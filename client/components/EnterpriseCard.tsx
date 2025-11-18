@@ -40,9 +40,11 @@ export default function EnterpriseCard({ enterprise, onEdit, onDelete }: Enterpr
                 Income
               </p>
               <p className="text-amber-100 text-sm">
-                {enterprise.income !== null && enterprise.income}
-                {enterprise.incomeLowerLimit !== null && enterprise.incomeUpperLimit !== null &&
-                  ` (${enterprise.incomeLowerLimit} - ${enterprise.incomeUpperLimit})`}
+                {enterprise.income !== null
+                  ? enterprise.income.toLocaleString()
+                  : enterprise.incomeLowerLimit !== null && enterprise.incomeUpperLimit !== null
+                  ? `${enterprise.incomeLowerLimit.toLocaleString()}-${enterprise.incomeUpperLimit.toLocaleString()}`
+                  : '-'}
               </p>
             </div>
           </div>
@@ -55,9 +57,11 @@ export default function EnterpriseCard({ enterprise, onEdit, onDelete }: Enterpr
                 Upkeep Cost
               </p>
               <p className="text-amber-100 text-sm">
-                {enterprise.upkeepCost !== null && enterprise.upkeepCost}
-                {enterprise.upkeepCostLowerLimit !== null && enterprise.upkeepCostUpperLimit !== null &&
-                  ` (${enterprise.upkeepCostLowerLimit} - ${enterprise.upkeepCostUpperLimit})`}
+                {enterprise.upkeepCost !== null
+                  ? enterprise.upkeepCost.toLocaleString()
+                  : enterprise.upkeepCostLowerLimit !== null && enterprise.upkeepCostUpperLimit !== null
+                  ? `${enterprise.upkeepCostLowerLimit.toLocaleString()}-${enterprise.upkeepCostUpperLimit.toLocaleString()}`
+                  : '-'}
               </p>
             </div>
           </div>

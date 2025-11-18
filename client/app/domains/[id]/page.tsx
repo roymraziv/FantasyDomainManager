@@ -46,6 +46,34 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
       return;
     }
 
+    // Validate income: cannot have both flat value and range
+    if (formData.income !== null && (formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null)) {
+      setError('Cannot specify both a flat value and a range for income');
+      return;
+    }
+
+    // Validate upkeep: cannot have both flat value and range
+    if (formData.upkeepCost !== null && (formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null)) {
+      setError('Cannot specify both a flat value and a range for upkeep cost');
+      return;
+    }
+
+    // Validate income range: min must be less than max
+    if (formData.incomeLowerLimit !== null && formData.incomeUpperLimit !== null) {
+      if (formData.incomeLowerLimit >= formData.incomeUpperLimit) {
+        setError('Income minimum must be less than income maximum');
+        return;
+      }
+    }
+
+    // Validate upkeep range: min must be less than max
+    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostUpperLimit !== null) {
+      if (formData.upkeepCostLowerLimit >= formData.upkeepCostUpperLimit) {
+        setError('Upkeep cost minimum must be less than upkeep cost maximum');
+        return;
+      }
+    }
+
     try {
       await domainApi.update(parseInt(id), formData);
       setIsEditModalOpen(false);
@@ -153,41 +181,19 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">
                 Income
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex items-start gap-3">
-                  <Coins className="text-amber-600 flex-shrink-0 mt-1" size={20} />
-                  <div>
-                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
-                      Income
-                    </p>
-                    <p className="text-amber-100 font-medium">
-                      {domain.income !== null ? domain.income.toLocaleString() : '-'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <Coins className="text-amber-600 flex-shrink-0 mt-1" size={20} />
-                  <div>
-                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
-                      Income Min
-                    </p>
-                    <p className="text-amber-100 font-medium">
-                      {domain.incomeLowerLimit !== null ? domain.incomeLowerLimit.toLocaleString() : '-'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <Coins className="text-amber-600 flex-shrink-0 mt-1" size={20} />
-                  <div>
-                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
-                      Income Max
-                    </p>
-                    <p className="text-amber-100 font-medium">
-                      {domain.incomeUpperLimit !== null ? domain.incomeUpperLimit.toLocaleString() : '-'}
-                    </p>
-                  </div>
+              <div className="flex items-start gap-3">
+                <Coins className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                <div>
+                  <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
+                    Income
+                  </p>
+                  <p className="text-amber-100 font-medium">
+                    {domain.income !== null
+                      ? domain.income.toLocaleString()
+                      : domain.incomeLowerLimit !== null && domain.incomeUpperLimit !== null
+                      ? `${domain.incomeLowerLimit.toLocaleString()}-${domain.incomeUpperLimit.toLocaleString()}`
+                      : '-'}
+                  </p>
                 </div>
               </div>
             </div>
@@ -197,41 +203,19 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">
                 Upkeep Cost
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex items-start gap-3">
-                  <TrendingDown className="text-amber-600 flex-shrink-0 mt-1" size={20} />
-                  <div>
-                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
-                      Upkeep Cost
-                    </p>
-                    <p className="text-amber-100 font-medium">
-                      {domain.upkeepCost !== null ? domain.upkeepCost.toLocaleString() : '-'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <TrendingDown className="text-amber-600 flex-shrink-0 mt-1" size={20} />
-                  <div>
-                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
-                      Upkeep Min
-                    </p>
-                    <p className="text-amber-100 font-medium">
-                      {domain.upkeepCostLowerLimit !== null ? domain.upkeepCostLowerLimit.toLocaleString() : '-'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <TrendingDown className="text-amber-600 flex-shrink-0 mt-1" size={20} />
-                  <div>
-                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
-                      Upkeep Max
-                    </p>
-                    <p className="text-amber-100 font-medium">
-                      {domain.upkeepCostUpperLimit !== null ? domain.upkeepCostUpperLimit.toLocaleString() : '-'}
-                    </p>
-                  </div>
+              <div className="flex items-start gap-3">
+                <TrendingDown className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                <div>
+                  <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
+                    Upkeep Cost
+                  </p>
+                  <p className="text-amber-100 font-medium">
+                    {domain.upkeepCost !== null
+                      ? domain.upkeepCost.toLocaleString()
+                      : domain.upkeepCostLowerLimit !== null && domain.upkeepCostUpperLimit !== null
+                      ? `${domain.upkeepCostLowerLimit.toLocaleString()}-${domain.upkeepCostUpperLimit.toLocaleString()}`
+                      : '-'}
+                  </p>
                 </div>
               </div>
             </div>
@@ -300,24 +284,26 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-amber-100 font-semibold mb-2">
-                Income
+                Income (flat value)
               </label>
               <input
                 type="number"
                 value={formData.income || ''}
                 onChange={(e) => setFormData({ ...formData, income: e.target.value ? parseInt(e.target.value) : null })}
-                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+                disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
+                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <div>
               <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Income Min
+                Income Min (or range)
               </label>
               <input
                 type="number"
                 value={formData.incomeLowerLimit || ''}
                 onChange={(e) => setFormData({ ...formData, incomeLowerLimit: e.target.value ? parseInt(e.target.value) : null })}
-                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+                disabled={formData.income !== null}
+                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <div>
@@ -328,7 +314,8 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 type="number"
                 value={formData.incomeUpperLimit || ''}
                 onChange={(e) => setFormData({ ...formData, incomeUpperLimit: e.target.value ? parseInt(e.target.value) : null })}
-                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+                disabled={formData.income !== null}
+                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -336,24 +323,26 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-amber-100 font-semibold mb-2">
-                Upkeep Cost
+                Upkeep Cost (flat value)
               </label>
               <input
                 type="number"
                 value={formData.upkeepCost || ''}
                 onChange={(e) => setFormData({ ...formData, upkeepCost: e.target.value ? parseInt(e.target.value) : null })}
-                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+                disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
+                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <div>
               <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Upkeep Min
+                Upkeep Min (or range)
               </label>
               <input
                 type="number"
                 value={formData.upkeepCostLowerLimit || ''}
                 onChange={(e) => setFormData({ ...formData, upkeepCostLowerLimit: e.target.value ? parseInt(e.target.value) : null })}
-                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+                disabled={formData.upkeepCost !== null}
+                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <div>
@@ -364,7 +353,8 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 type="number"
                 value={formData.upkeepCostUpperLimit || ''}
                 onChange={(e) => setFormData({ ...formData, upkeepCostUpperLimit: e.target.value ? parseInt(e.target.value) : null })}
-                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+                disabled={formData.upkeepCost !== null}
+                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
           </div>
