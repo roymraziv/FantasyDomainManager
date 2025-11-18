@@ -9,7 +9,7 @@ import {
   CreateTroopDto,
 } from '@/types/models';
 
-const API_BASE_URL = 'http://localhost:5523/api';
+const API_BASE_URL = 'http://localhost:5223/api';
 
 // Helper function for fetch requests
 async function fetchApi<T>(
