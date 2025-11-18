@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Edit, Trash2, Crown, Users, Coins, TrendingDown } from 'lucide-react';
 import { Domain } from '@/types/models';
@@ -10,7 +10,8 @@ import HeroSection from '@/components/HeroSection';
 import EnterpriseSection from '@/components/EnterpriseSection';
 import TroopSection from '@/components/TroopSection';
 
-export default function DomainDetailPage({ params }: { params: { id: string } }) {
+export default function DomainDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const [domain, setDomain] = useState<Domain | null>(null);
   const [loading, setLoading] = useState(true);
@@ -21,12 +22,12 @@ export default function DomainDetailPage({ params }: { params: { id: string } })
 
   useEffect(() => {
     loadDomain();
-  }, [params.id]);
+  }, [id]);
 
   const loadDomain = async () => {
     try {
       setLoading(true);
-      const data = await domainApi.getById(parseInt(params.id));
+      const data = await domainApi.getById(parseInt(id));
       setDomain(data);
       setFormData(data);
     } catch (err) {
@@ -46,7 +47,7 @@ export default function DomainDetailPage({ params }: { params: { id: string } })
     }
 
     try {
-      await domainApi.update(parseInt(params.id), formData);
+      await domainApi.update(parseInt(id), formData);
       setIsEditModalOpen(false);
       loadDomain();
     } catch (err) {
@@ -56,7 +57,7 @@ export default function DomainDetailPage({ params }: { params: { id: string } })
 
   const handleDelete = async () => {
     try {
-      await domainApi.delete(parseInt(params.id));
+      await domainApi.delete(parseInt(id));
       router.push('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete domain');
