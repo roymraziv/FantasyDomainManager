@@ -14,6 +14,8 @@ namespace FantasyDomainManager.Controllers
             _context = context;
         }
 
+        // ========== DOMAIN ENDPOINTS ==========
+
         [HttpGet("domains")]
         public IActionResult GetDomains()
         {
@@ -30,6 +32,66 @@ namespace FantasyDomainManager.Controllers
                 return NotFound();
             }
             return Ok(domain);
+        }
+
+        // ========== HERO ENDPOINTS ==========
+
+        [HttpGet("heroes")]
+        public IActionResult GetHeroes()
+        {
+            var heroes = _context.Heroes.ToList();
+            return Ok(heroes);
+        }
+
+        [HttpGet("heroes/{id}")]
+        public IActionResult GetHeroById(int id)
+        {
+            var hero = _context.Heroes.FirstOrDefault(h => h.Id == id);
+            if (hero == null)
+            {
+                return NotFound();
+            }
+            return Ok(hero);
+        }
+
+        // ========== ENTERPRISE ENDPOINTS ==========
+
+        [HttpGet("enterprises")]
+        public IActionResult GetEnterprises()
+        {
+            var enterprises = _context.Enterprises.ToList();
+            return Ok(enterprises);
+        }
+
+        [HttpGet("enterprises/{id}")]
+        public IActionResult GetEnterpriseById(int id)
+        {
+            var enterprise = _context.Enterprises.FirstOrDefault(e => e.Id == id);
+            if (enterprise == null)
+            {
+                return NotFound();
+            }
+            return Ok(enterprise);
+        }
+
+        // ========== TROOP ENDPOINTS ==========
+
+        [HttpGet("troops")]
+        public IActionResult GetTroops()
+        {
+            var troops = _context.Troops.ToList();
+            return Ok(troops);
+        }
+
+        [HttpGet("troops/{id}")]
+        public IActionResult GetTroopById(int id)
+        {
+            var troop = _context.Troops.FirstOrDefault(t => t.Id == id);
+            if (troop == null)
+            {
+                return NotFound();
+            }
+            return Ok(troop);
         }
     }
 }
