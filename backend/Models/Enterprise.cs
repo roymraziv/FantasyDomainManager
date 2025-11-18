@@ -12,6 +12,7 @@ public class Enterprise
     public int? UpkeepCost { get; set; }
     public int? UpkeepCostLowerLimit { get; set; }
     public int? UpkeepCostUpperLimit { get; set; }
+    public string Notes { get; set; } = string.Empty;
 
     public int DomainId { get; set; }
     public Domain? Domain { get; set; }

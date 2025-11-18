@@ -9,6 +9,7 @@ public class Hero
     public string Role { get; set; } = string.Empty;
     public int Level { get; set; }
     public int Wage { get; set; }
+    public string Notes { get; set; } = string.Empty;
 
     public int DomainId { get; set; }
     public Domain? Domain { get; set; }
