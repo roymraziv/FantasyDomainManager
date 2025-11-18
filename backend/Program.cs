@@ -9,6 +9,18 @@ var GetConnectionString = builder.Configuration.GetConnectionString("Domains") ?
 builder.Services.AddDbContext<DomainDb>(options =>
     options.UseSqlite(GetConnectionString));
 
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -32,6 +44,9 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fantasy Domain Manager API v1");
     });
 }
+
+// Enable CORS
+app.UseCors("AllowFrontend");
 
 app.MapControllers();
 
