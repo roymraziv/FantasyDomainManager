@@ -117,60 +117,124 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* Domain Information */}
-          <div className="px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-start gap-3">
-              <Crown className="text-amber-600 flex-shrink-0 mt-1" size={24} />
-              <div>
-                <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
-                  Ruler
-                </p>
-                <p className="text-amber-100 text-lg font-medium">{domain.ruler}</p>
+          <div className="px-6 py-6 space-y-6">
+            {/* Basic Information */}
+            <div>
+              <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">
+                Basic Information
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-start gap-3">
+                  <Crown className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
+                      Ruler
+                    </p>
+                    <p className="text-amber-100 font-medium">{domain.ruler}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Users className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
+                      Population
+                    </p>
+                    <p className="text-amber-100 font-medium">
+                      {domain.population.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-start gap-3">
-              <Users className="text-amber-600 flex-shrink-0 mt-1" size={24} />
-              <div>
-                <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
-                  Population
-                </p>
-                <p className="text-amber-100 text-lg font-medium">
-                  {domain.population.toLocaleString()}
-                </p>
+            {/* Income Section */}
+            <div>
+              <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">
+                Income
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex items-start gap-3">
+                  <Coins className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
+                      Income
+                    </p>
+                    <p className="text-amber-100 font-medium">
+                      {domain.income !== null ? domain.income.toLocaleString() : '-'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Coins className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
+                      Income Min
+                    </p>
+                    <p className="text-amber-100 font-medium">
+                      {domain.incomeLowerLimit !== null ? domain.incomeLowerLimit.toLocaleString() : '-'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Coins className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
+                      Income Max
+                    </p>
+                    <p className="text-amber-100 font-medium">
+                      {domain.incomeUpperLimit !== null ? domain.incomeUpperLimit.toLocaleString() : '-'}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {(domain.income !== null || domain.incomeLowerLimit !== null || domain.incomeUpperLimit !== null) && (
-              <div className="flex items-start gap-3">
-                <Coins className="text-amber-600 flex-shrink-0 mt-1" size={24} />
-                <div>
-                  <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
-                    Income
-                  </p>
-                  <p className="text-amber-100 text-lg font-medium">
-                    {domain.income !== null && domain.income}
-                    {domain.incomeLowerLimit !== null && domain.incomeUpperLimit !== null &&
-                      ` (${domain.incomeLowerLimit} - ${domain.incomeUpperLimit})`}
-                  </p>
+            {/* Upkeep Section */}
+            <div>
+              <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">
+                Upkeep Cost
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex items-start gap-3">
+                  <TrendingDown className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
+                      Upkeep Cost
+                    </p>
+                    <p className="text-amber-100 font-medium">
+                      {domain.upkeepCost !== null ? domain.upkeepCost.toLocaleString() : '-'}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            )}
 
-            {(domain.upkeepCost !== null || domain.upkeepCostLowerLimit !== null || domain.upkeepCostUpperLimit !== null) && (
-              <div className="flex items-start gap-3">
-                <TrendingDown className="text-amber-600 flex-shrink-0 mt-1" size={24} />
-                <div>
-                  <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
-                    Upkeep Cost
-                  </p>
-                  <p className="text-amber-100 text-lg font-medium">
-                    {domain.upkeepCost !== null && domain.upkeepCost}
-                    {domain.upkeepCostLowerLimit !== null && domain.upkeepCostUpperLimit !== null &&
-                      ` (${domain.upkeepCostLowerLimit} - ${domain.upkeepCostUpperLimit})`}
-                  </p>
+                <div className="flex items-start gap-3">
+                  <TrendingDown className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
+                      Upkeep Min
+                    </p>
+                    <p className="text-amber-100 font-medium">
+                      {domain.upkeepCostLowerLimit !== null ? domain.upkeepCostLowerLimit.toLocaleString() : '-'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <TrendingDown className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
+                      Upkeep Max
+                    </p>
+                    <p className="text-amber-100 font-medium">
+                      {domain.upkeepCostUpperLimit !== null ? domain.upkeepCostUpperLimit.toLocaleString() : '-'}
+                    </p>
+                  </div>
                 </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
 
