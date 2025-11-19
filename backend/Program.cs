@@ -9,6 +9,9 @@ var GetConnectionString = builder.Configuration.GetConnectionString("Domains") ?
 builder.Services.AddDbContext<DomainDb>(options =>
     options.UseSqlite(GetConnectionString));
 
+// Register services
+builder.Services.AddScoped<FantasyDomainManager.Services.FinancialCalculationService>();
+
 // Add CORS policy
 builder.Services.AddCors(options =>
 {

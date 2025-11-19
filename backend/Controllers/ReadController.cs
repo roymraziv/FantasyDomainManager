@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using FantasyDomainManager.Services;
+using FantasyDomainManager.DTOs;
 
 namespace FantasyDomainManager.Controllers
 {
@@ -8,10 +10,12 @@ namespace FantasyDomainManager.Controllers
     public class ReadController : ControllerBase
     {
         private readonly DbContexts.DomainDb _context;
+        private readonly FinancialCalculationService _financialService;
 
-        public ReadController(DbContexts.DomainDb context)
+        public ReadController(DbContexts.DomainDb context, FinancialCalculationService financialService)
         {
             _context = context;
+            _financialService = financialService;
         }
 
         // ========== DOMAIN ENDPOINTS ==========
@@ -32,6 +36,24 @@ namespace FantasyDomainManager.Controllers
                 return NotFound();
             }
             return Ok(domain);
+        }
+
+        [HttpPost("domains/{domainId}/calculate-financials")]
+        public async Task<IActionResult> CalculateFinancials(int domainId, [FromBody] FinancialCalculationRequest request)
+        {
+            if (request.Months <= 0)
+            {
+                return BadRequest(new { message = "Months must be greater than 0" });
+            }
+
+            var result = await _financialService.CalculateFinancials(domainId, request.Months);
+
+            if (result == null)
+            {
+                return NotFound(new { message = "Domain not found" });
+            }
+
+            return Ok(result);
         }
 
         // ========== HERO ENDPOINTS ==========
