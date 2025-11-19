@@ -9,11 +9,12 @@ import Modal from './Modal';
 
 interface HeroSectionProps {
   domainId: number;
+  initialHeroes?: Hero[];
 }
 
-export default function HeroSection({ domainId }: HeroSectionProps) {
+export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectionProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [heroes, setHeroes] = useState<Hero[]>([]);
+  const [heroes, setHeroes] = useState<Hero[]>(initialHeroes);
   const [loading, setLoading] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -30,7 +31,7 @@ export default function HeroSection({ domainId }: HeroSectionProps) {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (isOpen && heroes.length === 0) {
+    if (isOpen && heroes.length === 0 && initialHeroes.length === 0) {
       loadHeroes();
     }
   }, [isOpen]);

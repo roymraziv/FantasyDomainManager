@@ -9,11 +9,12 @@ import Modal from './Modal';
 
 interface TroopSectionProps {
   domainId: number;
+  initialTroops?: Troop[];
 }
 
-export default function TroopSection({ domainId }: TroopSectionProps) {
+export default function TroopSection({ domainId, initialTroops = [] }: TroopSectionProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [troops, setTroops] = useState<Troop[]>([]);
+  const [troops, setTroops] = useState<Troop[]>(initialTroops);
   const [loading, setLoading] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -29,7 +30,7 @@ export default function TroopSection({ domainId }: TroopSectionProps) {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (isOpen && troops.length === 0) {
+    if (isOpen && troops.length === 0 && initialTroops.length === 0) {
       loadTroops();
     }
   }, [isOpen]);
