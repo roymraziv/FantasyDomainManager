@@ -207,7 +207,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
             <input
               type="number"
               value={formData.level}
-              onChange={(e) => setFormData({ ...formData, level: parseInt(e.target.value) || 1 })}
+              onChange={(e) => setFormData({ ...formData, level: e.target.value === '' ? 1 : parseInt(e.target.value) })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -217,7 +217,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
             <input
               type="number"
               value={formData.wage}
-              onChange={(e) => setFormData({ ...formData, wage: parseInt(e.target.value) || 0 })}
+              onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? 0 : parseInt(e.target.value) })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -282,7 +282,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
             <input
               type="number"
               value={formData.level}
-              onChange={(e) => setFormData({ ...formData, level: parseInt(e.target.value) || 1 })}
+              onChange={(e) => setFormData({ ...formData, level: e.target.value === '' ? 1 : parseInt(e.target.value) })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -292,7 +292,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
             <input
               type="number"
               value={formData.wage}
-              onChange={(e) => setFormData({ ...formData, wage: parseInt(e.target.value) || 0 })}
+              onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? 0 : parseInt(e.target.value) })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
