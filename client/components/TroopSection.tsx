@@ -56,11 +56,24 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
       return;
     }
 
+    const quantity = formData.quantity === '' ? 0 : formData.quantity;
+    const wage = formData.wage === '' ? 0 : formData.wage;
+
+    if (quantity < 0) {
+      setError('Quantity cannot be negative');
+      return;
+    }
+
+    if (wage < 0) {
+      setError('Wage cannot be negative');
+      return;
+    }
+
     try {
       const submitData = {
         ...formData,
-        quantity: formData.quantity === '' ? 0 : formData.quantity,
-        wage: formData.wage === '' ? 0 : formData.wage,
+        quantity,
+        wage,
       };
       await troopApi.create(submitData);
       setIsCreateModalOpen(false);
@@ -80,11 +93,24 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
       return;
     }
 
+    const quantity = formData.quantity === '' ? 0 : formData.quantity;
+    const wage = formData.wage === '' ? 0 : formData.wage;
+
+    if (quantity < 0) {
+      setError('Quantity cannot be negative');
+      return;
+    }
+
+    if (wage < 0) {
+      setError('Wage cannot be negative');
+      return;
+    }
+
     try {
       const submitData = {
         ...formData,
-        quantity: formData.quantity === '' ? 0 : formData.quantity,
-        wage: formData.wage === '' ? 0 : formData.wage,
+        quantity,
+        wage,
         id: selectedTroop.id,
       };
       await troopApi.update(selectedTroop.id, submitData);
@@ -203,6 +229,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
             <label className="block text-amber-100 font-semibold mb-2">Quantity</label>
             <input
               type="number"
+              min="0"
               value={formData.quantity}
               onChange={(e) => setFormData({ ...formData, quantity: e.target.value === '' ? '' : parseInt(e.target.value) })}
               onWheel={(e) => e.currentTarget.blur()}
@@ -214,6 +241,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
             <label className="block text-amber-100 font-semibold mb-2">Wage</label>
             <input
               type="number"
+              min="0"
               value={formData.wage}
               onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? '' : parseInt(e.target.value) })}
               onWheel={(e) => e.currentTarget.blur()}
@@ -269,6 +297,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
             <label className="block text-amber-100 font-semibold mb-2">Quantity</label>
             <input
               type="number"
+              min="0"
               value={formData.quantity}
               onChange={(e) => setFormData({ ...formData, quantity: e.target.value === '' ? '' : parseInt(e.target.value) })}
               onWheel={(e) => e.currentTarget.blur()}
@@ -280,6 +309,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
             <label className="block text-amber-100 font-semibold mb-2">Wage</label>
             <input
               type="number"
+              min="0"
               value={formData.wage}
               onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? '' : parseInt(e.target.value) })}
               onWheel={(e) => e.currentTarget.blur()}

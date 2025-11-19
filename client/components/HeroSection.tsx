@@ -57,11 +57,24 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
       return;
     }
 
+    const level = formData.level === '' ? 1 : formData.level;
+    const wage = formData.wage === '' ? 0 : formData.wage;
+
+    if (level < 1) {
+      setError('Level must be at least 1');
+      return;
+    }
+
+    if (wage < 0) {
+      setError('Wage cannot be negative');
+      return;
+    }
+
     try {
       const submitData = {
         ...formData,
-        level: formData.level === '' ? 1 : formData.level,
-        wage: formData.wage === '' ? 0 : formData.wage,
+        level,
+        wage,
       };
       await heroApi.create(submitData);
       setIsCreateModalOpen(false);
@@ -81,11 +94,24 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
       return;
     }
 
+    const level = formData.level === '' ? 1 : formData.level;
+    const wage = formData.wage === '' ? 0 : formData.wage;
+
+    if (level < 1) {
+      setError('Level must be at least 1');
+      return;
+    }
+
+    if (wage < 0) {
+      setError('Wage cannot be negative');
+      return;
+    }
+
     try {
       const submitData = {
         ...formData,
-        level: formData.level === '' ? 1 : formData.level,
-        wage: formData.wage === '' ? 0 : formData.wage,
+        level,
+        wage,
         id: selectedHero.id,
       };
       await heroApi.update(selectedHero.id, submitData);
@@ -214,24 +240,28 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
           </div>
 
           <div>
-            <label className="block text-amber-100 font-semibold mb-2">Level</label>
+            <label className="block text-amber-100 font-semibold mb-2">Level *</label>
             <input
               type="number"
+              min="1"
               value={formData.level}
               onChange={(e) => setFormData({ ...formData, level: e.target.value === '' ? '' : parseInt(e.target.value) })}
               onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              required
             />
           </div>
 
           <div>
-            <label className="block text-amber-100 font-semibold mb-2">Wage</label>
+            <label className="block text-amber-100 font-semibold mb-2">Wage *</label>
             <input
               type="number"
+              min="0"
               value={formData.wage}
               onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? '' : parseInt(e.target.value) })}
               onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              required
             />
           </div>
 
@@ -291,24 +321,28 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
           </div>
 
           <div>
-            <label className="block text-amber-100 font-semibold mb-2">Level</label>
+            <label className="block text-amber-100 font-semibold mb-2">Level *</label>
             <input
               type="number"
+              min="1"
               value={formData.level}
               onChange={(e) => setFormData({ ...formData, level: e.target.value === '' ? '' : parseInt(e.target.value) })}
               onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              required
             />
           </div>
 
           <div>
-            <label className="block text-amber-100 font-semibold mb-2">Wage</label>
+            <label className="block text-amber-100 font-semibold mb-2">Wage *</label>
             <input
               type="number"
+              min="0"
               value={formData.wage}
               onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? '' : parseInt(e.target.value) })}
               onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              required
             />
           </div>
 
