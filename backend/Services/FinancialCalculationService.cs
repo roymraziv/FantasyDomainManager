@@ -76,8 +76,8 @@ public class FinancialCalculationService
             // Calculate Hero Wages (all flat values)
             breakdown.HeroWages = domain.Heroes.Sum(h => h.Wage);
 
-            // Calculate Troop Wages (all flat values)
-            breakdown.TroopWages = domain.Troops.Sum(t => t.Wage);
+            // Calculate Troop Wages (wage × quantity for each troop type)
+            breakdown.TroopWages = domain.Troops.Sum(t => t.Wage * t.Quantity);
 
             // Calculate Net Income for this month
             breakdown.NetIncome = breakdown.DomainIncome + breakdown.EnterpriseIncome
