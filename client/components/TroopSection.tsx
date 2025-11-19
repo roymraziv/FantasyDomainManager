@@ -23,6 +23,7 @@ export default function TroopSection({ domainId }: TroopSectionProps) {
     type: '',
     quantity: 0,
     wage: 0,
+    notes: null,
     domainId,
   });
   const [error, setError] = useState('');
@@ -102,6 +103,7 @@ export default function TroopSection({ domainId }: TroopSectionProps) {
       type: '',
       quantity: 0,
       wage: 0,
+      notes: null,
       domainId,
     });
     setError('');
@@ -113,6 +115,7 @@ export default function TroopSection({ domainId }: TroopSectionProps) {
       type: troop.type,
       quantity: troop.quantity,
       wage: troop.wage,
+      notes: troop.notes,
       domainId: troop.domainId,
     });
     setIsEditModalOpen(true);
@@ -204,6 +207,16 @@ export default function TroopSection({ domainId }: TroopSectionProps) {
             />
           </div>
 
+          <div>
+            <label className="block text-amber-100 font-semibold mb-2">Notes</label>
+            <textarea
+              value={formData.notes || ''}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value || null })}
+              className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none min-h-[100px] resize-y"
+              placeholder="Add any notes or descriptions..."
+            />
+          </div>
+
           <div className="flex justify-end gap-4 pt-4">
             <button
               type="button"
@@ -255,6 +268,16 @@ export default function TroopSection({ domainId }: TroopSectionProps) {
               value={formData.wage}
               onChange={(e) => setFormData({ ...formData, wage: parseInt(e.target.value) || 0 })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-amber-100 font-semibold mb-2">Notes</label>
+            <textarea
+              value={formData.notes || ''}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value || null })}
+              className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none min-h-[100px] resize-y"
+              placeholder="Add any notes or descriptions..."
             />
           </div>
 

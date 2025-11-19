@@ -21,6 +21,7 @@ export default function Home() {
     income: null,
     incomeLowerLimit: null,
     incomeUpperLimit: null,
+    notes: null,
   });
   const [error, setError] = useState('');
 
@@ -98,6 +99,7 @@ export default function Home() {
       income: null,
       incomeLowerLimit: null,
       incomeUpperLimit: null,
+      notes: null,
     });
     setError('');
   };
@@ -273,6 +275,18 @@ export default function Home() {
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-amber-100 font-semibold mb-2">
+              Notes
+            </label>
+            <textarea
+              value={formData.notes || ''}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value || null })}
+              className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none min-h-[100px] resize-y"
+              placeholder="Add any notes or descriptions..."
+            />
           </div>
 
           <div className="flex justify-end gap-4 pt-4">
