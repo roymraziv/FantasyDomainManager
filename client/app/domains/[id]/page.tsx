@@ -113,7 +113,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
       <div className="max-w-6xl mx-auto">
         {/* Back Button */}
         <button
-          onClick={() => router.push('/')}
+          onClick={() => router.push('/domains')}
           className="flex items-center gap-2 text-amber-100 hover:text-amber-400 mb-6 transition-colors"
         >
           <ArrowLeft size={20} />
