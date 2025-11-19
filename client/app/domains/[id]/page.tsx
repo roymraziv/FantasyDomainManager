@@ -29,7 +29,9 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
       setLoading(true);
       const data = await domainApi.getById(parseInt(id));
       setDomain(data);
-      setFormData(data);
+      // Only set domain fields for formData, exclude collections
+      const { heroes, troops, enterprises, ...domainFields } = data;
+      setFormData(domainFields);
     } catch (err) {
       console.error('Failed to load domain:', err);
     } finally {
