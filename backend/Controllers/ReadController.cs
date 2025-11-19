@@ -54,6 +54,13 @@ namespace FantasyDomainManager.Controllers
             return Ok(hero);
         }
 
+        [HttpGet("domains/{domainId}/heroes")]
+        public IActionResult GetHeroesByDomainId(int domainId)
+        {
+            var heroes = _context.Heroes.Where(h => h.DomainId == domainId).ToList();
+            return Ok(heroes);
+        }
+
         // ========== ENTERPRISE ENDPOINTS ==========
 
         [HttpGet("enterprises")]
@@ -74,6 +81,13 @@ namespace FantasyDomainManager.Controllers
             return Ok(enterprise);
         }
 
+        [HttpGet("domains/{domainId}/enterprises")]
+        public IActionResult GetEnterprisesByDomainId(int domainId)
+        {
+            var enterprises = _context.Enterprises.Where(e => e.DomainId == domainId).ToList();
+            return Ok(enterprises);
+        }
+
         // ========== TROOP ENDPOINTS ==========
 
         [HttpGet("troops")]
@@ -92,6 +106,13 @@ namespace FantasyDomainManager.Controllers
                 return NotFound();
             }
             return Ok(troop);
+        }
+
+        [HttpGet("domains/{domainId}/troops")]
+        public IActionResult GetTroopsByDomainId(int domainId)
+        {
+            var troops = _context.Troops.Where(t => t.DomainId == domainId).ToList();
+            return Ok(troops);
         }
     }
 }

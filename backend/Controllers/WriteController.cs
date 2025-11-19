@@ -43,6 +43,7 @@ namespace FantasyDomainManager.Controllers
             existingDomain.Income = domain.Income;
             existingDomain.IncomeLowerLimit = domain.IncomeLowerLimit;
             existingDomain.IncomeUpperLimit = domain.IncomeUpperLimit;
+            existingDomain.Notes = domain.Notes;
 
             _context.SaveChanges();
             return Ok(existingDomain);
@@ -115,6 +116,7 @@ namespace FantasyDomainManager.Controllers
             existingHero.Role = hero.Role;
             existingHero.Level = hero.Level;
             existingHero.Wage = hero.Wage;
+            existingHero.Notes = hero.Notes;
             existingHero.DomainId = hero.DomainId;
 
             _context.SaveChanges();
@@ -175,6 +177,7 @@ namespace FantasyDomainManager.Controllers
             existingEnterprise.UpkeepCost = enterprise.UpkeepCost;
             existingEnterprise.UpkeepCostLowerLimit = enterprise.UpkeepCostLowerLimit;
             existingEnterprise.UpkeepCostUpperLimit = enterprise.UpkeepCostUpperLimit;
+            existingEnterprise.Notes = enterprise.Notes;
             existingEnterprise.DomainId = enterprise.DomainId;
 
             _context.SaveChanges();
@@ -231,6 +234,7 @@ namespace FantasyDomainManager.Controllers
             existingTroop.Type = troop.Type;
             existingTroop.Quantity = troop.Quantity;
             existingTroop.Wage = troop.Wage;
+            existingTroop.Notes = troop.Notes;
             existingTroop.DomainId = troop.DomainId;
 
             _context.SaveChanges();
