@@ -20,6 +20,11 @@ namespace FantasyDomainManager.Controllers
         [HttpPost("domains")]
         public IActionResult CreateDomain([FromBody] Models.Domain domain)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Domains.Add(domain);
             _context.SaveChanges();
             return CreatedAtAction(nameof(CreateDomain), new { id = domain.Id }, domain);
@@ -28,6 +33,11 @@ namespace FantasyDomainManager.Controllers
         [HttpPut("domains/{id}")]
         public IActionResult UpdateDomain(int id, [FromBody] Models.Domain domain)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
             var existingDomain = _context.Domains.FirstOrDefault(d => d.Id == id);
             if (existingDomain == null)
             {
