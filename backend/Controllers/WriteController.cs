@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FantasyDomainManager.DTOs;
 
 namespace FantasyDomainManager.Controllers
 {
@@ -31,29 +32,29 @@ namespace FantasyDomainManager.Controllers
         }
 
         [HttpPut("domains/{id}")]
-        public IActionResult UpdateDomain(int id, [FromBody] Models.Domain domain)
+        public IActionResult UpdateDomain(int id, [FromBody] UpdateDomainDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            
+
             var existingDomain = _context.Domains.FirstOrDefault(d => d.Id == id);
             if (existingDomain == null)
             {
                 return NotFound();
             }
 
-            existingDomain.Name = domain.Name;
-            existingDomain.Ruler = domain.Ruler;
-            existingDomain.Population = domain.Population;
-            existingDomain.UpkeepCost = domain.UpkeepCost;
-            existingDomain.UpkeepCostLowerLimit = domain.UpkeepCostLowerLimit;
-            existingDomain.UpkeepCostUpperLimit = domain.UpkeepCostUpperLimit;
-            existingDomain.Income = domain.Income;
-            existingDomain.IncomeLowerLimit = domain.IncomeLowerLimit;
-            existingDomain.IncomeUpperLimit = domain.IncomeUpperLimit;
-            existingDomain.Notes = domain.Notes;
+            existingDomain.Name = dto.Name;
+            existingDomain.Ruler = dto.Ruler;
+            existingDomain.Population = dto.Population;
+            existingDomain.UpkeepCost = dto.UpkeepCost;
+            existingDomain.UpkeepCostLowerLimit = dto.UpkeepCostLowerLimit;
+            existingDomain.UpkeepCostUpperLimit = dto.UpkeepCostUpperLimit;
+            existingDomain.Income = dto.Income;
+            existingDomain.IncomeLowerLimit = dto.IncomeLowerLimit;
+            existingDomain.IncomeUpperLimit = dto.IncomeUpperLimit;
+            existingDomain.Notes = dto.Notes;
 
             _context.SaveChanges();
             return Ok(existingDomain);
@@ -107,8 +108,13 @@ namespace FantasyDomainManager.Controllers
         }
 
         [HttpPut("heroes/{id}")]
-        public IActionResult UpdateHero(int id, [FromBody] Models.Hero hero)
+        public IActionResult UpdateHero(int id, [FromBody] UpdateHeroDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var existingHero = _context.Heroes.FirstOrDefault(h => h.Id == id);
             if (existingHero == null)
             {
@@ -116,18 +122,18 @@ namespace FantasyDomainManager.Controllers
             }
 
             // Validate that the domain exists
-            var domainExists = _context.Domains.Any(d => d.Id == hero.DomainId);
+            var domainExists = _context.Domains.Any(d => d.Id == dto.DomainId);
             if (!domainExists)
             {
                 return BadRequest(new { message = "Domain does not exist" });
             }
 
-            existingHero.Name = hero.Name;
-            existingHero.Role = hero.Role;
-            existingHero.Level = hero.Level;
-            existingHero.Wage = hero.Wage;
-            existingHero.Notes = hero.Notes;
-            existingHero.DomainId = hero.DomainId;
+            existingHero.Name = dto.Name;
+            existingHero.Role = dto.Role;
+            existingHero.Level = dto.Level;
+            existingHero.Wage = dto.Wage;
+            existingHero.Notes = dto.Notes;
+            existingHero.DomainId = dto.DomainId;
 
             _context.SaveChanges();
             return Ok(existingHero);
@@ -165,8 +171,13 @@ namespace FantasyDomainManager.Controllers
         }
 
         [HttpPut("enterprises/{id}")]
-        public IActionResult UpdateEnterprise(int id, [FromBody] Models.Enterprise enterprise)
+        public IActionResult UpdateEnterprise(int id, [FromBody] UpdateEnterpriseDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var existingEnterprise = _context.Enterprises.FirstOrDefault(e => e.Id == id);
             if (existingEnterprise == null)
             {
@@ -174,21 +185,21 @@ namespace FantasyDomainManager.Controllers
             }
 
             // Validate that the domain exists
-            var domainExists = _context.Domains.Any(d => d.Id == enterprise.DomainId);
+            var domainExists = _context.Domains.Any(d => d.Id == dto.DomainId);
             if (!domainExists)
             {
                 return BadRequest(new { message = "Domain does not exist" });
             }
 
-            existingEnterprise.Name = enterprise.Name;
-            existingEnterprise.Income = enterprise.Income;
-            existingEnterprise.IncomeLowerLimit = enterprise.IncomeLowerLimit;
-            existingEnterprise.IncomeUpperLimit = enterprise.IncomeUpperLimit;
-            existingEnterprise.UpkeepCost = enterprise.UpkeepCost;
-            existingEnterprise.UpkeepCostLowerLimit = enterprise.UpkeepCostLowerLimit;
-            existingEnterprise.UpkeepCostUpperLimit = enterprise.UpkeepCostUpperLimit;
-            existingEnterprise.Notes = enterprise.Notes;
-            existingEnterprise.DomainId = enterprise.DomainId;
+            existingEnterprise.Name = dto.Name;
+            existingEnterprise.Income = dto.Income;
+            existingEnterprise.IncomeLowerLimit = dto.IncomeLowerLimit;
+            existingEnterprise.IncomeUpperLimit = dto.IncomeUpperLimit;
+            existingEnterprise.UpkeepCost = dto.UpkeepCost;
+            existingEnterprise.UpkeepCostLowerLimit = dto.UpkeepCostLowerLimit;
+            existingEnterprise.UpkeepCostUpperLimit = dto.UpkeepCostUpperLimit;
+            existingEnterprise.Notes = dto.Notes;
+            existingEnterprise.DomainId = dto.DomainId;
 
             _context.SaveChanges();
             return Ok(existingEnterprise);
@@ -226,8 +237,13 @@ namespace FantasyDomainManager.Controllers
         }
 
         [HttpPut("troops/{id}")]
-        public IActionResult UpdateTroop(int id, [FromBody] Models.Troop troop)
+        public IActionResult UpdateTroop(int id, [FromBody] UpdateTroopDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var existingTroop = _context.Troops.FirstOrDefault(t => t.Id == id);
             if (existingTroop == null)
             {
@@ -235,17 +251,17 @@ namespace FantasyDomainManager.Controllers
             }
 
             // Validate that the domain exists
-            var domainExists = _context.Domains.Any(d => d.Id == troop.DomainId);
+            var domainExists = _context.Domains.Any(d => d.Id == dto.DomainId);
             if (!domainExists)
             {
                 return BadRequest(new { message = "Domain does not exist" });
             }
 
-            existingTroop.Type = troop.Type;
-            existingTroop.Quantity = troop.Quantity;
-            existingTroop.Wage = troop.Wage;
-            existingTroop.Notes = troop.Notes;
-            existingTroop.DomainId = troop.DomainId;
+            existingTroop.Type = dto.Type;
+            existingTroop.Quantity = dto.Quantity;
+            existingTroop.Wage = dto.Wage;
+            existingTroop.Notes = dto.Notes;
+            existingTroop.DomainId = dto.DomainId;
 
             _context.SaveChanges();
             return Ok(existingTroop);
