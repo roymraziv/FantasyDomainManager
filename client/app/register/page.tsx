@@ -7,6 +7,8 @@ import { Castle, Mail, Lock, User } from 'lucide-react';
 export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
     username: '',
     email: '',
     password: '',
@@ -70,6 +72,47 @@ export default function RegisterPage() {
                   {error}
                 </div>
               )}
+
+              {/* Name Fields */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-amber-100 font-semibold mb-2">
+                    First Name
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <User className="text-amber-600" size={20} />
+                    </div>
+                    <input
+                      type="text"
+                      value={formData.firstName}
+                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                      className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 pl-11 pr-4 py-3 focus:border-amber-600 focus:outline-none"
+                      placeholder="First name"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-amber-100 font-semibold mb-2">
+                    Last Name
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <User className="text-amber-600" size={20} />
+                    </div>
+                    <input
+                      type="text"
+                      value={formData.lastName}
+                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                      className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 pl-11 pr-4 py-3 focus:border-amber-600 focus:outline-none"
+                      placeholder="Last name"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
 
               {/* Username Field */}
               <div>
