@@ -8,7 +8,7 @@ public class Troop
     public string Type { get; set; } = string.Empty;
     public int Quantity { get; set; }
     public int Wage { get; set; }
-    public string Notes { get; set; } = string.Empty;
+    public string? Notes { get; set; }
 
     public int DomainId { get; set; }
     public Domain? Domain { get; set; }

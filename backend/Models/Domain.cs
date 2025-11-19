@@ -14,7 +14,7 @@ public class Domain
     public int? Income { get; set; }
     public int? IncomeLowerLimit { get; set; }
     public int? IncomeUpperLimit { get; set; }
-    public string Notes { get; set; } = string.Empty;
+    public string? Notes { get; set; }
     public List<Enterprise> Enterprises { get; set; } = new();
     public List<Hero> Heroes { get; set; } = new();
     public List<Troop> Troops { get; set; } = new();
