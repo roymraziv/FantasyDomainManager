@@ -1,311 +1,175 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Plus, Castle } from 'lucide-react';
-import { Domain, CreateDomainDto } from '@/types/models';
-import { domainApi } from '@/lib/api';
-import DomainCard from '@/components/DomainCard';
-import Modal from '@/components/Modal';
+import { useRouter } from 'next/navigation';
+import { Castle, Users, Sword, Coins, BookOpen, Shield, TrendingUp, Map } from 'lucide-react';
 
-export default function Home() {
-  const [domains, setDomains] = useState<Domain[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState<CreateDomainDto>({
-    name: '',
-    ruler: '',
-    population: 0,
-    upkeepCost: null,
-    upkeepCostLowerLimit: null,
-    upkeepCostUpperLimit: null,
-    income: null,
-    incomeLowerLimit: null,
-    incomeUpperLimit: null,
-    notes: null,
-  });
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    loadDomains();
-  }, []);
-
-  const loadDomains = async () => {
-    try {
-      setLoading(true);
-      const data = await domainApi.getAll();
-      setDomains(data);
-    } catch (err) {
-      console.error('Failed to load domains:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    if (!formData.name || !formData.ruler) {
-      setError('Name and Ruler are required');
-      return;
-    }
-
-    // Validate income: cannot have both flat value and range
-    if (formData.income !== null && (formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null)) {
-      setError('Cannot specify both a flat value and a range for income');
-      return;
-    }
-
-    // Validate upkeep: cannot have both flat value and range
-    if (formData.upkeepCost !== null && (formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null)) {
-      setError('Cannot specify both a flat value and a range for upkeep cost');
-      return;
-    }
-
-    // Validate income range: min must be less than max
-    if (formData.incomeLowerLimit !== null && formData.incomeUpperLimit !== null) {
-      if (formData.incomeLowerLimit >= formData.incomeUpperLimit) {
-        setError('Income minimum must be less than income maximum');
-        return;
-      }
-    }
-
-    // Validate upkeep range: min must be less than max
-    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostUpperLimit !== null) {
-      if (formData.upkeepCostLowerLimit >= formData.upkeepCostUpperLimit) {
-        setError('Upkeep cost minimum must be less than upkeep cost maximum');
-        return;
-      }
-    }
-
-    try {
-      await domainApi.create(formData);
-      setIsModalOpen(false);
-      resetForm();
-      loadDomains();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create domain');
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      ruler: '',
-      population: 0,
-      upkeepCost: null,
-      upkeepCostLowerLimit: null,
-      upkeepCostUpperLimit: null,
-      income: null,
-      incomeLowerLimit: null,
-      incomeUpperLimit: null,
-      notes: null,
-    });
-    setError('');
-  };
-
-  const handleOpenModal = () => {
-    resetForm();
-    setIsModalOpen(true);
-  };
+export default function LandingPage() {
+  const router = useRouter();
 
   return (
     <div className="min-h-screen p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Castle className="text-amber-600" size={40} />
-            <h1 className="text-4xl font-bold text-amber-100 tracking-wide">
-              Fantasy Domain Manager
-            </h1>
+      <div className="max-w-6xl mx-auto">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <div className="flex justify-center mb-6">
+            <Castle className="text-amber-600" size={80} />
           </div>
-          <button
-            onClick={handleOpenModal}
-            className="flex items-center gap-2 bg-amber-700 hover:bg-amber-600 text-amber-100 px-6 py-3 border-2 border-amber-900 font-semibold transition-all hover:shadow-lg hover:shadow-amber-900/30"
-          >
-            <Plus size={20} />
-            Add Domain
-          </button>
+          <h1 className="text-6xl font-bold text-amber-100 tracking-wide mb-4">
+            Fantasy Domain Manager
+          </h1>
+          <p className="text-xl text-amber-200/80 mb-8 max-w-2xl mx-auto">
+            Command your realm with precision. Manage domains, heroes, troops, and enterprises
+            in your fantasy world with powerful tools designed for Dungeon Masters and world builders.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-wrap justify-center gap-4">
+            <button
+              onClick={() => router.push('/domains')}
+              className="flex items-center gap-2 bg-amber-700 hover:bg-amber-600 text-amber-100 px-8 py-4 border-2 border-amber-900 font-bold text-lg transition-all hover:shadow-lg hover:shadow-amber-900/30"
+            >
+              <Map size={24} />
+              View My Domains
+            </button>
+            <button
+              onClick={() => router.push('/register')}
+              className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-amber-100 px-8 py-4 border-2 border-amber-700/50 font-bold text-lg transition-all hover:border-amber-600"
+            >
+              <Shield size={24} />
+              Create Account
+            </button>
+            <button
+              onClick={() => router.push('/login')}
+              className="flex items-center gap-2 border-2 border-amber-700/50 hover:bg-zinc-800 text-amber-100 px-8 py-4 font-bold text-lg transition-all hover:border-amber-600"
+            >
+              Sign In
+            </button>
+          </div>
         </div>
 
-        {/* Domain Grid */}
-        {loading ? (
-          <div className="text-center text-amber-200/60 py-20">
-            Loading domains...
+        {/* Features Section */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-amber-100 text-center mb-8 border-b-2 border-amber-700/30 pb-4">
+            Manage Every Aspect of Your Realm
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Domain Management */}
+            <div className="bg-zinc-900 border-2 border-amber-700/50 p-6">
+              <div className="flex flex-col items-center text-center">
+                <Castle className="text-amber-600 mb-4" size={48} />
+                <h3 className="text-xl font-bold text-amber-100 mb-2">Domains</h3>
+                <p className="text-amber-200/70 text-sm">
+                  Track domain names, rulers, populations, income, and upkeep costs.
+                  Support for both fixed values and ranges.
+                </p>
+              </div>
+            </div>
+
+            {/* Hero Management */}
+            <div className="bg-zinc-900 border-2 border-amber-700/50 p-6">
+              <div className="flex flex-col items-center text-center">
+                <Sword className="text-amber-600 mb-4" size={48} />
+                <h3 className="text-xl font-bold text-amber-100 mb-2">Heroes</h3>
+                <p className="text-amber-200/70 text-sm">
+                  Manage your champions and adventurers with detailed role assignments,
+                  levels, and wage information.
+                </p>
+              </div>
+            </div>
+
+            {/* Troop Management */}
+            <div className="bg-zinc-900 border-2 border-amber-700/50 p-6">
+              <div className="flex flex-col items-center text-center">
+                <Users className="text-amber-600 mb-4" size={48} />
+                <h3 className="text-xl font-bold text-amber-100 mb-2">Troops</h3>
+                <p className="text-amber-200/70 text-sm">
+                  Organize military forces by type and quantity. Track wages
+                  and maintain army rosters.
+                </p>
+              </div>
+            </div>
+
+            {/* Enterprise Management */}
+            <div className="bg-zinc-900 border-2 border-amber-700/50 p-6">
+              <div className="flex flex-col items-center text-center">
+                <Coins className="text-amber-600 mb-4" size={48} />
+                <h3 className="text-xl font-bold text-amber-100 mb-2">Enterprises</h3>
+                <p className="text-amber-200/70 text-sm">
+                  Monitor businesses, guilds, and trade operations. Track both
+                  income and operational costs.
+                </p>
+              </div>
+            </div>
           </div>
-        ) : domains.length === 0 ? (
-          <div className="text-center text-amber-200/60 py-20">
-            <Castle className="mx-auto mb-4 text-amber-700/30" size={64} />
-            <p className="text-xl">No domains yet. Create your first domain to get started!</p>
+        </div>
+
+        {/* Additional Features */}
+        <div className="bg-zinc-900 border-2 border-amber-700/50 p-8 mb-16">
+          <h2 className="text-3xl font-bold text-amber-100 text-center mb-6">
+            Built for Game Masters
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex items-start gap-3">
+              <TrendingUp className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+              <div>
+                <h3 className="text-lg font-bold text-amber-100 mb-2">Financial Tracking</h3>
+                <p className="text-amber-200/70 text-sm">
+                  Flexible income and upkeep systems support both fixed values and variable ranges,
+                  perfect for dynamic economies.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <BookOpen className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+              <div>
+                <h3 className="text-lg font-bold text-amber-100 mb-2">Detailed Notes</h3>
+                <p className="text-amber-200/70 text-sm">
+                  Add custom notes to every entity - domains, heroes, troops, and enterprises.
+                  Keep your lore organized.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <Map className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+              <div>
+                <h3 className="text-lg font-bold text-amber-100 mb-2">Organized View</h3>
+                <p className="text-amber-200/70 text-sm">
+                  Clean card-based interface makes it easy to view and manage all aspects
+                  of your domains at a glance.
+                </p>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {domains.map((domain) => (
-              <DomainCard key={domain.id} domain={domain} />
-            ))}
+        </div>
+
+        {/* Getting Started */}
+        <div className="text-center bg-zinc-950/50 border-2 border-amber-700/30 p-8">
+          <h2 className="text-3xl font-bold text-amber-100 mb-4">
+            Ready to Rule Your Realm?
+          </h2>
+          <p className="text-amber-200/70 mb-6 max-w-2xl mx-auto">
+            Join Fantasy Domain Manager today and bring order to your fantasy world.
+            Perfect for D&D campaigns, worldbuilding projects, and tabletop games.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <button
+              onClick={() => router.push('/register')}
+              className="bg-amber-700 hover:bg-amber-600 text-amber-100 px-8 py-3 border-2 border-amber-900 font-bold text-lg transition-all hover:shadow-lg hover:shadow-amber-900/30"
+            >
+              Get Started Free
+            </button>
+            <button
+              onClick={() => router.push('/domains')}
+              className="border-2 border-amber-700/50 hover:bg-zinc-800 text-amber-100 px-8 py-3 font-bold text-lg transition-all hover:border-amber-600"
+            >
+              View Demo
+            </button>
           </div>
-        )}
+        </div>
       </div>
-
-      {/* Create Domain Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Create New Domain"
-      >
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <div className="bg-red-900/30 border-2 border-red-700 text-red-200 px-4 py-3">
-              {error}
-            </div>
-          )}
-
-          <div>
-            <label className="block text-amber-100 font-semibold mb-2">
-              Domain Name *
-            </label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-amber-100 font-semibold mb-2">
-              Ruler *
-            </label>
-            <input
-              type="text"
-              value={formData.ruler}
-              onChange={(e) => setFormData({ ...formData, ruler: e.target.value })}
-              className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-amber-100 font-semibold mb-2">
-              Population
-            </label>
-            <input
-              type="number"
-              value={formData.population}
-              onChange={(e) => setFormData({ ...formData, population: parseInt(e.target.value) || 0 })}
-              className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-amber-100 font-semibold mb-2">
-                Income (flat value)
-              </label>
-              <input
-                type="number"
-                value={formData.income || ''}
-                onChange={(e) => setFormData({ ...formData, income: e.target.value ? parseInt(e.target.value) : null })}
-                disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
-                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-            </div>
-            <div>
-              <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Income Min (or range)
-              </label>
-              <input
-                type="number"
-                value={formData.incomeLowerLimit || ''}
-                onChange={(e) => setFormData({ ...formData, incomeLowerLimit: e.target.value ? parseInt(e.target.value) : null })}
-                disabled={formData.income !== null}
-                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-            </div>
-            <div>
-              <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Income Max
-              </label>
-              <input
-                type="number"
-                value={formData.incomeUpperLimit || ''}
-                onChange={(e) => setFormData({ ...formData, incomeUpperLimit: e.target.value ? parseInt(e.target.value) : null })}
-                disabled={formData.income !== null}
-                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-amber-100 font-semibold mb-2">
-                Upkeep Cost (flat value)
-              </label>
-              <input
-                type="number"
-                value={formData.upkeepCost || ''}
-                onChange={(e) => setFormData({ ...formData, upkeepCost: e.target.value ? parseInt(e.target.value) : null })}
-                disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
-                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-            </div>
-            <div>
-              <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Upkeep Min (or range)
-              </label>
-              <input
-                type="number"
-                value={formData.upkeepCostLowerLimit || ''}
-                onChange={(e) => setFormData({ ...formData, upkeepCostLowerLimit: e.target.value ? parseInt(e.target.value) : null })}
-                disabled={formData.upkeepCost !== null}
-                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-            </div>
-            <div>
-              <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Upkeep Max
-              </label>
-              <input
-                type="number"
-                value={formData.upkeepCostUpperLimit || ''}
-                onChange={(e) => setFormData({ ...formData, upkeepCostUpperLimit: e.target.value ? parseInt(e.target.value) : null })}
-                disabled={formData.upkeepCost !== null}
-                className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-amber-100 font-semibold mb-2">
-              Notes
-            </label>
-            <textarea
-              value={formData.notes || ''}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value || null })}
-              className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none min-h-[100px] resize-y"
-              placeholder="Add any notes or descriptions..."
-            />
-          </div>
-
-          <div className="flex justify-end gap-4 pt-4">
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(false)}
-              className="px-6 py-2 border-2 border-amber-700/50 text-amber-100 hover:bg-zinc-800 transition-all font-semibold"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-6 py-2 bg-amber-700 hover:bg-amber-600 text-amber-100 border-2 border-amber-900 font-semibold transition-all"
-            >
-              Create Domain
-            </button>
-          </div>
-        </form>
-      </Modal>
     </div>
   );
 }
