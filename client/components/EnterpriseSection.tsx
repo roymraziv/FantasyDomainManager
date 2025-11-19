@@ -9,11 +9,12 @@ import Modal from './Modal';
 
 interface EnterpriseSectionProps {
   domainId: number;
+  initialEnterprises?: Enterprise[];
 }
 
-export default function EnterpriseSection({ domainId }: EnterpriseSectionProps) {
+export default function EnterpriseSection({ domainId, initialEnterprises = [] }: EnterpriseSectionProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [enterprises, setEnterprises] = useState<Enterprise[]>([]);
+  const [enterprises, setEnterprises] = useState<Enterprise[]>(initialEnterprises);
   const [loading, setLoading] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -33,7 +34,7 @@ export default function EnterpriseSection({ domainId }: EnterpriseSectionProps) 
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (isOpen && enterprises.length === 0) {
+    if (isOpen && enterprises.length === 0 && initialEnterprises.length === 0) {
       loadEnterprises();
     }
   }, [isOpen]);

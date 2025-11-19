@@ -234,9 +234,9 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
 
         {/* Sections for Heroes, Troops, Enterprises */}
         <div className="space-y-6">
-          <HeroSection domainId={domain.id} />
-          <TroopSection domainId={domain.id} />
-          <EnterpriseSection domainId={domain.id} />
+          <HeroSection domainId={domain.id} initialHeroes={domain.heroes} />
+          <TroopSection domainId={domain.id} initialTroops={domain.troops} />
+          <EnterpriseSection domainId={domain.id} initialEnterprises={domain.enterprises} />
         </div>
       </div>
 
