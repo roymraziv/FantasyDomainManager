@@ -269,6 +269,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 value={formData.income || ''}
                 onChange={(e) => setFormData({ ...formData, income: e.target.value ? parseInt(e.target.value) : null })}
                 disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
+                  onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -281,6 +282,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                   setFormData({ ...formData, incomeLowerLimit: e.target.value ? parseInt(e.target.value) : null })
                 }
                 disabled={formData.income !== null}
+                  onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -293,6 +295,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                   setFormData({ ...formData, incomeUpperLimit: e.target.value ? parseInt(e.target.value) : null })
                 }
                 disabled={formData.income !== null}
+                  onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -308,6 +311,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                   setFormData({ ...formData, upkeepCost: e.target.value ? parseInt(e.target.value) : null })
                 }
                 disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
+                  onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -320,6 +324,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                   setFormData({ ...formData, upkeepCostLowerLimit: e.target.value ? parseInt(e.target.value) : null })
                 }
                 disabled={formData.upkeepCost !== null}
+                  onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -332,6 +337,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                   setFormData({ ...formData, upkeepCostUpperLimit: e.target.value ? parseInt(e.target.value) : null })
                 }
                 disabled={formData.upkeepCost !== null}
+                  onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -389,6 +395,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 value={formData.income || ''}
                 onChange={(e) => setFormData({ ...formData, income: e.target.value ? parseInt(e.target.value) : null })}
                 disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
+                  onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -401,6 +408,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                   setFormData({ ...formData, incomeLowerLimit: e.target.value ? parseInt(e.target.value) : null })
                 }
                 disabled={formData.income !== null}
+                  onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -413,6 +421,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                   setFormData({ ...formData, incomeUpperLimit: e.target.value ? parseInt(e.target.value) : null })
                 }
                 disabled={formData.income !== null}
+                  onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -428,6 +437,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                   setFormData({ ...formData, upkeepCost: e.target.value ? parseInt(e.target.value) : null })
                 }
                 disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
+                  onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -440,6 +450,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                   setFormData({ ...formData, upkeepCostLowerLimit: e.target.value ? parseInt(e.target.value) : null })
                 }
                 disabled={formData.upkeepCost !== null}
+                  onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -452,6 +463,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                   setFormData({ ...formData, upkeepCostUpperLimit: e.target.value ? parseInt(e.target.value) : null })
                 }
                 disabled={formData.upkeepCost !== null}
+                  onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>

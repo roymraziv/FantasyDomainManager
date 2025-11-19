@@ -289,6 +289,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               type="number"
               value={formData.population || 0}
               onChange={(e) => setFormData({ ...formData, population: e.target.value === '' ? 0 : parseInt(e.target.value) })}
+              onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -302,6 +303,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 type="number"
                 value={formData.income || ''}
                 onChange={(e) => setFormData({ ...formData, income: e.target.value ? parseInt(e.target.value) : null })}
+                onWheel={(e) => e.currentTarget.blur()}
                 disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -314,6 +316,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 type="number"
                 value={formData.incomeLowerLimit || ''}
                 onChange={(e) => setFormData({ ...formData, incomeLowerLimit: e.target.value ? parseInt(e.target.value) : null })}
+                onWheel={(e) => e.currentTarget.blur()}
                 disabled={formData.income !== null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -326,6 +329,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 type="number"
                 value={formData.incomeUpperLimit || ''}
                 onChange={(e) => setFormData({ ...formData, incomeUpperLimit: e.target.value ? parseInt(e.target.value) : null })}
+                onWheel={(e) => e.currentTarget.blur()}
                 disabled={formData.income !== null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -341,6 +345,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 type="number"
                 value={formData.upkeepCost || ''}
                 onChange={(e) => setFormData({ ...formData, upkeepCost: e.target.value ? parseInt(e.target.value) : null })}
+                onWheel={(e) => e.currentTarget.blur()}
                 disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -353,6 +358,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 type="number"
                 value={formData.upkeepCostLowerLimit || ''}
                 onChange={(e) => setFormData({ ...formData, upkeepCostLowerLimit: e.target.value ? parseInt(e.target.value) : null })}
+                onWheel={(e) => e.currentTarget.blur()}
                 disabled={formData.upkeepCost !== null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -365,6 +371,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 type="number"
                 value={formData.upkeepCostUpperLimit || ''}
                 onChange={(e) => setFormData({ ...formData, upkeepCostUpperLimit: e.target.value ? parseInt(e.target.value) : null })}
+                onWheel={(e) => e.currentTarget.blur()}
                 disabled={formData.upkeepCost !== null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />

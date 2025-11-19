@@ -194,6 +194,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
               type="number"
               value={formData.quantity}
               onChange={(e) => setFormData({ ...formData, quantity: e.target.value === '' ? 0 : parseInt(e.target.value) })}
+                  onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -204,6 +205,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
               type="number"
               value={formData.wage}
               onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? 0 : parseInt(e.target.value) })}
+                  onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -258,6 +260,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
               type="number"
               value={formData.quantity}
               onChange={(e) => setFormData({ ...formData, quantity: e.target.value === '' ? 0 : parseInt(e.target.value) })}
+                  onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -268,6 +271,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
               type="number"
               value={formData.wage}
               onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? 0 : parseInt(e.target.value) })}
+                  onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
