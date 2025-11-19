@@ -32,7 +32,7 @@ interface FinancialCalculationResult {
 export default function DomainCard({ domain }: DomainCardProps) {
   const router = useRouter();
   const [isCalculateModalOpen, setIsCalculateModalOpen] = useState(false);
-  const [months, setMonths] = useState(1);
+  const [months, setMonths] = useState<number | ''>('');
   const [calculationResult, setCalculationResult] = useState<FinancialCalculationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -49,7 +49,9 @@ export default function DomainCard({ domain }: DomainCardProps) {
   };
 
   const handleCalculate = async () => {
-    if (months <= 0) {
+    const monthsValue = typeof months === 'number' ? months : parseInt(months) || 0;
+
+    if (monthsValue <= 0) {
       setError('Months must be greater than 0');
       return;
     }
@@ -63,7 +65,7 @@ export default function DomainCard({ domain }: DomainCardProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ months }),
+        body: JSON.stringify({ months: monthsValue }),
       });
 
       if (!response.ok) {
@@ -153,7 +155,7 @@ export default function DomainCard({ domain }: DomainCardProps) {
                   type="number"
                   min="1"
                   value={months}
-                  onChange={(e) => setMonths(parseInt(e.target.value) || 1)}
+                  onChange={(e) => setMonths(e.target.value === '' ? '' : parseInt(e.target.value))}
                   className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
                 />
                 <p className="text-amber-200/60 text-sm mt-1">
@@ -266,7 +268,7 @@ export default function DomainCard({ domain }: DomainCardProps) {
                 <button
                   onClick={() => {
                     setCalculationResult(null);
-                    setMonths(1);
+                    setMonths('');
                   }}
                   className="px-6 py-2 border-2 border-amber-700/50 text-amber-100 hover:bg-zinc-800 transition-all font-semibold"
                 >

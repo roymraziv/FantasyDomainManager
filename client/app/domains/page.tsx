@@ -194,7 +194,7 @@ export default function DomainsPage() {
             <input
               type="number"
               value={formData.population}
-              onChange={(e) => setFormData({ ...formData, population: parseInt(e.target.value) || 0 })}
+              onChange={(e) => setFormData({ ...formData, population: e.target.value === '' ? 0 : parseInt(e.target.value) })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
