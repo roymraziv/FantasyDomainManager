@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using FantasyDomainManager.Services;
 using FantasyDomainManager.DTOs;
 
@@ -30,7 +31,11 @@ namespace FantasyDomainManager.Controllers
         [HttpGet("domains/{id}")]
         public IActionResult GetDomainById(int id)
         {
-            var domain = _context.Domains.FirstOrDefault(d => d.Id == id);
+            var domain = _context.Domains
+                .Include(d => d.Heroes)
+                .Include(d => d.Troops)
+                .Include(d => d.Enterprises)
+                .FirstOrDefault(d => d.Id == id);
             if (domain == null)
             {
                 return NotFound();
