@@ -176,61 +176,59 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               </div>
             </div>
 
-            {/* Income Section */}
+            {/* Finances Section */}
             <div>
               <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">
-                Income
+                Finances
               </h3>
-              <div className="flex items-start gap-3">
-                <Coins className="text-amber-600 flex-shrink-0 mt-1" size={20} />
-                <div>
-                  <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
-                    Income
-                  </p>
-                  <p className="text-amber-100 font-medium">
-                    {domain.income !== null
-                      ? domain.income.toLocaleString()
-                      : domain.incomeLowerLimit !== null && domain.incomeUpperLimit !== null
-                      ? `${domain.incomeLowerLimit.toLocaleString()}-${domain.incomeUpperLimit.toLocaleString()}`
-                      : '-'}
-                  </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Upkeep (Left) */}
+                <div className="flex items-start gap-3">
+                  <TrendingDown className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
+                      Upkeep Cost
+                    </p>
+                    <p className="text-amber-100 font-medium">
+                      {domain.upkeepCost !== null
+                        ? domain.upkeepCost.toLocaleString()
+                        : domain.upkeepCostLowerLimit !== null && domain.upkeepCostUpperLimit !== null
+                        ? `${domain.upkeepCostLowerLimit.toLocaleString()}-${domain.upkeepCostUpperLimit.toLocaleString()}`
+                        : '-'}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Upkeep Section */}
-            <div>
-              <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">
-                Upkeep Cost
-              </h3>
-              <div className="flex items-start gap-3">
-                <TrendingDown className="text-amber-600 flex-shrink-0 mt-1" size={20} />
-                <div>
-                  <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
-                    Upkeep Cost
-                  </p>
-                  <p className="text-amber-100 font-medium">
-                    {domain.upkeepCost !== null
-                      ? domain.upkeepCost.toLocaleString()
-                      : domain.upkeepCostLowerLimit !== null && domain.upkeepCostUpperLimit !== null
-                      ? `${domain.upkeepCostLowerLimit.toLocaleString()}-${domain.upkeepCostUpperLimit.toLocaleString()}`
-                      : '-'}
-                  </p>
+                {/* Income (Right) */}
+                <div className="flex items-start gap-3">
+                  <Coins className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
+                      Income
+                    </p>
+                    <p className="text-amber-100 font-medium">
+                      {domain.income !== null
+                        ? domain.income.toLocaleString()
+                        : domain.incomeLowerLimit !== null && domain.incomeUpperLimit !== null
+                        ? `${domain.incomeLowerLimit.toLocaleString()}-${domain.incomeUpperLimit.toLocaleString()}`
+                        : '-'}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Notes Section */}
-            {domain.notes && (
-              <div>
-                <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">
-                  Notes
-                </h3>
-                <p className="text-amber-100 font-medium whitespace-pre-wrap">
-                  {domain.notes}
+            <div>
+              <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">
+                Notes
+              </h3>
+              <div className="bg-zinc-800 border-2 border-amber-700/50 px-4 py-3 min-h-[100px]">
+                <p className="text-amber-100 whitespace-pre-wrap">
+                  {domain.notes || 'No notes'}
                 </p>
               </div>
-            )}
+            </div>
           </div>
         </div>
 
