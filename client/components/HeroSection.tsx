@@ -20,7 +20,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
-  const [formData, setFormData] = useState<CreateHeroDto>({
+  const [formData, setFormData] = useState<CreateHeroDto & { level: number | '', wage: number | '' }>({
     name: '',
     role: '',
     level: 1,
@@ -58,7 +58,12 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
     }
 
     try {
-      await heroApi.create(formData);
+      const submitData = {
+        ...formData,
+        level: formData.level === '' ? 1 : formData.level,
+        wage: formData.wage === '' ? 0 : formData.wage,
+      };
+      await heroApi.create(submitData);
       setIsCreateModalOpen(false);
       resetForm();
       loadHeroes();
@@ -77,7 +82,13 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
     }
 
     try {
-      await heroApi.update(selectedHero.id, { ...formData, id: selectedHero.id });
+      const submitData = {
+        ...formData,
+        level: formData.level === '' ? 1 : formData.level,
+        wage: formData.wage === '' ? 0 : formData.wage,
+        id: selectedHero.id,
+      };
+      await heroApi.update(selectedHero.id, submitData);
       setIsEditModalOpen(false);
       setSelectedHero(null);
       resetForm();
@@ -207,8 +218,8 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
             <input
               type="number"
               value={formData.level}
-              onChange={(e) => setFormData({ ...formData, level: e.target.value === '' ? 1 : parseInt(e.target.value) })}
-                  onWheel={(e) => e.currentTarget.blur()}
+              onChange={(e) => setFormData({ ...formData, level: e.target.value === '' ? '' : parseInt(e.target.value) })}
+              onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -218,8 +229,8 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
             <input
               type="number"
               value={formData.wage}
-              onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? 0 : parseInt(e.target.value) })}
-                  onWheel={(e) => e.currentTarget.blur()}
+              onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? '' : parseInt(e.target.value) })}
+              onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -284,8 +295,8 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
             <input
               type="number"
               value={formData.level}
-              onChange={(e) => setFormData({ ...formData, level: e.target.value === '' ? 1 : parseInt(e.target.value) })}
-                  onWheel={(e) => e.currentTarget.blur()}
+              onChange={(e) => setFormData({ ...formData, level: e.target.value === '' ? '' : parseInt(e.target.value) })}
+              onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -295,8 +306,8 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
             <input
               type="number"
               value={formData.wage}
-              onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? 0 : parseInt(e.target.value) })}
-                  onWheel={(e) => e.currentTarget.blur()}
+              onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? '' : parseInt(e.target.value) })}
+              onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
