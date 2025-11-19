@@ -76,6 +76,36 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
       }
     }
 
+    // Validate negative numbers
+    if (formData.population !== undefined && formData.population < 0) {
+      setError('Population cannot be negative');
+      return;
+    }
+    if (formData.income !== null && formData.income !== undefined && formData.income < 0) {
+      setError('Income cannot be negative');
+      return;
+    }
+    if (formData.incomeLowerLimit !== null && formData.incomeLowerLimit !== undefined && formData.incomeLowerLimit < 0) {
+      setError('Income minimum cannot be negative');
+      return;
+    }
+    if (formData.incomeUpperLimit !== null && formData.incomeUpperLimit !== undefined && formData.incomeUpperLimit < 0) {
+      setError('Income maximum cannot be negative');
+      return;
+    }
+    if (formData.upkeepCost !== null && formData.upkeepCost !== undefined && formData.upkeepCost < 0) {
+      setError('Upkeep cost cannot be negative');
+      return;
+    }
+    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostLowerLimit !== undefined && formData.upkeepCostLowerLimit < 0) {
+      setError('Upkeep minimum cannot be negative');
+      return;
+    }
+    if (formData.upkeepCostUpperLimit !== null && formData.upkeepCostUpperLimit !== undefined && formData.upkeepCostUpperLimit < 0) {
+      setError('Upkeep maximum cannot be negative');
+      return;
+    }
+
     try {
       await domainApi.update(parseInt(id), formData);
       setIsEditModalOpen(false);
@@ -287,7 +317,8 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
             </label>
             <input
               type="number"
-              value={formData.population || 0}
+              min="0"
+              value={formData.population ?? 0}
               onChange={(e) => setFormData({ ...formData, population: e.target.value === '' ? 0 : parseInt(e.target.value) })}
               onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
@@ -301,8 +332,9 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               </label>
               <input
                 type="number"
-                value={formData.income || ''}
-                onChange={(e) => setFormData({ ...formData, income: e.target.value ? parseInt(e.target.value) : null })}
+                min="0"
+                value={formData.income ?? ''}
+                onChange={(e) => setFormData({ ...formData, income: e.target.value === '' ? null : parseInt(e.target.value) })}
                 onWheel={(e) => e.currentTarget.blur()}
                 disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
@@ -314,8 +346,9 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               </label>
               <input
                 type="number"
-                value={formData.incomeLowerLimit || ''}
-                onChange={(e) => setFormData({ ...formData, incomeLowerLimit: e.target.value ? parseInt(e.target.value) : null })}
+                min="0"
+                value={formData.incomeLowerLimit ?? ''}
+                onChange={(e) => setFormData({ ...formData, incomeLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
                 onWheel={(e) => e.currentTarget.blur()}
                 disabled={formData.income !== null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
@@ -327,8 +360,9 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               </label>
               <input
                 type="number"
-                value={formData.incomeUpperLimit || ''}
-                onChange={(e) => setFormData({ ...formData, incomeUpperLimit: e.target.value ? parseInt(e.target.value) : null })}
+                min="0"
+                value={formData.incomeUpperLimit ?? ''}
+                onChange={(e) => setFormData({ ...formData, incomeUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
                 onWheel={(e) => e.currentTarget.blur()}
                 disabled={formData.income !== null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
@@ -343,8 +377,9 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               </label>
               <input
                 type="number"
-                value={formData.upkeepCost || ''}
-                onChange={(e) => setFormData({ ...formData, upkeepCost: e.target.value ? parseInt(e.target.value) : null })}
+                min="0"
+                value={formData.upkeepCost ?? ''}
+                onChange={(e) => setFormData({ ...formData, upkeepCost: e.target.value === '' ? null : parseInt(e.target.value) })}
                 onWheel={(e) => e.currentTarget.blur()}
                 disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
@@ -356,8 +391,9 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               </label>
               <input
                 type="number"
-                value={formData.upkeepCostLowerLimit || ''}
-                onChange={(e) => setFormData({ ...formData, upkeepCostLowerLimit: e.target.value ? parseInt(e.target.value) : null })}
+                min="0"
+                value={formData.upkeepCostLowerLimit ?? ''}
+                onChange={(e) => setFormData({ ...formData, upkeepCostLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
                 onWheel={(e) => e.currentTarget.blur()}
                 disabled={formData.upkeepCost !== null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
@@ -369,8 +405,9 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               </label>
               <input
                 type="number"
-                value={formData.upkeepCostUpperLimit || ''}
-                onChange={(e) => setFormData({ ...formData, upkeepCostUpperLimit: e.target.value ? parseInt(e.target.value) : null })}
+                min="0"
+                value={formData.upkeepCostUpperLimit ?? ''}
+                onChange={(e) => setFormData({ ...formData, upkeepCostUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
                 onWheel={(e) => e.currentTarget.blur()}
                 disabled={formData.upkeepCost !== null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"

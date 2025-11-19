@@ -11,7 +11,7 @@ export default function DomainsPage() {
   const [domains, setDomains] = useState<Domain[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState<CreateDomainDto>({
+  const [formData, setFormData] = useState<CreateDomainDto & { population: number | '' }>({
     name: '',
     ruler: '',
     population: 0,
@@ -78,8 +78,43 @@ export default function DomainsPage() {
       }
     }
 
+    // Validate negative numbers
+    const population = formData.population === '' ? 0 : formData.population;
+    if (population < 0) {
+      setError('Population cannot be negative');
+      return;
+    }
+    if (formData.income !== null && formData.income < 0) {
+      setError('Income cannot be negative');
+      return;
+    }
+    if (formData.incomeLowerLimit !== null && formData.incomeLowerLimit < 0) {
+      setError('Income minimum cannot be negative');
+      return;
+    }
+    if (formData.incomeUpperLimit !== null && formData.incomeUpperLimit < 0) {
+      setError('Income maximum cannot be negative');
+      return;
+    }
+    if (formData.upkeepCost !== null && formData.upkeepCost < 0) {
+      setError('Upkeep cost cannot be negative');
+      return;
+    }
+    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostLowerLimit < 0) {
+      setError('Upkeep minimum cannot be negative');
+      return;
+    }
+    if (formData.upkeepCostUpperLimit !== null && formData.upkeepCostUpperLimit < 0) {
+      setError('Upkeep maximum cannot be negative');
+      return;
+    }
+
     try {
-      await domainApi.create(formData);
+      const submitData = {
+        ...formData,
+        population: formData.population === '' ? 0 : formData.population,
+      };
+      await domainApi.create(submitData);
       setIsModalOpen(false);
       resetForm();
       loadDomains();
@@ -193,9 +228,10 @@ export default function DomainsPage() {
             </label>
             <input
               type="number"
+              min="0"
               value={formData.population}
-              onChange={(e) => setFormData({ ...formData, population: e.target.value === '' ? 0 : parseInt(e.target.value) })}
-                  onWheel={(e) => e.currentTarget.blur()}
+              onChange={(e) => setFormData({ ...formData, population: e.target.value === '' ? '' : parseInt(e.target.value) })}
+              onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -207,10 +243,11 @@ export default function DomainsPage() {
               </label>
               <input
                 type="number"
-                value={formData.income || ''}
-                onChange={(e) => setFormData({ ...formData, income: e.target.value ? parseInt(e.target.value) : null })}
+                min="0"
+                value={formData.income ?? ''}
+                onChange={(e) => setFormData({ ...formData, income: e.target.value === '' ? null : parseInt(e.target.value) })}
                 disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -220,10 +257,11 @@ export default function DomainsPage() {
               </label>
               <input
                 type="number"
-                value={formData.incomeLowerLimit || ''}
-                onChange={(e) => setFormData({ ...formData, incomeLowerLimit: e.target.value ? parseInt(e.target.value) : null })}
+                min="0"
+                value={formData.incomeLowerLimit ?? ''}
+                onChange={(e) => setFormData({ ...formData, incomeLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
                 disabled={formData.income !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -233,10 +271,11 @@ export default function DomainsPage() {
               </label>
               <input
                 type="number"
-                value={formData.incomeUpperLimit || ''}
-                onChange={(e) => setFormData({ ...formData, incomeUpperLimit: e.target.value ? parseInt(e.target.value) : null })}
+                min="0"
+                value={formData.incomeUpperLimit ?? ''}
+                onChange={(e) => setFormData({ ...formData, incomeUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
                 disabled={formData.income !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -249,10 +288,11 @@ export default function DomainsPage() {
               </label>
               <input
                 type="number"
-                value={formData.upkeepCost || ''}
-                onChange={(e) => setFormData({ ...formData, upkeepCost: e.target.value ? parseInt(e.target.value) : null })}
+                min="0"
+                value={formData.upkeepCost ?? ''}
+                onChange={(e) => setFormData({ ...formData, upkeepCost: e.target.value === '' ? null : parseInt(e.target.value) })}
                 disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -262,10 +302,11 @@ export default function DomainsPage() {
               </label>
               <input
                 type="number"
-                value={formData.upkeepCostLowerLimit || ''}
-                onChange={(e) => setFormData({ ...formData, upkeepCostLowerLimit: e.target.value ? parseInt(e.target.value) : null })}
+                min="0"
+                value={formData.upkeepCostLowerLimit ?? ''}
+                onChange={(e) => setFormData({ ...formData, upkeepCostLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
                 disabled={formData.upkeepCost !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -275,10 +316,11 @@ export default function DomainsPage() {
               </label>
               <input
                 type="number"
-                value={formData.upkeepCostUpperLimit || ''}
-                onChange={(e) => setFormData({ ...formData, upkeepCostUpperLimit: e.target.value ? parseInt(e.target.value) : null })}
+                min="0"
+                value={formData.upkeepCostUpperLimit ?? ''}
+                onChange={(e) => setFormData({ ...formData, upkeepCostUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
                 disabled={formData.upkeepCost !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
