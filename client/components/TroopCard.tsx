@@ -51,6 +51,14 @@ export default function TroopCard({ troop, onEdit, onDelete }: TroopCardProps) {
           </div>
         </div>
       </div>
+      {troop.notes && (
+        <div className="px-4 pb-4 border-t-2 border-amber-700/30 pt-3">
+          <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-2">
+            Notes
+          </p>
+          <p className="text-amber-100 text-sm whitespace-pre-wrap">{troop.notes}</p>
+        </div>
+      )}
     </div>
   );
 }

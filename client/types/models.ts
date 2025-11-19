@@ -9,6 +9,7 @@ export interface Domain {
   income?: number | null;
   incomeLowerLimit?: number | null;
   incomeUpperLimit?: number | null;
+  notes?: string | null;
   enterprises?: Enterprise[];
   heroes?: Hero[];
   troops?: Troop[];
@@ -20,6 +21,7 @@ export interface Hero {
   role: string;
   level: number;
   wage: number;
+  notes?: string | null;
   domainId: number;
   domain?: Domain;
 }
@@ -33,6 +35,7 @@ export interface Enterprise {
   upkeepCost?: number | null;
   upkeepCostLowerLimit?: number | null;
   upkeepCostUpperLimit?: number | null;
+  notes?: string | null;
   domainId: number;
   domain?: Domain;
 }
@@ -42,6 +45,7 @@ export interface Troop {
   type: string;
   quantity: number;
   wage: number;
+  notes?: string | null;
   domainId: number;
   domain?: Domain;
 }
