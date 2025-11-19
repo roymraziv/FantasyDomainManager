@@ -20,7 +20,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedTroop, setSelectedTroop] = useState<Troop | null>(null);
-  const [formData, setFormData] = useState<CreateTroopDto>({
+  const [formData, setFormData] = useState<CreateTroopDto & { quantity: number | '', wage: number | '' }>({
     type: '',
     quantity: 0,
     wage: 0,
@@ -57,7 +57,12 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
     }
 
     try {
-      await troopApi.create(formData);
+      const submitData = {
+        ...formData,
+        quantity: formData.quantity === '' ? 0 : formData.quantity,
+        wage: formData.wage === '' ? 0 : formData.wage,
+      };
+      await troopApi.create(submitData);
       setIsCreateModalOpen(false);
       resetForm();
       loadTroops();
@@ -76,7 +81,13 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
     }
 
     try {
-      await troopApi.update(selectedTroop.id, { ...formData, id: selectedTroop.id });
+      const submitData = {
+        ...formData,
+        quantity: formData.quantity === '' ? 0 : formData.quantity,
+        wage: formData.wage === '' ? 0 : formData.wage,
+        id: selectedTroop.id,
+      };
+      await troopApi.update(selectedTroop.id, submitData);
       setIsEditModalOpen(false);
       setSelectedTroop(null);
       resetForm();
@@ -193,8 +204,8 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
             <input
               type="number"
               value={formData.quantity}
-              onChange={(e) => setFormData({ ...formData, quantity: e.target.value === '' ? 0 : parseInt(e.target.value) })}
-                  onWheel={(e) => e.currentTarget.blur()}
+              onChange={(e) => setFormData({ ...formData, quantity: e.target.value === '' ? '' : parseInt(e.target.value) })}
+              onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -204,8 +215,8 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
             <input
               type="number"
               value={formData.wage}
-              onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? 0 : parseInt(e.target.value) })}
-                  onWheel={(e) => e.currentTarget.blur()}
+              onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? '' : parseInt(e.target.value) })}
+              onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -259,8 +270,8 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
             <input
               type="number"
               value={formData.quantity}
-              onChange={(e) => setFormData({ ...formData, quantity: e.target.value === '' ? 0 : parseInt(e.target.value) })}
-                  onWheel={(e) => e.currentTarget.blur()}
+              onChange={(e) => setFormData({ ...formData, quantity: e.target.value === '' ? '' : parseInt(e.target.value) })}
+              onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>
@@ -270,8 +281,8 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
             <input
               type="number"
               value={formData.wage}
-              onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? 0 : parseInt(e.target.value) })}
-                  onWheel={(e) => e.currentTarget.blur()}
+              onChange={(e) => setFormData({ ...formData, wage: e.target.value === '' ? '' : parseInt(e.target.value) })}
+              onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
           </div>

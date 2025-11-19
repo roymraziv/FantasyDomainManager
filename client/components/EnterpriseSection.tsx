@@ -266,10 +266,10 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               <label className="block text-amber-100 font-semibold mb-2">Income (flat value)</label>
               <input
                 type="number"
-                value={formData.income || ''}
-                onChange={(e) => setFormData({ ...formData, income: e.target.value ? parseInt(e.target.value) : null })}
+                value={formData.income ?? ''}
+                onChange={(e) => setFormData({ ...formData, income: e.target.value === '' ? null : parseInt(e.target.value) })}
                 disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -277,12 +277,12 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               <label className="block text-amber-100 font-semibold mb-2 text-sm">Income Min (or range)</label>
               <input
                 type="number"
-                value={formData.incomeLowerLimit || ''}
+                value={formData.incomeLowerLimit ?? ''}
                 onChange={(e) =>
-                  setFormData({ ...formData, incomeLowerLimit: e.target.value ? parseInt(e.target.value) : null })
+                  setFormData({ ...formData, incomeLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
                 disabled={formData.income !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -290,12 +290,12 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               <label className="block text-amber-100 font-semibold mb-2 text-sm">Income Max</label>
               <input
                 type="number"
-                value={formData.incomeUpperLimit || ''}
+                value={formData.incomeUpperLimit ?? ''}
                 onChange={(e) =>
-                  setFormData({ ...formData, incomeUpperLimit: e.target.value ? parseInt(e.target.value) : null })
+                  setFormData({ ...formData, incomeUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
                 disabled={formData.income !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -306,12 +306,12 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               <label className="block text-amber-100 font-semibold mb-2">Upkeep Cost (flat value)</label>
               <input
                 type="number"
-                value={formData.upkeepCost || ''}
+                value={formData.upkeepCost ?? ''}
                 onChange={(e) =>
-                  setFormData({ ...formData, upkeepCost: e.target.value ? parseInt(e.target.value) : null })
+                  setFormData({ ...formData, upkeepCost: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
                 disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -319,12 +319,12 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               <label className="block text-amber-100 font-semibold mb-2 text-sm">Upkeep Min (or range)</label>
               <input
                 type="number"
-                value={formData.upkeepCostLowerLimit || ''}
+                value={formData.upkeepCostLowerLimit ?? ''}
                 onChange={(e) =>
-                  setFormData({ ...formData, upkeepCostLowerLimit: e.target.value ? parseInt(e.target.value) : null })
+                  setFormData({ ...formData, upkeepCostLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
                 disabled={formData.upkeepCost !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -332,12 +332,12 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               <label className="block text-amber-100 font-semibold mb-2 text-sm">Upkeep Max</label>
               <input
                 type="number"
-                value={formData.upkeepCostUpperLimit || ''}
+                value={formData.upkeepCostUpperLimit ?? ''}
                 onChange={(e) =>
-                  setFormData({ ...formData, upkeepCostUpperLimit: e.target.value ? parseInt(e.target.value) : null })
+                  setFormData({ ...formData, upkeepCostUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
                 disabled={formData.upkeepCost !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -392,10 +392,10 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               <label className="block text-amber-100 font-semibold mb-2">Income (flat value)</label>
               <input
                 type="number"
-                value={formData.income || ''}
-                onChange={(e) => setFormData({ ...formData, income: e.target.value ? parseInt(e.target.value) : null })}
+                value={formData.income ?? ''}
+                onChange={(e) => setFormData({ ...formData, income: e.target.value === '' ? null : parseInt(e.target.value) })}
                 disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -403,12 +403,12 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               <label className="block text-amber-100 font-semibold mb-2 text-sm">Income Min (or range)</label>
               <input
                 type="number"
-                value={formData.incomeLowerLimit || ''}
+                value={formData.incomeLowerLimit ?? ''}
                 onChange={(e) =>
-                  setFormData({ ...formData, incomeLowerLimit: e.target.value ? parseInt(e.target.value) : null })
+                  setFormData({ ...formData, incomeLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
                 disabled={formData.income !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -416,12 +416,12 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               <label className="block text-amber-100 font-semibold mb-2 text-sm">Income Max</label>
               <input
                 type="number"
-                value={formData.incomeUpperLimit || ''}
+                value={formData.incomeUpperLimit ?? ''}
                 onChange={(e) =>
-                  setFormData({ ...formData, incomeUpperLimit: e.target.value ? parseInt(e.target.value) : null })
+                  setFormData({ ...formData, incomeUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
                 disabled={formData.income !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -432,12 +432,12 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               <label className="block text-amber-100 font-semibold mb-2">Upkeep Cost (flat value)</label>
               <input
                 type="number"
-                value={formData.upkeepCost || ''}
+                value={formData.upkeepCost ?? ''}
                 onChange={(e) =>
-                  setFormData({ ...formData, upkeepCost: e.target.value ? parseInt(e.target.value) : null })
+                  setFormData({ ...formData, upkeepCost: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
                 disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -445,12 +445,12 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               <label className="block text-amber-100 font-semibold mb-2 text-sm">Upkeep Min (or range)</label>
               <input
                 type="number"
-                value={formData.upkeepCostLowerLimit || ''}
+                value={formData.upkeepCostLowerLimit ?? ''}
                 onChange={(e) =>
-                  setFormData({ ...formData, upkeepCostLowerLimit: e.target.value ? parseInt(e.target.value) : null })
+                  setFormData({ ...formData, upkeepCostLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
                 disabled={formData.upkeepCost !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -458,12 +458,12 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               <label className="block text-amber-100 font-semibold mb-2 text-sm">Upkeep Max</label>
               <input
                 type="number"
-                value={formData.upkeepCostUpperLimit || ''}
+                value={formData.upkeepCostUpperLimit ?? ''}
                 onChange={(e) =>
-                  setFormData({ ...formData, upkeepCostUpperLimit: e.target.value ? parseInt(e.target.value) : null })
+                  setFormData({ ...formData, upkeepCostUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
                 disabled={formData.upkeepCost !== null}
-                  onWheel={(e) => e.currentTarget.blur()}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
