@@ -29,6 +29,7 @@ public class AccountController(DbContexts.DomainDb context, ITokenService tokenS
 
         var user = new User
         {
+            Id = Guid.NewGuid().ToString(),
             Email = dto.Email.ToLower(),
             FirstName = dto.FirstName,
             LastName = dto.LastName,

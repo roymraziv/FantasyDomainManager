@@ -6,9 +6,11 @@ using FantasyDomainManager.DTOs.CreateDtos;
 using API.Extensions;
 using FantasyDomainManager.Extensions;
 using FantasyDomainManager.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FantasyDomainManager.Controllers
 {
+    [Authorize]
     public class WriteController : BaseApiController
     {
         private readonly DbContexts.DomainDb _context;

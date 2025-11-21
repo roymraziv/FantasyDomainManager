@@ -2,9 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FantasyDomainManager.Services;
 using FantasyDomainManager.DTOs;
+using API.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FantasyDomainManager.Controllers
 {
+    [Authorize]
     public class ReadController : BaseApiController
     {
         private readonly DbContexts.DomainDb _context;
@@ -21,7 +24,15 @@ namespace FantasyDomainManager.Controllers
         [HttpGet("domains")]
         public IActionResult GetDomains()
         {
-            var domains = _context.Domains.ToList();
+            var userId = User.GetUserId();
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var domains = _context.Domains.Where(d => d.UserId == userId).ToList();
             return Ok(domains);
         }
 
