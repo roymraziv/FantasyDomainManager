@@ -18,4 +18,6 @@ public class Domain
     public List<Enterprise> Enterprises { get; set; } = new();
     public List<Hero> Heroes { get; set; } = new();
     public List<Troop> Troops { get; set; } = new();
+
+    public required string UserId { get; set; }
 }
