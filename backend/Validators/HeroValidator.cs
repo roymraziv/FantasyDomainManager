@@ -28,7 +28,7 @@ public class HeroValidator : AbstractValidator<Hero>
             .MaximumLength(100).WithMessage("Role must not exceed 100 characters.");
             
         RuleFor(hero => hero.Notes)
-            .MaximumLength(500).WithMessage("Notes must not exceed 500 characters.");
+            .MaximumLength(1000).WithMessage("Notes must not exceed 1000 characters.");
 
     }
 }
