@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FantasyDomainManager.Services;
@@ -6,9 +5,7 @@ using FantasyDomainManager.DTOs;
 
 namespace FantasyDomainManager.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ReadController : ControllerBase
+    public class ReadController : BaseApiController
     {
         private readonly DbContexts.DomainDb _context;
         private readonly FinancialCalculationService _financialService;
