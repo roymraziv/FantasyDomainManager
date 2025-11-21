@@ -13,6 +13,7 @@ public class DomainDb : DbContext
     public DbSet<Models.Enterprise> Enterprises { get; set; }
     public DbSet<Models.Hero> Heroes { get; set; }
     public DbSet<Models.Troop> Troops { get; set; }
+    public DbSet<Models.User> Users { get; set; }
 
     
 }
