@@ -11,5 +11,5 @@ public class UpdateEnterpriseDto
     public int? UpkeepCostLowerLimit { get; set; }
     public int? UpkeepCostUpperLimit { get; set; }
     public string? Notes { get; set; }
-    public int DomainId { get; set; }
+    public string DomainId { get; set; } = string.Empty;
 }

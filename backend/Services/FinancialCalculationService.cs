@@ -15,7 +15,7 @@ public class FinancialCalculationService
         _random = new Random();
     }
 
-    public async Task<FinancialCalculationResponse?> CalculateFinancials(int domainId, int months)
+    public async Task<FinancialCalculationResponse?> CalculateFinancials(string domainId, int months)
     {
         var domain = await _context.Domains
             .Include(d => d.Heroes)

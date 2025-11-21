@@ -8,7 +8,7 @@ import HeroCard from './HeroCard';
 import Modal from './Modal';
 
 interface HeroSectionProps {
-  domainId: number;
+  domainId: string;
   initialHeroes?: Hero[];
 }
 

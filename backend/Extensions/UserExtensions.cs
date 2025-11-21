@@ -1,5 +1,6 @@
 using System;
 using FantasyDomainManager.DTOs;
+using FantasyDomainManager.DTOs.CreateDtos;
 using FantasyDomainManager.Interfaces;
 using FantasyDomainManager.Models;
 

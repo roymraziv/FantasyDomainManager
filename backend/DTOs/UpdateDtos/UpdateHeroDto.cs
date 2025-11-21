@@ -8,5 +8,5 @@ public class UpdateHeroDto
     public int Level { get; set; }
     public int Wage { get; set; }
     public string? Notes { get; set; }
-    public int DomainId { get; set; }
+    public string DomainId { get; set; } = string.Empty;
 }

@@ -53,7 +53,7 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<DomainValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateDomainDtoValidator>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

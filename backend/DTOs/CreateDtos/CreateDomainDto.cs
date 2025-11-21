@@ -1,10 +1,9 @@
 using System;
 
-namespace FantasyDomainManager.Models;
+namespace FantasyDomainManager.DTOs.CreateDtos;
 
-public class Domain
+public class CreateDomainDto
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string Name { get; set; } = string.Empty;
     public string Ruler { get; set; } = string.Empty;
     public int Population { get; set; }
@@ -15,9 +14,4 @@ public class Domain
     public int? IncomeLowerLimit { get; set; }
     public int? IncomeUpperLimit { get; set; }
     public string? Notes { get; set; }
-    public List<Enterprise> Enterprises { get; set; } = new();
-    public List<Hero> Heroes { get; set; } = new();
-    public List<Troop> Troops { get; set; } = new();
-
-    public required string UserId { get; set; }
 }
