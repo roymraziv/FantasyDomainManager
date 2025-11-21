@@ -16,7 +16,7 @@ public class UpdateDomainDtoValidator : AbstractValidator<UpdateDomainDto>
             .MaximumLength(100).WithMessage("Ruler must not exceed 100 characters.");
 
         RuleFor(dto => dto.Population)
-            .GreaterThanOrEqualTo(0).WithMessage("Population must be a positive value.");
+            .GreaterThan(0).WithMessage("Population must be greater than 0.");
 
         RuleFor(dto => dto.UpkeepCost)
             .Must((dto, upkeepCost) =>

@@ -180,6 +180,7 @@ namespace FantasyDomainManager.Controllers
             }
 
             existingHero.Name = dto.Name;
+            existingHero.Class = dto.Class;
             existingHero.Role = dto.Role;
             existingHero.Level = dto.Level;
             existingHero.Wage = dto.Wage;

@@ -41,8 +41,8 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("http://localhost:3000")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .WithHeaders("Content-Type", "Authorization")
+                  .WithMethods("GET", "POST", "PUT", "DELETE");
         });
 });
 
@@ -76,6 +76,9 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fantasy Domain Manager API v1");
     });
 }
+
+// Enforce HTTPS redirection
+app.UseHttpsRedirection();
 
 // Enable CORS
 app.UseCors("AllowFrontend");

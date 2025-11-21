@@ -11,6 +11,10 @@ public class UpdateHeroDtoValidator : AbstractValidator<UpdateHeroDto>
             .NotEmpty().WithMessage("Name is required.")
             .MaximumLength(100).WithMessage("Name must not exceed 100 characters.");
 
+        RuleFor(dto => dto.Class)
+            .NotEmpty().WithMessage("Class is required.")
+            .MaximumLength(50).WithMessage("Class must not exceed 50 characters.");
+
         RuleFor(dto => dto.Role)
             .NotEmpty().WithMessage("Role is required.")
             .MaximumLength(100).WithMessage("Role must not exceed 100 characters.");

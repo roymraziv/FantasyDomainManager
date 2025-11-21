@@ -49,7 +49,7 @@ public class AccountController(DbContexts.DomainDb context, ITokenService tokenS
 
         if (user == null)
         {
-            return Unauthorized(new { message = "Invalid email address" });
+            return Unauthorized(new { message = "Invalid email or password" });
         }
 
         using var hmac = new HMACSHA512(user.PasswordSalt);
@@ -60,7 +60,7 @@ public class AccountController(DbContexts.DomainDb context, ITokenService tokenS
         {
             if (computedHash[i] != user.PasswordHash[i])
             {
-                return Unauthorized(new { message = "Invalid email address or password" });
+                return Unauthorized(new { message = "Invalid email or password" });
             }
         }
 
