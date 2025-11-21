@@ -7,20 +7,37 @@ import {
   CreateHeroDto,
   CreateEnterpriseDto,
   CreateTroopDto,
+  User,
+  LoginDto,
+  RegisterDto,
 } from '@/types/models';
 
 const API_BASE_URL = 'http://localhost:5223/api';
+
+// Helper function to get auth token
+function getAuthToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('auth_token');
+}
 
 // Helper function for fetch requests
 async function fetchApi<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
+  const token = getAuthToken();
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    ...options?.headers,
+  };
+
+  // Add Authorization header if token exists
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
+    headers,
     ...options,
   });
 
@@ -143,4 +160,39 @@ export const troopApi = {
     fetchApi<void>(`/Write/troops/${id}`, {
       method: 'DELETE',
     }),
+};
+
+// ========== AUTHENTICATION API ==========
+
+export const authApi = {
+  login: (data: LoginDto) =>
+    fetchApi<User>('/account/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  register: (data: RegisterDto) =>
+    fetchApi<User>('/account/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  // Helper to store token in localStorage
+  storeToken: (token: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('auth_token', token);
+    }
+  },
+
+  // Helper to remove token from localStorage
+  clearToken: () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+    }
+  },
+
+  // Helper to check if user is authenticated
+  isAuthenticated: () => {
+    return getAuthToken() !== null;
+  },
 };

@@ -1,3 +1,23 @@
+// User and Authentication types
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  token: string;
+}
+
+export interface LoginDto {
+  email: string;
+  password: string;
+}
+
+export interface RegisterDto {
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+}
+
 export interface Domain {
   id: number;
   name: string;
