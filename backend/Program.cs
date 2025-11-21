@@ -5,6 +5,8 @@ using System.Text.Json.Serialization;
 using FantasyDomainManager.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using FantasyDomainManager.Interfaces;
+using FantasyDomainManager.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +16,8 @@ builder.Services.AddDbContext<DomainDb>(options =>
     options.UseSqlite(GetConnectionString));
 
 // Register services
-builder.Services.AddScoped<FantasyDomainManager.Services.FinancialCalculationService>();
+builder.Services.AddScoped<FinancialCalculationService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 // Add CORS policy
 builder.Services.AddCors(options =>

@@ -5,9 +5,7 @@ using FantasyDomainManager.DTOs;
 
 namespace FantasyDomainManager.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class WriteController : ControllerBase
+    public class WriteController : BaseApiController
     {
         private readonly DbContexts.DomainDb _context;
 
