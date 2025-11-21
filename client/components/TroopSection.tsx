@@ -8,7 +8,7 @@ import TroopCard from './TroopCard';
 import Modal from './Modal';
 
 interface TroopSectionProps {
-  domainId: number;
+  domainId: string;
   initialTroops?: Troop[];
 }
 

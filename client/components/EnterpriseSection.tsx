@@ -8,7 +8,7 @@ import EnterpriseCard from './EnterpriseCard';
 import Modal from './Modal';
 
 interface EnterpriseSectionProps {
-  domainId: number;
+  domainId: string;
   initialEnterprises?: Enterprise[];
 }
 

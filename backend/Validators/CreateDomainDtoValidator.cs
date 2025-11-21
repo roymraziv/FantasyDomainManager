@@ -1,13 +1,13 @@
 using System;
 using System.Data;
-using FantasyDomainManager.Models;
+using FantasyDomainManager.DTOs.CreateDtos;
 using FluentValidation;
 
 namespace FantasyDomainManager.Validators;
 
-public class DomainValidator : AbstractValidator<Domain>
+public class CreateDomainDtoValidator : AbstractValidator<CreateDomainDto>
 {
-    public DomainValidator()
+    public CreateDomainDtoValidator()
     {
         RuleFor(domain => domain.Name)
             .NotEmpty().WithMessage("Name is required.")

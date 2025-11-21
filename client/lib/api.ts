@@ -26,9 +26,9 @@ async function fetchApi<T>(
   options?: RequestInit
 ): Promise<T> {
   const token = getAuthToken();
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...options?.headers,
+    ...(options?.headers as Record<string, string>),
   };
 
   // Add Authorization header if token exists
@@ -86,7 +86,7 @@ export const heroApi = {
 
   getById: (id: number) => fetchApi<Hero>(`/Read/heroes/${id}`),
 
-  getByDomainId: (domainId: number) => fetchApi<Hero[]>(`/Read/domains/${domainId}/heroes`),
+  getByDomainId: (domainId: string) => fetchApi<Hero[]>(`/Read/domains/${domainId}/heroes`),
 
   create: (hero: CreateHeroDto) =>
     fetchApi<Hero>('/Write/heroes', {
@@ -113,7 +113,7 @@ export const enterpriseApi = {
 
   getById: (id: number) => fetchApi<Enterprise>(`/Read/enterprises/${id}`),
 
-  getByDomainId: (domainId: number) =>
+  getByDomainId: (domainId: string) =>
     fetchApi<Enterprise[]>(`/Read/domains/${domainId}/enterprises`),
 
   create: (enterprise: CreateEnterpriseDto) =>
@@ -141,7 +141,7 @@ export const troopApi = {
 
   getById: (id: number) => fetchApi<Troop>(`/Read/troops/${id}`),
 
-  getByDomainId: (domainId: number) =>
+  getByDomainId: (domainId: string) =>
     fetchApi<Troop[]>(`/Read/domains/${domainId}/troops`),
 
   create: (troop: CreateTroopDto) =>

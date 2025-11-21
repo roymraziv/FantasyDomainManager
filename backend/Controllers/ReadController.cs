@@ -26,7 +26,7 @@ namespace FantasyDomainManager.Controllers
         }
 
         [HttpGet("domains/{id}")]
-        public IActionResult GetDomainById(int id)
+        public IActionResult GetDomainById(string id)
         {
             var domain = _context.Domains
                 .Include(d => d.Heroes)
@@ -41,7 +41,7 @@ namespace FantasyDomainManager.Controllers
         }
 
         [HttpPost("domains/{domainId}/calculate-financials")]
-        public async Task<IActionResult> CalculateFinancials(int domainId, [FromBody] FinancialCalculationRequest request)
+        public async Task<IActionResult> CalculateFinancials(string domainId, [FromBody] FinancialCalculationRequest request)
         {
             if (request.Months <= 0)
             {
@@ -79,7 +79,7 @@ namespace FantasyDomainManager.Controllers
         }
 
         [HttpGet("domains/{domainId}/heroes")]
-        public IActionResult GetHeroesByDomainId(int domainId)
+        public IActionResult GetHeroesByDomainId(string domainId)
         {
             var heroes = _context.Heroes.Where(h => h.DomainId == domainId).ToList();
             return Ok(heroes);
@@ -106,7 +106,7 @@ namespace FantasyDomainManager.Controllers
         }
 
         [HttpGet("domains/{domainId}/enterprises")]
-        public IActionResult GetEnterprisesByDomainId(int domainId)
+        public IActionResult GetEnterprisesByDomainId(string domainId)
         {
             var enterprises = _context.Enterprises.Where(e => e.DomainId == domainId).ToList();
             return Ok(enterprises);
@@ -133,7 +133,7 @@ namespace FantasyDomainManager.Controllers
         }
 
         [HttpGet("domains/{domainId}/troops")]
-        public IActionResult GetTroopsByDomainId(int domainId)
+        public IActionResult GetTroopsByDomainId(string domainId)
         {
             var troops = _context.Troops.Where(t => t.DomainId == domainId).ToList();
             return Ok(troops);

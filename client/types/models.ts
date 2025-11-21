@@ -42,7 +42,7 @@ export interface Hero {
   level: number;
   wage: number;
   notes?: string | null;
-  domainId: number;
+  domainId: string;
   domain?: Domain;
 }
 
@@ -56,7 +56,7 @@ export interface Enterprise {
   upkeepCostLowerLimit?: number | null;
   upkeepCostUpperLimit?: number | null;
   notes?: string | null;
-  domainId: number;
+  domainId: string;
   domain?: Domain;
 }
 
@@ -66,7 +66,7 @@ export interface Troop {
   quantity: number;
   wage: number;
   notes?: string | null;
-  domainId: number;
+  domainId: string;
   domain?: Domain;
 }
 
