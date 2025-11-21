@@ -3,13 +3,15 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Castle, Mail, Lock, User } from 'lucide-react';
+import { authApi } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -34,15 +36,25 @@ export default function RegisterPage() {
 
     setLoading(true);
 
-    // TODO: Implement actual registration logic
-    // For now, this is just a placeholder
-    console.log('Registration attempt:', formData);
+    try {
+      // Call the register API
+      const user = await authApi.register({
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        password: formData.password,
+      });
 
-    // Simulate API call
-    setTimeout(() => {
+      // Store user data and token
+      login(user);
+
+      // Redirect to domains page
+      router.push('/domains');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
+    } finally {
       setLoading(false);
-      setError('Registration not yet implemented');
-    }, 1000);
+    }
   };
 
   return (
@@ -114,26 +126,6 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* Username Field */}
-              <div>
-                <label className="block text-amber-100 font-semibold mb-2">
-                  Username
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="text-amber-600" size={20} />
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.username}
-                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                    className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 pl-11 pr-4 py-3 focus:border-amber-600 focus:outline-none"
-                    placeholder="Choose a username"
-                    required
-                  />
-                </div>
-              </div>
-
               {/* Email Field */}
               <div>
                 <label className="block text-amber-100 font-semibold mb-2">
@@ -173,7 +165,7 @@ export default function RegisterPage() {
                   />
                 </div>
                 <p className="text-amber-200/50 text-xs mt-1">
-                  Must be at least 8 characters
+                  Must be at least 8 characters with uppercase, lowercase, digit, and special character
                 </p>
               </div>
 
@@ -239,7 +231,7 @@ export default function RegisterPage() {
 
         {/* Footer Note */}
         <p className="text-center text-amber-200/40 text-sm mt-6">
-          Registration system coming soon
+          Secure registration with JWT authentication
         </p>
       </div>
     </div>

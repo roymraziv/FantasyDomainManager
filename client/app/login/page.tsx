@@ -3,9 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Castle, Mail, Lock } from 'lucide-react';
+import { authApi } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -18,15 +21,23 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
 
-    // TODO: Implement actual authentication logic
-    // For now, this is just a placeholder
-    console.log('Login attempt:', formData);
+    try {
+      // Call the login API
+      const user = await authApi.login({
+        email: formData.email,
+        password: formData.password,
+      });
 
-    // Simulate API call
-    setTimeout(() => {
+      // Store user data and token
+      login(user);
+
+      // Redirect to domains page
+      router.push('/domains');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed. Please check your credentials.');
+    } finally {
       setLoading(false);
-      setError('Authentication not yet implemented');
-    }, 1000);
+    }
   };
 
   return (
@@ -142,7 +153,7 @@ export default function LoginPage() {
 
         {/* Footer Note */}
         <p className="text-center text-amber-200/40 text-sm mt-6">
-          Authentication system coming soon
+          Secure authentication with JWT
         </p>
       </div>
     </div>
