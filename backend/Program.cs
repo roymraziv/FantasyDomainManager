@@ -7,6 +7,9 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using FantasyDomainManager.Interfaces;
 using FantasyDomainManager.Services;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +21,18 @@ builder.Services.AddDbContext<DomainDb>(options =>
 // Register services
 builder.Services.AddScoped<FinancialCalculationService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(Options =>
+    {
+        var tokenKey = builder.Configuration["TokenKey"] ?? throw new Exception("Token key not found in configuration");
+        Options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(tokenKey)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
 // Add CORS policy
 builder.Services.AddCors(options =>
@@ -64,6 +79,9 @@ if (app.Environment.IsDevelopment())
 
 // Enable CORS
 app.UseCors("AllowFrontend");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

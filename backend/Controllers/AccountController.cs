@@ -1,30 +1,26 @@
 using System;
 using System.Security.Cryptography;
 using FantasyDomainManager.DTOs;
+using FantasyDomainManager.Extensions;
+using FantasyDomainManager.Interfaces;
 using FantasyDomainManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FantasyDomainManager.Controllers;
 
-public class AccountController : BaseApiController
+public class AccountController(DbContexts.DomainDb context, ITokenService tokenService) : BaseApiController
 {
-    private readonly DbContexts.DomainDb _context;
-
-    public AccountController(DbContexts.DomainDb context)
-    {
-        _context = context;
-    }
 
     [HttpPost("register")]
-    public async Task<ActionResult<User>> Register(RegisterDto dto)
+    public async Task<ActionResult<UserDto>> Register(RegisterDto dto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        if (await _context.Users.AnyAsync(u => u.Email == dto.Email.ToLower()))
+        if (await context.Users.AnyAsync(u => u.Email == dto.Email.ToLower()))
         {
             return BadRequest(new { message = "Email is already registered" });
         }
@@ -40,15 +36,15 @@ public class AccountController : BaseApiController
             PasswordSalt = hmac.Key
         };
 
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-        return user;
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
+        return user.ToDto(tokenService);
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<User>> Login(LoginDto dto)
+    public async Task<ActionResult<UserDto>> Login(LoginDto dto)
     {
-        var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == dto.Email.ToLower());
+        var user = await context.Users.SingleOrDefaultAsync(u => u.Email == dto.Email.ToLower());
 
         if (user == null)
         {
@@ -67,7 +63,7 @@ public class AccountController : BaseApiController
             }
         }
 
-        return user;
+        return user.ToDto(tokenService);
 
     }
 }
