@@ -23,6 +23,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
   const [formData, setFormData] = useState<Omit<CreateHeroDto, 'level' | 'wage'> & { level: number | '', wage: number | '' }>({
     name: '',
     role: '',
+    class: '',
     level: 1,
     wage: 0,
     notes: null,
@@ -52,8 +53,8 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
     e.preventDefault();
     setError('');
 
-    if (!formData.name || !formData.role) {
-      setError('Name and Role are required');
+    if (!formData.name || !formData.role || !formData.class) {
+      setError('Name, Role, and Class are required');
       return;
     }
 
@@ -89,8 +90,8 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
     e.preventDefault();
     setError('');
 
-    if (!selectedHero || !formData.name || !formData.role) {
-      setError('Name and Role are required');
+    if (!selectedHero || !formData.name || !formData.role || !formData.class) {
+      setError('Name, Role, and Class are required');
       return;
     }
 
@@ -141,6 +142,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
     setFormData({
       name: '',
       role: '',
+      class: '',
       level: 1,
       wage: 0,
       notes: null,
@@ -154,6 +156,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
     setFormData({
       name: hero.name,
       role: hero.role,
+      class: hero.class,
       level: hero.level,
       wage: hero.wage,
       notes: hero.notes,
@@ -240,6 +243,18 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
           </div>
 
           <div>
+            <label className="block text-amber-100 font-semibold mb-2">Class *</label>
+            <input
+              type="text"
+              value={formData.class}
+              onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+              className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              placeholder="e.g., Fighter, Wizard, Rogue"
+              required
+            />
+          </div>
+
+          <div>
             <label className="block text-amber-100 font-semibold mb-2">Level *</label>
             <input
               type="number"
@@ -316,6 +331,18 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
               value={formData.role}
               onChange={(e) => setFormData({ ...formData, role: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-amber-100 font-semibold mb-2">Class *</label>
+            <input
+              type="text"
+              value={formData.class}
+              onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+              className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              placeholder="e.g., Fighter, Wizard, Rogue"
               required
             />
           </div>
