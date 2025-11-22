@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Plus, Castle } from 'lucide-react';
+import { Plus, Map } from 'lucide-react';
 import { Domain, CreateDomainDto } from '@/types/models';
 import { domainApi } from '@/lib/api';
 import DomainCard from '@/components/DomainCard';
@@ -150,9 +150,9 @@ export default function DomainsPage() {
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Castle className="text-amber-600" size={40} />
+            <Map className="text-amber-600" size={40} />
             <h1 className="text-4xl font-bold text-amber-100 tracking-wide">
-              Fantasy Domain Manager
+              My Domains
             </h1>
           </div>
           <button
@@ -171,7 +171,7 @@ export default function DomainsPage() {
           </div>
         ) : domains.length === 0 ? (
           <div className="text-center text-amber-200/60 py-20">
-            <Castle className="mx-auto mb-4 text-amber-700/30" size={64} />
+            <Map className="mx-auto mb-4 text-amber-700/30" size={64} />
             <p className="text-xl">No domains yet. Create your first domain to get started!</p>
           </div>
         ) : (

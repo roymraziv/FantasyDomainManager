@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { Castle, LogIn, User } from 'lucide-react';
+import { Castle, LogIn, User, Map } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
@@ -48,8 +48,18 @@ export default function Header() {
             <span className="sm:hidden text-xl font-bold">FDM</span>
           </Link>
 
-          {/* Right Side - Auth Actions */}
+          {/* Navigation & Auth Actions */}
           <div className="flex items-center gap-4">
+            {/* Domains Link - Only for authenticated users */}
+            {isAuthenticated && (
+              <Link
+                href="/domains"
+                className="flex items-center gap-2 px-4 py-2 text-amber-100 hover:text-amber-500 transition-colors font-semibold"
+              >
+                <Map className="h-4 w-4" />
+                <span className="hidden sm:inline">Domains</span>
+              </Link>
+            )}
             {!isAuthenticated ? (
               <Link
                 href="/login"
@@ -78,55 +88,22 @@ export default function Header() {
 
                 {/* Profile Dropdown */}
                 {showProfileDropdown && (
-                  <div className="absolute right-0 mt-2 w-80 bg-zinc-800 border-2 border-amber-700/50 rounded-lg shadow-lg shadow-amber-900/30 overflow-hidden">
-                    <div className="p-4 border-b-2 border-amber-700/30">
-                      <h3 className="text-lg font-bold text-amber-100 mb-4">Profile Information</h3>
+                  <div className="absolute right-0 mt-2 w-56 bg-zinc-800 border-2 border-amber-700/50 rounded-lg shadow-lg shadow-amber-900/30 overflow-hidden">
+                    <div className="p-2">
+                      {/* View Profile Info Link */}
+                      <Link
+                        href="/profile"
+                        onClick={() => setShowProfileDropdown(false)}
+                        className="w-full px-4 py-2 text-amber-100 hover:bg-zinc-700 rounded transition-colors font-semibold flex items-center gap-2"
+                      >
+                        <User className="h-4 w-4" />
+                        View Profile Info
+                      </Link>
 
-                      {/* Profile Fields - Read Only */}
-                      <div className="space-y-3">
-                        <div>
-                          <label className="block text-xs font-semibold text-amber-700 mb-1">
-                            Name
-                          </label>
-                          <input
-                            type="text"
-                            value={user?.name || ''}
-                            disabled
-                            className="w-full px-3 py-2 bg-zinc-900 border-2 border-amber-700/30 rounded text-amber-100 opacity-75 cursor-not-allowed"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-xs font-semibold text-amber-700 mb-1">
-                            Email
-                          </label>
-                          <input
-                            type="email"
-                            value={user?.email || ''}
-                            disabled
-                            className="w-full px-3 py-2 bg-zinc-900 border-2 border-amber-700/30 rounded text-amber-100 opacity-75 cursor-not-allowed"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-xs font-semibold text-amber-700 mb-1">
-                            User ID
-                          </label>
-                          <input
-                            type="text"
-                            value={user?.id || ''}
-                            disabled
-                            className="w-full px-3 py-2 bg-zinc-900 border-2 border-amber-700/30 rounded text-amber-100 opacity-75 cursor-not-allowed font-mono text-sm"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Logout Button */}
-                    <div className="p-3">
+                      {/* Logout Button */}
                       <button
                         onClick={handleLogout}
-                        className="w-full px-4 py-2 bg-red-700 hover:bg-red-600 text-zinc-100 rounded-lg border-2 border-red-900/50 transition-colors font-semibold flex items-center justify-center gap-2"
+                        className="w-full px-4 py-2 mt-1 text-red-400 hover:bg-zinc-700 rounded transition-colors font-semibold flex items-center gap-2"
                       >
                         <svg
                           className="h-4 w-4"
