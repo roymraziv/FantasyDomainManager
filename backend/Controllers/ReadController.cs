@@ -4,42 +4,35 @@ using FantasyDomainManager.Services;
 using FantasyDomainManager.DTOs;
 using API.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using FantasyDomainManager.DbContexts;
 
 namespace FantasyDomainManager.Controllers
 {
     [Authorize]
-    public class ReadController : BaseApiController
+    public class ReadController(FinancialCalculationService financialService, DomainDb domainDb) : BaseApiController(domainDb)
     {
-        private readonly DbContexts.DomainDb _context;
-        private readonly FinancialCalculationService _financialService;
-
-        public ReadController(DbContexts.DomainDb context, FinancialCalculationService financialService)
-        {
-            _context = context;
-            _financialService = financialService;
-        }
-
+        private readonly DomainDb context = domainDb;
         // ========== DOMAIN ENDPOINTS ==========
 
         [HttpGet("domains")]
         public IActionResult GetDomains()
         {
             var userId = User.GetUserId();
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = context.Users.FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
             {
                 return Unauthorized();
             }
 
-            var domains = _context.Domains.Where(d => d.UserId == userId).ToList();
+            var domains = context.Domains.Where(d => d.UserId == userId).ToList();
             return Ok(domains);
         }
 
         [HttpGet("domains/{id}")]
         public IActionResult GetDomainById(string id)
         {
-            var domain = _context.Domains
+            var domain = context.Domains
                 .Include(d => d.Heroes)
                 .Include(d => d.Troops)
                 .Include(d => d.Enterprises)
@@ -59,7 +52,7 @@ namespace FantasyDomainManager.Controllers
                 return BadRequest(new { message = "Months must be greater than 0" });
             }
 
-            var result = await _financialService.CalculateFinancials(domainId, request.Months);
+            var result = await financialService.CalculateFinancials(domainId, request.Months);
 
             if (result == null)
             {
@@ -74,14 +67,14 @@ namespace FantasyDomainManager.Controllers
         [HttpGet("heroes")]
         public IActionResult GetHeroes()
         {
-            var heroes = _context.Heroes.ToList();
+            var heroes = context.Heroes.ToList();
             return Ok(heroes);
         }
 
         [HttpGet("heroes/{id}")]
         public IActionResult GetHeroById(int id)
         {
-            var hero = _context.Heroes.FirstOrDefault(h => h.Id == id);
+            var hero = context.Heroes.FirstOrDefault(h => h.Id == id);
             if (hero == null)
             {
                 return NotFound();
@@ -92,7 +85,7 @@ namespace FantasyDomainManager.Controllers
         [HttpGet("domains/{domainId}/heroes")]
         public IActionResult GetHeroesByDomainId(string domainId)
         {
-            var heroes = _context.Heroes.Where(h => h.DomainId == domainId).ToList();
+            var heroes = context.Heroes.Where(h => h.DomainId == domainId).ToList();
             return Ok(heroes);
         }
 
@@ -101,14 +94,14 @@ namespace FantasyDomainManager.Controllers
         [HttpGet("enterprises")]
         public IActionResult GetEnterprises()
         {
-            var enterprises = _context.Enterprises.ToList();
+            var enterprises = context.Enterprises.ToList();
             return Ok(enterprises);
         }
 
         [HttpGet("enterprises/{id}")]
         public IActionResult GetEnterpriseById(int id)
         {
-            var enterprise = _context.Enterprises.FirstOrDefault(e => e.Id == id);
+            var enterprise = context.Enterprises.FirstOrDefault(e => e.Id == id);
             if (enterprise == null)
             {
                 return NotFound();
@@ -119,7 +112,7 @@ namespace FantasyDomainManager.Controllers
         [HttpGet("domains/{domainId}/enterprises")]
         public IActionResult GetEnterprisesByDomainId(string domainId)
         {
-            var enterprises = _context.Enterprises.Where(e => e.DomainId == domainId).ToList();
+            var enterprises = context.Enterprises.Where(e => e.DomainId == domainId).ToList();
             return Ok(enterprises);
         }
 
@@ -128,14 +121,14 @@ namespace FantasyDomainManager.Controllers
         [HttpGet("troops")]
         public IActionResult GetTroops()
         {
-            var troops = _context.Troops.ToList();
+            var troops = context.Troops.ToList();
             return Ok(troops);
         }
 
         [HttpGet("troops/{id}")]
         public IActionResult GetTroopById(int id)
         {
-            var troop = _context.Troops.FirstOrDefault(t => t.Id == id);
+            var troop = context.Troops.FirstOrDefault(t => t.Id == id);
             if (troop == null)
             {
                 return NotFound();
@@ -146,7 +139,7 @@ namespace FantasyDomainManager.Controllers
         [HttpGet("domains/{domainId}/troops")]
         public IActionResult GetTroopsByDomainId(string domainId)
         {
-            var troops = _context.Troops.Where(t => t.DomainId == domainId).ToList();
+            var troops = context.Troops.Where(t => t.DomainId == domainId).ToList();
             return Ok(troops);
         }
     }
