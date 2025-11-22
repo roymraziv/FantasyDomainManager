@@ -39,6 +39,7 @@ export interface Hero {
   id: string;
   name: string;
   role: string;
+  class: string;
   level: number;
   wage: number;
   notes?: string | null;
