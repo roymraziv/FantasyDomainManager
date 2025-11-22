@@ -19,7 +19,7 @@ export interface RegisterDto {
 }
 
 export interface Domain {
-  id: number;
+  id: string;
   name: string;
   ruler: string;
   population: number;
@@ -36,7 +36,7 @@ export interface Domain {
 }
 
 export interface Hero {
-  id: number;
+  id: string;
   name: string;
   role: string;
   level: number;
@@ -47,7 +47,7 @@ export interface Hero {
 }
 
 export interface Enterprise {
-  id: number;
+  id: string;
   name: string;
   income?: number | null;
   incomeLowerLimit?: number | null;
@@ -61,7 +61,7 @@ export interface Enterprise {
 }
 
 export interface Troop {
-  id: number;
+  id: string;
   type: string;
   quantity: number;
   wage: number;

@@ -59,7 +59,7 @@ async function fetchApi<T>(
 export const domainApi = {
   getAll: () => fetchApi<Domain[]>('/Read/domains'),
 
-  getById: (id: number) => fetchApi<Domain>(`/Read/domains/${id}`),
+  getById: (id: string) => fetchApi<Domain>(`/Read/domains/${id}`),
 
   create: (domain: CreateDomainDto) =>
     fetchApi<Domain>('/Write/domains', {
@@ -67,13 +67,13 @@ export const domainApi = {
       body: JSON.stringify(domain),
     }),
 
-  update: (id: number, domain: Partial<Domain>) =>
+  update: (id: string, domain: Partial<Domain>) =>
     fetchApi<Domain>(`/Write/domains/${id}`, {
       method: 'PUT',
       body: JSON.stringify(domain),
     }),
 
-  delete: (id: number) =>
+  delete: (id: string) =>
     fetchApi<void>(`/Write/domains/${id}`, {
       method: 'DELETE',
     }),
@@ -84,7 +84,7 @@ export const domainApi = {
 export const heroApi = {
   getAll: () => fetchApi<Hero[]>('/Read/heroes'),
 
-  getById: (id: number) => fetchApi<Hero>(`/Read/heroes/${id}`),
+  getById: (id: string) => fetchApi<Hero>(`/Read/heroes/${id}`),
 
   getByDomainId: (domainId: string) => fetchApi<Hero[]>(`/Read/domains/${domainId}/heroes`),
 
@@ -94,13 +94,13 @@ export const heroApi = {
       body: JSON.stringify(hero),
     }),
 
-  update: (id: number, hero: Partial<Hero>) =>
+  update: (id: string, hero: Partial<Hero>) =>
     fetchApi<Hero>(`/Write/heroes/${id}`, {
       method: 'PUT',
       body: JSON.stringify(hero),
     }),
 
-  delete: (id: number) =>
+  delete: (id: string) =>
     fetchApi<void>(`/Write/heroes/${id}`, {
       method: 'DELETE',
     }),
@@ -111,7 +111,7 @@ export const heroApi = {
 export const enterpriseApi = {
   getAll: () => fetchApi<Enterprise[]>('/Read/enterprises'),
 
-  getById: (id: number) => fetchApi<Enterprise>(`/Read/enterprises/${id}`),
+  getById: (id: string) => fetchApi<Enterprise>(`/Read/enterprises/${id}`),
 
   getByDomainId: (domainId: string) =>
     fetchApi<Enterprise[]>(`/Read/domains/${domainId}/enterprises`),
@@ -122,13 +122,13 @@ export const enterpriseApi = {
       body: JSON.stringify(enterprise),
     }),
 
-  update: (id: number, enterprise: Partial<Enterprise>) =>
+  update: (id: string, enterprise: Partial<Enterprise>) =>
     fetchApi<Enterprise>(`/Write/enterprises/${id}`, {
       method: 'PUT',
       body: JSON.stringify(enterprise),
     }),
 
-  delete: (id: number) =>
+  delete: (id: string) =>
     fetchApi<void>(`/Write/enterprises/${id}`, {
       method: 'DELETE',
     }),
@@ -139,7 +139,7 @@ export const enterpriseApi = {
 export const troopApi = {
   getAll: () => fetchApi<Troop[]>('/Read/troops'),
 
-  getById: (id: number) => fetchApi<Troop>(`/Read/troops/${id}`),
+  getById: (id: string) => fetchApi<Troop>(`/Read/troops/${id}`),
 
   getByDomainId: (domainId: string) =>
     fetchApi<Troop[]>(`/Read/domains/${domainId}/troops`),
@@ -150,13 +150,13 @@ export const troopApi = {
       body: JSON.stringify(troop),
     }),
 
-  update: (id: number, troop: Partial<Troop>) =>
+  update: (id: string, troop: Partial<Troop>) =>
     fetchApi<Troop>(`/Write/troops/${id}`, {
       method: 'PUT',
       body: JSON.stringify(troop),
     }),
 
-  delete: (id: number) =>
+  delete: (id: string) =>
     fetchApi<void>(`/Write/troops/${id}`, {
       method: 'DELETE',
     }),

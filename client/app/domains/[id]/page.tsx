@@ -27,7 +27,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
   const loadDomain = async () => {
     try {
       setLoading(true);
-      const data = await domainApi.getById(parseInt(id));
+      const data = await domainApi.getById(id);
       setDomain(data);
       // Only set domain fields for formData, exclude collections
       const { heroes, troops, enterprises, ...domainFields } = data;
@@ -107,7 +107,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
     }
 
     try {
-      await domainApi.update(parseInt(id), formData);
+      await domainApi.update(id, formData);
       setIsEditModalOpen(false);
       loadDomain();
     } catch (err) {
@@ -117,7 +117,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
 
   const handleDelete = async () => {
     try {
-      await domainApi.delete(parseInt(id));
+      await domainApi.delete(id);
       router.push('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete domain');
@@ -266,9 +266,9 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
 
         {/* Sections for Heroes, Troops, Enterprises */}
         <div className="space-y-6">
-          <HeroSection domainId={domain.id.toString()} initialHeroes={domain.heroes} />
-          <TroopSection domainId={domain.id.toString()} initialTroops={domain.troops} />
-          <EnterpriseSection domainId={domain.id.toString()} initialEnterprises={domain.enterprises} />
+          <HeroSection domainId={domain.id} initialHeroes={domain.heroes} />
+          <TroopSection domainId={domain.id} initialTroops={domain.troops} />
+          <EnterpriseSection domainId={domain.id} initialEnterprises={domain.enterprises} />
         </div>
       </div>
 
