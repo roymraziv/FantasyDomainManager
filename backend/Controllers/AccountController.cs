@@ -1,5 +1,6 @@
 using System;
 using System.Security.Cryptography;
+using FantasyDomainManager.DbContexts;
 using FantasyDomainManager.DTOs;
 using FantasyDomainManager.Extensions;
 using FantasyDomainManager.Interfaces;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FantasyDomainManager.Controllers;
 
-public class AccountController(DbContexts.DomainDb context, ITokenService tokenService) : BaseApiController
+public class AccountController(ITokenService tokenService, DomainDb context) : BaseApiController(context)
 {
 
     [HttpPost("register")]
