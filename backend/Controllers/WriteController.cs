@@ -20,15 +20,10 @@ namespace FantasyDomainManager.Controllers
         [HttpPost("domains")]
         public IActionResult CreateDomain([FromBody] CreateDomainDto dto)
         {
-            var userId = User.GetUserId();
-            var user = context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = GetAuthenticatedUser(out var userError);
+            if (userError != null) return userError;
 
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            var domain = dto.ToDomain(user);
+            var domain = dto.ToDomain(user!);
 
             context.Domains.Add(domain);
             context.SaveChanges();
@@ -38,22 +33,13 @@ namespace FantasyDomainManager.Controllers
         [HttpPut("domains/{id}")]
         public IActionResult UpdateDomain(string id, [FromBody] UpdateDomainDto dto)
         {
-            var userId = User.GetUserId();
-            var user = context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = GetAuthenticatedUser(out var userError);
+            if (userError != null) return userError;
 
-            if (user == null)
-            {
-                return Unauthorized();
-            }
+            var existingDomain = GetEntityOrNotFound<Domain>(d => d.Id == id, out var domainError);
+            if (domainError != null) return domainError;
 
-            var existingDomain = context.Domains.FirstOrDefault(d => d.Id == id);
-
-            if (existingDomain == null)
-            {
-                return NotFound();
-            }
-
-            if (existingDomain.UserId != userId)
+            if (existingDomain!.UserId != user!.Id)
             {
                 return Forbid();
             }
@@ -76,13 +62,8 @@ namespace FantasyDomainManager.Controllers
         [HttpDelete("domains/{id}")]
         public IActionResult DeleteDomain(string id)
         {
-            var userId = User.GetUserId();
-            var user = context.Users.FirstOrDefault(u => u.Id == userId);
-
-            if (user == null)
-            {
-                return Unauthorized();
-            }
+            var user = GetAuthenticatedUser(out var userError);
+            if (userError != null) return userError;
 
             var domain = context.Domains
                 .Include(d => d.Heroes)
@@ -95,7 +76,7 @@ namespace FantasyDomainManager.Controllers
                 return NotFound();
             }
 
-            if (domain.UserId != userId)
+            if (domain.UserId != user!.Id)
             {
                 return Forbid();
             }
@@ -103,7 +84,8 @@ namespace FantasyDomainManager.Controllers
             // Check for connected records
             if (domain.Heroes.Any() || domain.Enterprises.Any() || domain.Troops.Any())
             {
-                return BadRequest(new {
+                return BadRequest(new
+                {
                     message = "Cannot delete domain with connected records",
                     heroes = domain.Heroes.Count,
                     enterprises = domain.Enterprises.Count,
@@ -121,25 +103,11 @@ namespace FantasyDomainManager.Controllers
         [HttpPost("heroes")]
         public IActionResult CreateHero([FromBody] Hero hero)
         {
-            var userId = User.GetUserId();
-            var user = context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = GetAuthenticatedUser(out var userError);
+            if (userError != null) return userError;
 
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            var domain = context.Domains.FirstOrDefault(d => d.Id == hero.DomainId);
-
-            if (domain == null)
-            {
-                return BadRequest(new { message = "Domain does not exist" });
-            }
-
-            if (domain.UserId != userId)
-            {
-                return Forbid();
-            }
+            var domain = GetAndValidateDomainOwnership(hero.DomainId, user!.Id, out var domainError);
+            if (domainError != null) return domainError;
 
             context.Heroes.Add(hero);
             context.SaveChanges();
@@ -149,32 +117,16 @@ namespace FantasyDomainManager.Controllers
         [HttpPut("heroes/{id}")]
         public IActionResult UpdateHero(int id, [FromBody] UpdateHeroDto dto)
         {
-            var userId = User.GetUserId();
-            var user = context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = GetAuthenticatedUser(out var userError);
+            if (userError != null) return userError;
 
-            if (user == null)
-            {
-                return Unauthorized();
-            }
+            var existingHero = GetEntityOrNotFound<Hero>(h => h.Id == id, out var heroError);
+            if (heroError != null) return heroError;
 
-            var existingHero = context.Heroes.FirstOrDefault(h => h.Id == id);
-            if (existingHero == null)
-            {
-                return NotFound();
-            }
+            var domain = GetAndValidateDomainOwnership(dto.DomainId, user!.Id, out var domainError);
+            if (domainError != null) return domainError;
 
-            var domain = context.Domains.FirstOrDefault(d => d.Id == dto.DomainId);
-            if (domain == null)
-            {
-                return BadRequest(new { message = "Domain does not exist" });
-            }
-
-            if (domain.UserId != userId)
-            {
-                return Forbid();
-            }
-
-            existingHero.Name = dto.Name;
+            existingHero!.Name = dto.Name;
             existingHero.Class = dto.Class;
             existingHero.Role = dto.Role;
             existingHero.Level = dto.Level;
@@ -189,31 +141,14 @@ namespace FantasyDomainManager.Controllers
         [HttpDelete("heroes/{id}")]
         public IActionResult DeleteHero(int id)
         {
-            var hero = context.Heroes.FirstOrDefault(h => h.Id == id);
-            if (hero == null)
-            {
-                return NotFound();
-            }
+            var user = GetAuthenticatedUser(out var userError);
+            if (userError != null) return userError;
 
-            var userId = User.GetUserId();
-            var user = context.Users.FirstOrDefault(u => u.Id == userId);
+            var hero = GetEntityOrNotFound<Hero>(h => h.Id == id, out var heroError);
+            if (heroError != null) return heroError;
 
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            var domain = context.Domains.FirstOrDefault(d => d.Id == hero.DomainId);
-
-            if (domain == null)
-            {
-                return BadRequest(new { message = "Domain does not exist" });
-            }
-
-            if (domain.UserId != userId)
-            {
-                return Forbid();
-            }
+            var domain = GetAndValidateDomainOwnership(hero!.DomainId, user!.Id, out var domainError);
+            if (domainError != null) return domainError;
 
             context.Heroes.Remove(hero);
             context.SaveChanges();
@@ -225,25 +160,11 @@ namespace FantasyDomainManager.Controllers
         [HttpPost("enterprises")]
         public IActionResult CreateEnterprise([FromBody] Models.Enterprise enterprise)
         {
-            var userId = User.GetUserId();
-            var user = context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = GetAuthenticatedUser(out var userError);
+            if (userError != null) return userError;
 
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            var domain = context.Domains.FirstOrDefault(d => d.Id == enterprise.DomainId);
-
-            if (domain == null)
-            {
-                return BadRequest(new { message = "Domain does not exist" });
-            }
-
-            if (domain.UserId != userId)
-            {
-                return Forbid();
-            }
+            var domain = GetAndValidateDomainOwnership(enterprise.DomainId, user!.Id, out var domainError);
+            if (domainError != null) return domainError;
 
             context.Enterprises.Add(enterprise);
             context.SaveChanges();
@@ -253,31 +174,14 @@ namespace FantasyDomainManager.Controllers
         [HttpPut("enterprises/{id}")]
         public IActionResult UpdateEnterprise(int id, [FromBody] UpdateEnterpriseDto dto)
         {
-            var userId = User.GetUserId();
-            var user = context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = GetAuthenticatedUser(out var userError);
+            if (userError != null) return userError;
 
-            if (user == null)
-            {
-                return Unauthorized();
-            }
+            var existingEnterprise = GetEntityOrNotFound<Enterprise>(e => e.Id == id, out var enterpriseError);
+            if (enterpriseError != null) return enterpriseError;
 
-            var domain = context.Domains.FirstOrDefault(d => d.Id == dto.DomainId);
-
-            if (domain == null)
-            {
-                return BadRequest(new { message = "Domain does not exist" });
-            }
-
-            if (domain.UserId != userId)
-            {
-                return Forbid();
-            }
-
-            var existingEnterprise = context.Enterprises.FirstOrDefault(e => e.Id == id);
-            if (existingEnterprise == null)
-            {
-                return NotFound();
-            }
+            var domain = GetAndValidateDomainOwnership(existingEnterprise!.DomainId, user!.Id, out var domainError);
+            if (domainError != null) return domainError;
 
             existingEnterprise.Name = dto.Name;
             existingEnterprise.Income = dto.Income;
@@ -296,32 +200,14 @@ namespace FantasyDomainManager.Controllers
         [HttpDelete("enterprises/{id}")]
         public IActionResult DeleteEnterprise(int id)
         {
-            var userId = User.GetUserId();
-            var user = context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = GetAuthenticatedUser(out var userError);
+            if (userError != null) return userError;
 
-            if (user == null)
-            {
-                return Unauthorized();
-            }
+            var enterprise = GetEntityOrNotFound<Enterprise>(e => e.Id == id, out var enterpriseError);
+            if (enterpriseError != null) return enterpriseError;
 
-            var enterprise = context.Enterprises.FirstOrDefault(e => e.Id == id);
-
-            if (enterprise == null)
-            {
-                return NotFound();
-            }
-
-            var domain = context.Domains.FirstOrDefault(d => d.Id == enterprise.DomainId);
-
-            if (domain == null)
-            {
-                return BadRequest(new { message = "Domain does not exist" });
-            }
-
-            if (domain.UserId != userId)
-            {
-                return Forbid();
-            }
+            var domain = GetAndValidateDomainOwnership(enterprise!.DomainId, user!.Id, out var domainError);
+            if (domainError != null) return domainError;
 
             context.Enterprises.Remove(enterprise);
             context.SaveChanges();
@@ -333,12 +219,11 @@ namespace FantasyDomainManager.Controllers
         [HttpPost("troops")]
         public IActionResult CreateTroop([FromBody] Models.Troop troop)
         {
-            // Validate that the domain exists
-            var domainExists = context.Domains.Any(d => d.Id == troop.DomainId);
-            if (!domainExists)
-            {
-                return BadRequest(new { message = "Domain does not exist" });
-            }
+            var user = GetAuthenticatedUser(out var userError);
+            if (userError != null) return userError;
+
+            var domain = GetAndValidateDomainOwnership(troop!.DomainId, user!.Id, out var domainError);
+            if (domainError != null) return domainError;
 
             context.Troops.Add(troop);
             context.SaveChanges();
@@ -348,31 +233,14 @@ namespace FantasyDomainManager.Controllers
         [HttpPut("troops/{id}")]
         public IActionResult UpdateTroop(int id, [FromBody] UpdateTroopDto dto)
         {
-            var userId = User.GetUserId();
-            var user = context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = GetAuthenticatedUser(out var userError);
+            if (userError != null) return userError;
 
-            if (user == null)
-            {
-                return Unauthorized();
-            }
+            var existingTroop = GetEntityOrNotFound<Troop>(t => t.Id == id, out var troopError);
+            if (troopError != null) return troopError;
 
-            var existingTroop = context.Troops.FirstOrDefault(t => t.Id == id);
-            if (existingTroop == null)
-            {
-                return NotFound();
-            }
-
-            // Validate that the domain exists
-            var domain = context.Domains.FirstOrDefault(d => d.Id == dto.DomainId);
-            if (domain == null)
-            {
-                return BadRequest(new { message = "Domain does not exist" });
-            }
-
-            if (domain.UserId != userId)
-            {
-                return Forbid();
-            }
+            var domain = GetAndValidateDomainOwnership(existingTroop!.DomainId, user!.Id, out var domainError);
+            if (domainError != null) return domainError;
 
             existingTroop.Type = dto.Type;
             existingTroop.Quantity = dto.Quantity;
@@ -387,30 +255,14 @@ namespace FantasyDomainManager.Controllers
         [HttpDelete("troops/{id}")]
         public IActionResult DeleteTroop(int id)
         {
-            var userId = User.GetUserId();
-            var user = context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = GetAuthenticatedUser(out var userError);
+            if (userError != null) return userError;
 
-            if (user == null)
-            {
-                return Unauthorized();
-            }
+            var troop = GetEntityOrNotFound<Troop>(t => t.Id == id, out var troopError);
+            if (troopError != null) return troopError;
 
-            var troop = context.Troops.FirstOrDefault(t => t.Id == id);
-            if (troop == null)
-            {
-                return NotFound();
-            }
-
-            var domain = context.Domains.FirstOrDefault(d => d.Id == troop.DomainId);
-            if (domain == null)
-            {
-                return BadRequest(new { message = "Domain does not exist" });
-            }
-
-            if (domain.UserId != userId)
-            {
-                return Forbid();
-            }
+            var domain = GetAndValidateDomainOwnership(troop!.DomainId, user!.Id, out var domainError);
+            if (domainError != null) return domainError;
 
             context.Troops.Remove(troop);
             context.SaveChanges();
