@@ -20,7 +20,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedTroop, setSelectedTroop] = useState<Troop | null>(null);
-  const [formData, setFormData] = useState<CreateTroopDto & { quantity: number | '', wage: number | '' }>({
+  const [formData, setFormData] = useState<Omit<CreateTroopDto, 'quantity' | 'wage'> & { quantity: number | '', wage: number | '' }>({
     type: '',
     quantity: 0,
     wage: 0,
@@ -56,8 +56,8 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
       return;
     }
 
-    const quantity = formData.quantity === '' ? 0 : formData.quantity;
-    const wage = formData.wage === '' ? 0 : formData.wage;
+    const quantity = typeof formData.quantity === 'string' ? 0 : formData.quantity;
+    const wage = typeof formData.wage === 'string' ? 0 : formData.wage;
 
     if (quantity < 0) {
       setError('Quantity cannot be negative');
@@ -93,8 +93,8 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
       return;
     }
 
-    const quantity = formData.quantity === '' ? 0 : formData.quantity;
-    const wage = formData.wage === '' ? 0 : formData.wage;
+    const quantity = typeof formData.quantity === 'string' ? 0 : formData.quantity;
+    const wage = typeof formData.wage === 'string' ? 0 : formData.wage;
 
     if (quantity < 0) {
       setError('Quantity cannot be negative');

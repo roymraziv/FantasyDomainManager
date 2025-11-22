@@ -20,7 +20,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
-  const [formData, setFormData] = useState<CreateHeroDto & { level: number | '', wage: number | '' }>({
+  const [formData, setFormData] = useState<Omit<CreateHeroDto, 'level' | 'wage'> & { level: number | '', wage: number | '' }>({
     name: '',
     role: '',
     level: 1,
@@ -57,8 +57,8 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
       return;
     }
 
-    const level = formData.level === '' ? 1 : formData.level;
-    const wage = formData.wage === '' ? 0 : formData.wage;
+    const level = typeof formData.level === 'string' ? 1 : formData.level;
+    const wage = typeof formData.wage === 'string' ? 0 : formData.wage;
 
     if (level < 1) {
       setError('Level must be at least 1');
@@ -94,8 +94,8 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
       return;
     }
 
-    const level = formData.level === '' ? 1 : formData.level;
-    const wage = formData.wage === '' ? 0 : formData.wage;
+    const level = typeof formData.level === 'string' ? 1 : formData.level;
+    const wage = typeof formData.wage === 'string' ? 0 : formData.wage;
 
     if (level < 1) {
       setError('Level must be at least 1');
