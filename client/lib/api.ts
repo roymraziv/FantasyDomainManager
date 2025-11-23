@@ -77,6 +77,12 @@ export const domainApi = {
     fetchApi<void>(`/Write/domains/${id}`, {
       method: 'DELETE',
     }),
+
+  calculateFinancials: (id: string, months: number) =>
+    fetchApi<any>(`/Read/domains/${id}/calculate-financials`, {
+      method: 'POST',
+      body: JSON.stringify({ months }),
+    }),
 };
 
 // ========== HERO API ==========
