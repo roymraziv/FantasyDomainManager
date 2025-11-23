@@ -5,6 +5,7 @@ import { Users, Crown, Calculator } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Modal from './Modal';
+import { domainApi } from '@/lib/api';
 
 interface DomainCardProps {
   domain: Domain;
@@ -60,19 +61,7 @@ export default function DomainCard({ domain }: DomainCardProps) {
     setError('');
 
     try {
-      const response = await fetch(`http://localhost:5223/api/Read/domains/${domain.id}/calculate-financials`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ months: monthsValue }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to calculate financials');
-      }
-
-      const data = await response.json();
+      const data = await domainApi.calculateFinancials(domain.id, monthsValue);
       setCalculationResult(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to calculate financials');
