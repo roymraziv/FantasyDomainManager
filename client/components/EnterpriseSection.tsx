@@ -60,57 +60,68 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
       return;
     }
 
+    // Validate max lengths
+    if (formData.name.length > 100) {
+      setError('Name must not exceed 100 characters');
+      return;
+    }
+
+    if (formData.notes && formData.notes.length > 1000) {
+      setError('Notes must not exceed 1000 characters');
+      return;
+    }
+
     // Validate income: cannot have both flat value and range
     if (formData.income != null && (formData.incomeLowerLimit != null || formData.incomeUpperLimit != null)) {
-      setError('Cannot specify both a flat value and a range for income');
+      setError('Income must be null when income lower limit and upper limit are provided');
       return;
     }
 
     // Validate upkeep: cannot have both flat value and range
     if (formData.upkeepCost != null && (formData.upkeepCostLowerLimit != null || formData.upkeepCostUpperLimit != null)) {
-      setError('Cannot specify both a flat value and a range for upkeep cost');
+      setError('Upkeep cost must be null when upkeep cost lower limit and upper limit are provided');
       return;
     }
 
-    // Validate income range: min must be less than max
+    // Validate income range: min must be less than or equal to max
     if (formData.incomeLowerLimit != null && formData.incomeUpperLimit != null) {
-      if (formData.incomeLowerLimit >= formData.incomeUpperLimit) {
-        setError('Income minimum must be less than income maximum');
+      if (formData.incomeLowerLimit > formData.incomeUpperLimit) {
+        setError('Income lower limit must be less than or equal to income upper limit');
         return;
       }
     }
 
-    // Validate upkeep range: min must be less than max
+    // Validate upkeep range: min must be less than or equal to max
     if (formData.upkeepCostLowerLimit != null && formData.upkeepCostUpperLimit != null) {
-      if (formData.upkeepCostLowerLimit >= formData.upkeepCostUpperLimit) {
-        setError('Upkeep cost minimum must be less than upkeep cost maximum');
+      if (formData.upkeepCostLowerLimit > formData.upkeepCostUpperLimit) {
+        setError('Upkeep cost lower limit must be less than or equal to upkeep cost upper limit');
         return;
       }
     }
 
-    // Validate negative numbers
+    // Validate positive values
     if (formData.income != null && formData.income < 0) {
-      setError('Income cannot be negative');
+      setError('Income must be a positive value');
       return;
     }
     if (formData.incomeLowerLimit != null && formData.incomeLowerLimit < 0) {
-      setError('Income minimum cannot be negative');
+      setError('Income lower limit must be a positive value');
       return;
     }
     if (formData.incomeUpperLimit != null && formData.incomeUpperLimit < 0) {
-      setError('Income maximum cannot be negative');
+      setError('Income upper limit must be a positive value');
       return;
     }
     if (formData.upkeepCost != null && formData.upkeepCost < 0) {
-      setError('Upkeep cost cannot be negative');
+      setError('Upkeep cost must be a positive value');
       return;
     }
     if (formData.upkeepCostLowerLimit != null && formData.upkeepCostLowerLimit < 0) {
-      setError('Upkeep minimum cannot be negative');
+      setError('Upkeep cost lower limit must be a positive value');
       return;
     }
     if (formData.upkeepCostUpperLimit != null && formData.upkeepCostUpperLimit < 0) {
-      setError('Upkeep maximum cannot be negative');
+      setError('Upkeep cost upper limit must be a positive value');
       return;
     }
 
@@ -133,57 +144,68 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
       return;
     }
 
+    // Validate max lengths
+    if (formData.name.length > 100) {
+      setError('Name must not exceed 100 characters');
+      return;
+    }
+
+    if (formData.notes && formData.notes.length > 1000) {
+      setError('Notes must not exceed 1000 characters');
+      return;
+    }
+
     // Validate income: cannot have both flat value and range
     if (formData.income != null && (formData.incomeLowerLimit != null || formData.incomeUpperLimit != null)) {
-      setError('Cannot specify both a flat value and a range for income');
+      setError('Income must be null when income lower limit and upper limit are provided');
       return;
     }
 
     // Validate upkeep: cannot have both flat value and range
     if (formData.upkeepCost != null && (formData.upkeepCostLowerLimit != null || formData.upkeepCostUpperLimit != null)) {
-      setError('Cannot specify both a flat value and a range for upkeep cost');
+      setError('Upkeep cost must be null when upkeep cost lower limit and upper limit are provided');
       return;
     }
 
-    // Validate income range: min must be less than max
+    // Validate income range: min must be less than or equal to max
     if (formData.incomeLowerLimit != null && formData.incomeUpperLimit != null) {
-      if (formData.incomeLowerLimit >= formData.incomeUpperLimit) {
-        setError('Income minimum must be less than income maximum');
+      if (formData.incomeLowerLimit > formData.incomeUpperLimit) {
+        setError('Income lower limit must be less than or equal to income upper limit');
         return;
       }
     }
 
-    // Validate upkeep range: min must be less than max
+    // Validate upkeep range: min must be less than or equal to max
     if (formData.upkeepCostLowerLimit != null && formData.upkeepCostUpperLimit != null) {
-      if (formData.upkeepCostLowerLimit >= formData.upkeepCostUpperLimit) {
-        setError('Upkeep cost minimum must be less than upkeep cost maximum');
+      if (formData.upkeepCostLowerLimit > formData.upkeepCostUpperLimit) {
+        setError('Upkeep cost lower limit must be less than or equal to upkeep cost upper limit');
         return;
       }
     }
 
-    // Validate negative numbers
+    // Validate positive values
     if (formData.income != null && formData.income < 0) {
-      setError('Income cannot be negative');
+      setError('Income must be a positive value');
       return;
     }
     if (formData.incomeLowerLimit != null && formData.incomeLowerLimit < 0) {
-      setError('Income minimum cannot be negative');
+      setError('Income lower limit must be a positive value');
       return;
     }
     if (formData.incomeUpperLimit != null && formData.incomeUpperLimit < 0) {
-      setError('Income maximum cannot be negative');
+      setError('Income upper limit must be a positive value');
       return;
     }
     if (formData.upkeepCost != null && formData.upkeepCost < 0) {
-      setError('Upkeep cost cannot be negative');
+      setError('Upkeep cost must be a positive value');
       return;
     }
     if (formData.upkeepCostLowerLimit != null && formData.upkeepCostLowerLimit < 0) {
-      setError('Upkeep minimum cannot be negative');
+      setError('Upkeep cost lower limit must be a positive value');
       return;
     }
     if (formData.upkeepCostUpperLimit != null && formData.upkeepCostUpperLimit < 0) {
-      setError('Upkeep maximum cannot be negative');
+      setError('Upkeep cost upper limit must be a positive value');
       return;
     }
 
@@ -309,6 +331,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              maxLength={100}
               required
             />
           </div>
@@ -402,6 +425,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               onChange={(e) => setFormData({ ...formData, notes: e.target.value || null })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none min-h-[100px] resize-y"
               placeholder="Add any notes or descriptions..."
+              maxLength={1000}
             />
           </div>
 
@@ -435,6 +459,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              maxLength={100}
               required
             />
           </div>
@@ -528,6 +553,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
               onChange={(e) => setFormData({ ...formData, notes: e.target.value || null })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none min-h-[100px] resize-y"
               placeholder="Add any notes or descriptions..."
+              maxLength={1000}
             />
           </div>
 

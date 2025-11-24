@@ -56,16 +56,27 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
       return;
     }
 
+    // Validate max lengths
+    if (formData.type.length > 100) {
+      setError('Type must not exceed 100 characters');
+      return;
+    }
+
+    if (formData.notes && formData.notes.length > 1000) {
+      setError('Notes must not exceed 1000 characters');
+      return;
+    }
+
     const quantity = typeof formData.quantity === 'string' ? 0 : formData.quantity;
     const wage = typeof formData.wage === 'string' ? 0 : formData.wage;
 
-    if (quantity < 0) {
-      setError('Quantity cannot be negative');
+    if (quantity <= 0) {
+      setError('Quantity must be greater than 0');
       return;
     }
 
     if (wage < 0) {
-      setError('Wage cannot be negative');
+      setError('Wage must be a positive value');
       return;
     }
 
@@ -93,16 +104,27 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
       return;
     }
 
+    // Validate max lengths
+    if (formData.type.length > 100) {
+      setError('Type must not exceed 100 characters');
+      return;
+    }
+
+    if (formData.notes && formData.notes.length > 1000) {
+      setError('Notes must not exceed 1000 characters');
+      return;
+    }
+
     const quantity = typeof formData.quantity === 'string' ? 0 : formData.quantity;
     const wage = typeof formData.wage === 'string' ? 0 : formData.wage;
 
-    if (quantity < 0) {
-      setError('Quantity cannot be negative');
+    if (quantity <= 0) {
+      setError('Quantity must be greater than 0');
       return;
     }
 
     if (wage < 0) {
-      setError('Wage cannot be negative');
+      setError('Wage must be a positive value');
       return;
     }
 
@@ -221,6 +243,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
               value={formData.type}
               onChange={(e) => setFormData({ ...formData, type: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              maxLength={100}
               required
             />
           </div>
@@ -256,6 +279,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
               onChange={(e) => setFormData({ ...formData, notes: e.target.value || null })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none min-h-[100px] resize-y"
               placeholder="Add any notes or descriptions..."
+              maxLength={1000}
             />
           </div>
 
@@ -289,6 +313,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
               value={formData.type}
               onChange={(e) => setFormData({ ...formData, type: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              maxLength={100}
               required
             />
           </div>
@@ -324,6 +349,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
               onChange={(e) => setFormData({ ...formData, notes: e.target.value || null })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none min-h-[100px] resize-y"
               placeholder="Add any notes or descriptions..."
+              maxLength={1000}
             />
           </div>
 
