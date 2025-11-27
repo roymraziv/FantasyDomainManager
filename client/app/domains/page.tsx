@@ -250,7 +250,7 @@ export default function DomainsPage() {
 
           <div>
             <label className="block text-amber-100 font-semibold mb-2">
-              Population
+              Population * 
             </label>
             <input
               type="number"
@@ -265,7 +265,7 @@ export default function DomainsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-amber-100 font-semibold mb-2">
-                Income (flat value)
+                Income (flat value) *
               </label>
               <input
                 type="number"
@@ -279,7 +279,7 @@ export default function DomainsPage() {
             </div>
             <div>
               <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Income Min (or range)
+                Income Min (or range) *
               </label>
               <input
                 type="number"
@@ -293,7 +293,7 @@ export default function DomainsPage() {
             </div>
             <div>
               <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Income Max
+                Income Max *
               </label>
               <input
                 type="number"
@@ -310,7 +310,7 @@ export default function DomainsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-amber-100 font-semibold mb-2">
-                Upkeep Cost (flat value)
+                Upkeep Cost (flat value) *
               </label>
               <input
                 type="number"
@@ -324,7 +324,7 @@ export default function DomainsPage() {
             </div>
             <div>
               <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Upkeep Min (or range)
+                Upkeep Min (or range) *
               </label>
               <input
                 type="number"
@@ -338,7 +338,7 @@ export default function DomainsPage() {
             </div>
             <div>
               <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Upkeep Max
+                Upkeep Max *
               </label>
               <input
                 type="number"

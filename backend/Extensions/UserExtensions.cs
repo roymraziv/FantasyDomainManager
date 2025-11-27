@@ -8,9 +8,9 @@ namespace FantasyDomainManager.Extensions;
 
 public static class UserExtensions
 {
-    public static UserDto ToDto(this User user, ITokenService tokenService)
+    public static async Task<UserDto> ToDto(this User user, ITokenService tokenService)
     {
-        var token = tokenService.CreateToken(user);
+        var token = await tokenService.CreateToken(user);
         return new UserDto
         {
             Id = user.Id,

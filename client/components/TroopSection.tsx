@@ -249,7 +249,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
           </div>
 
           <div>
-            <label className="block text-amber-100 font-semibold mb-2">Quantity</label>
+            <label className="block text-amber-100 font-semibold mb-2">Quantity *</label>
             <input
               type="number"
               min="0"
@@ -319,7 +319,7 @@ export default function TroopSection({ domainId, initialTroops = [] }: TroopSect
           </div>
 
           <div>
-            <label className="block text-amber-100 font-semibold mb-2">Quantity</label>
+            <label className="block text-amber-100 font-semibold mb-2">Quantity *</label>
             <input
               type="number"
               min="0"
