@@ -14,10 +14,42 @@ import {
 
 const API_BASE_URL = 'http://localhost:5223/api';
 
-// Helper function to get auth token
-function getAuthToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('auth_token');
+// Token refresh state management
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+function onRefreshed(token: string) {
+  refreshSubscribers.forEach(callback => callback(token));
+  refreshSubscribers = [];
+}
+
+function addRefreshSubscriber(callback: (token: string) => void) {
+  refreshSubscribers.push(callback);
+}
+
+// Refresh access token using refresh token cookie
+async function refreshAccessToken(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/account/refresh-token`, {
+      method: 'POST',
+      credentials: 'include', // Important: sends cookies
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      // Cookies are set automatically by browser
+      // Update context with new token expiry
+      if ((window as any).__authContext) {
+        (window as any).__authContext.updateTokenExpiry(data.tokenExpiry);
+      }
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    console.error('Token refresh failed:', error);
+    return false;
+  }
 }
 
 // Helper function for fetch requests
@@ -25,33 +57,76 @@ async function fetchApi<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
-  const token = getAuthToken();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options?.headers as Record<string, string>),
   };
 
-  // Add Authorization header if token exists
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+  // Remove manual Authorization header - cookies handle authentication now
+
+  try {
+    let response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers,
+      credentials: 'include', // Always include cookies
+    });
+
+    // Handle 401 - attempt token refresh (but not for auth endpoints)
+    const isAuthEndpoint = endpoint.includes('/account/login') ||
+                          endpoint.includes('/account/register') ||
+                          endpoint.includes('/refresh-token');
+
+    if (response.status === 401 && !isAuthEndpoint) {
+      if (!isRefreshing) {
+        isRefreshing = true;
+        const refreshSuccess = await refreshAccessToken();
+        isRefreshing = false;
+
+        if (refreshSuccess) {
+          onRefreshed('refreshed');
+          // Retry original request
+          response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            ...options,
+            headers,
+            credentials: 'include',
+          });
+        } else {
+          // Refresh failed - logout user
+          if ((window as any).__authContext) {
+            (window as any).__authContext.logout();
+          }
+          throw new Error('Session expired. Please login again.');
+        }
+      } else {
+        // Wait for ongoing refresh to complete
+        await new Promise<void>((resolve) => {
+          addRefreshSubscriber(() => resolve());
+        });
+        // Retry original request
+        response = await fetch(`${API_BASE_URL}${endpoint}`, {
+          ...options,
+          headers,
+          credentials: 'include',
+        });
+      }
+    }
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({
+        message: 'Request failed'
+      }));
+      throw new Error(error.message || `HTTP error! status: ${response.status}`);
+    }
+
+    // Handle 204 No Content responses
+    if (response.status === 204) {
+      return {} as T;
+    }
+
+    return response.json();
+  } catch (error) {
+    throw error;
   }
-
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers,
-    ...options,
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Request failed' }));
-    throw new Error(error.message || `HTTP error! status: ${response.status}`);
-  }
-
-  // Handle 204 No Content responses
-  if (response.status === 204) {
-    return {} as T;
-  }
-
-  return response.json();
 }
 
 // ========== DOMAIN API ==========
@@ -183,22 +258,13 @@ export const authApi = {
       body: JSON.stringify(data),
     }),
 
-  // Helper to store token in localStorage
-  storeToken: (token: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('auth_token', token);
-    }
-  },
+  refreshToken: () =>
+    fetchApi<User>('/account/refresh-token', {
+      method: 'POST',
+    }),
 
-  // Helper to remove token from localStorage
-  clearToken: () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('auth_token');
-    }
-  },
-
-  // Helper to check if user is authenticated
-  isAuthenticated: () => {
-    return getAuthToken() !== null;
-  },
+  logout: () =>
+    fetchApi<void>('/account/logout', {
+      method: 'POST',
+    }),
 };

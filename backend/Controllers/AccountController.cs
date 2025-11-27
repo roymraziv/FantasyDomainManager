@@ -32,8 +32,10 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
         }
 
         await SetRefreshTokenCookie(user);
+        var userDto = await user.ToDto(tokenService);
+        SetAccessTokenCookie(userDto.Token);
 
-        return await user.ToDto(tokenService);
+        return userDto;
     }
 
     [HttpPost("login")]
@@ -54,8 +56,10 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
         }
 
         await SetRefreshTokenCookie(user);
+        var userDto = await user.ToDto(tokenService);
+        SetAccessTokenCookie(userDto.Token);
 
-        return await user.ToDto(tokenService);
+        return userDto;
     }
 
     [HttpPost("refresh-token")]
@@ -64,21 +68,52 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
         var refreshToken = Request.Cookies["refreshToken"];
         if (string.IsNullOrEmpty(refreshToken))
         {
-            return NoContent();
+            return Unauthorized(new { message = "No refresh token found" });
         }
 
         var user = await userManager.Users
-            .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken 
+            .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken
                                       && u.RefreshTokenExpiry > DateTime.UtcNow);
 
         if (user == null)
         {
-            return Unauthorized();
+            return Unauthorized(new { message = "Invalid or expired refresh token" });
         }
 
         await SetRefreshTokenCookie(user);
+        var userDto = await user.ToDto(tokenService);
+        SetAccessTokenCookie(userDto.Token);
 
-        return await user.ToDto(tokenService);
+        return userDto;
+    }
+
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        // Delete cookies with matching options to ensure proper deletion
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict
+        };
+
+        Response.Cookies.Delete("accessToken", cookieOptions);
+        Response.Cookies.Delete("refreshToken", cookieOptions);
+        return Ok();
+    }
+
+    private void SetAccessTokenCookie(string token)
+    {
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTime.UtcNow.AddMinutes(30)
+        };
+
+        Response.Cookies.Append("accessToken", token, cookieOptions);
     }
 
     private async Task SetRefreshTokenCookie(User user)
