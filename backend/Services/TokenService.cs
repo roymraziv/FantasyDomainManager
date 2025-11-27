@@ -34,7 +34,7 @@ public class TokenService(IConfiguration config, UserManager<User> userManager) 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddMinutes(30),
+            Expires = DateTime.UtcNow.AddMinutes(30),
             SigningCredentials = creds
         };
 

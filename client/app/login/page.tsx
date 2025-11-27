@@ -23,13 +23,14 @@ export default function LoginPage() {
 
     try {
       // Call the login API
-      const user = await authApi.login({
+      const data = await authApi.login({
         email: formData.email,
         password: formData.password,
       });
 
-      // Store user data and token
-      login(user);
+      // Cookies are set automatically by browser
+      // Store user data and token expiry
+      login(data, data.tokenExpiry);
 
       // Redirect to domains page
       router.push('/domains');

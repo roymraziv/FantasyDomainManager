@@ -51,4 +51,23 @@ public class AdminController(UserManager<User> userManager, DomainDb context) : 
 
     return Ok(userList);
   }
+
+  [Authorize(Policy = "RequireAdminRole")]
+  [HttpDelete("users/{userId}")]
+  public async Task<ActionResult> DeleteUser(string userId)
+  {
+    var user = await userManager.FindByIdAsync(userId);
+    if (user == null) return NotFound("User not found");
+
+    // Delete all domains owned by this user (cascade delete)
+    var userDomains = await context.Domains.Where(d => d.UserId == userId).ToListAsync();
+    context.Domains.RemoveRange(userDomains);
+
+    // Delete the user
+    var result = await userManager.DeleteAsync(user);
+    if (!result.Succeeded) return BadRequest(result.Errors);
+
+    await context.SaveChangesAsync();
+    return NoContent();
+  }
 }

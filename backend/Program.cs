@@ -1,4 +1,5 @@
 using FantasyDomainManager.DbContexts;
+using FantasyDomainManager.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
@@ -20,9 +21,13 @@ var GetConnectionString = builder.Configuration.GetConnectionString("Domains") ?
 builder.Services.AddDbContext<DomainDb>(options =>
     options.UseSqlite(GetConnectionString));
 
+// Register configuration
+builder.Services.Configure<AdminSeedSettings>(builder.Configuration.GetSection("AdminSeed"));
+
 // Register services
 builder.Services.AddScoped<FinancialCalculationService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<DatabaseSeeder>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -33,6 +38,29 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(tokenKey)),
             ValidateIssuer = false,
             ValidateAudience = false
+        };
+
+        // Read JWT from cookie
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                // Check for token in cookie first
+                if (context.Request.Cookies.ContainsKey("accessToken"))
+                {
+                    context.Token = context.Request.Cookies["accessToken"];
+                }
+                // Fallback to Authorization header (for backwards compatibility)
+                else if (context.Request.Headers.ContainsKey("Authorization"))
+                {
+                    var authHeader = context.Request.Headers["Authorization"].ToString();
+                    if (authHeader.StartsWith("Bearer "))
+                    {
+                        context.Token = authHeader.Substring("Bearer ".Length).Trim();
+                    }
+                }
+                return Task.CompletedTask;
+            }
         };
     });
 
@@ -79,6 +107,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+// Seed database with admin user and roles
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+    await seeder.SeedAsync();
+}
 
 if (app.Environment.IsDevelopment())
 {
