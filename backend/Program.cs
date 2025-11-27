@@ -6,10 +6,12 @@ using FantasyDomainManager.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using FantasyDomainManager.Interfaces;
+using FantasyDomainManager.Models;
 using FantasyDomainManager.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,10 +24,10 @@ builder.Services.AddDbContext<DomainDb>(options =>
 builder.Services.AddScoped<FinancialCalculationService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(Options =>
+    .AddJwtBearer(options =>
     {
         var tokenKey = builder.Configuration["TokenKey"] ?? throw new Exception("Token key not found in configuration");
-        Options.TokenValidationParameters = new TokenValidationParameters
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(tokenKey)),
@@ -33,6 +35,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false
         };
     });
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
 
 // Add CORS policy
 builder.Services.AddCors(options =>
@@ -42,7 +47,8 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins("http://localhost:3000")
                   .WithHeaders("Content-Type", "Authorization")
-                  .WithMethods("GET", "POST", "PUT", "DELETE");
+                  .WithMethods("GET", "POST", "PUT", "DELETE")
+                  .AllowCredentials();
         });
 });
 
@@ -54,6 +60,12 @@ builder.Services.AddControllers()
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateDomainDtoValidator>();
+builder.Services.AddIdentityCore<User>(opt =>
+{
+    opt.User.RequireUniqueEmail = true;
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<DomainDb>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

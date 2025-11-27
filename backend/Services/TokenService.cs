@@ -1,16 +1,18 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using FantasyDomainManager.Interfaces;
 using FantasyDomainManager.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace FantasyDomainManager.Services;
 
-public class TokenService(IConfiguration config) : ITokenService
+public class TokenService(IConfiguration config, UserManager<User> userManager) : ITokenService
 {
-    public string CreateToken(User user)
+    public async Task<string> CreateToken(User user)
     {
         var tokenKey = config["TokenKey"] ?? throw new Exception("Token key not found in configuration");
         if (tokenKey.Length < 64) throw new Exception("Token key must be at least 64 characters long");
@@ -23,17 +25,27 @@ public class TokenService(IConfiguration config) : ITokenService
             new(ClaimTypes.NameIdentifier, user.Id)
         };
 
+        var roles = await userManager.GetRolesAsync(user);
+
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddDays(7),
+            Expires = DateTime.Now.AddMinutes(30),
             SigningCredentials = creds
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
+    }
+
+    public string GenerateRefreshToken()
+    {
+        var randomBytes = RandomNumberGenerator.GetBytes(64);
+        return Convert.ToBase64String(randomBytes);
     }
 }
