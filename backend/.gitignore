@@ -409,3 +409,16 @@ FodyWeavers.xsd
 .env
 .env.local
 .env.*.local
+
+# ASP.NET Core appsettings (keep base appsettings.json, ignore environment-specific)
+appsettings.Development.json
+appsettings.Production.json
+appsettings.*.json
+!appsettings.json
+
+# ASP.NET Core launch settings (contains local dev server configuration)
+Properties/launchSettings.json
+
+# User secrets (ASP.NET Core)
+secrets.json
+*.secrets.json
