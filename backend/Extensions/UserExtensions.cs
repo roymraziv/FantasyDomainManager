@@ -1,6 +1,4 @@
-using System;
 using FantasyDomainManager.DTOs;
-using FantasyDomainManager.DTOs.CreateDtos;
 using FantasyDomainManager.Interfaces;
 using FantasyDomainManager.Models;
 
@@ -14,7 +12,7 @@ public static class UserExtensions
         return new UserDto
         {
             Id = user.Id,
-            Email = user.Email,
+            Email = user.Email!,
             Name = $"{user.FirstName} {user.LastName}",
             Token = token,
             TokenExpiry = DateTime.UtcNow.AddMinutes(30)

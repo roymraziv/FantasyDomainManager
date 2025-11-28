@@ -10,6 +10,7 @@ import {
   User,
   LoginDto,
   RegisterDto,
+  UserWithRoles,
 } from '@/types/models';
 
 const API_BASE_URL = 'http://localhost:5223/api';
@@ -266,5 +267,28 @@ export const authApi = {
   logout: () =>
     fetchApi<void>('/account/logout', {
       method: 'POST',
+    }),
+};
+
+// ========== ADMIN API ==========
+// All admin endpoints require Admin role - enforced server-side
+
+export const adminApi = {
+  // Get all users with their roles
+  getUsersWithRoles: () =>
+    fetchApi<UserWithRoles[]>('/admin/users-with-roles', {
+      method: 'GET',
+    }),
+
+  // Edit user roles
+  editUserRoles: (userId: string, roles: string[]) =>
+    fetchApi<string[]>(`/admin/edit-roles/${userId}?roles=${roles.join(',')}`, {
+      method: 'POST',
+    }),
+
+  // Delete a user (admin only)
+  deleteUser: (userId: string) =>
+    fetchApi<void>(`/admin/users/${userId}`, {
+      method: 'DELETE',
     }),
 };

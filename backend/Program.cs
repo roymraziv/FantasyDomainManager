@@ -9,17 +9,16 @@ using FluentValidation.AspNetCore;
 using FantasyDomainManager.Interfaces;
 using FantasyDomainManager.Models;
 using FantasyDomainManager.Services;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var GetConnectionString = builder.Configuration.GetConnectionString("Domains") ?? "Data Source=domains.db";
+var getConnectionString = builder.Configuration.GetConnectionString("Domains") ?? "Data Source=domains.db";
 
 builder.Services.AddDbContext<DomainDb>(options =>
-    options.UseSqlite(GetConnectionString));
+    options.UseSqlite(getConnectionString));
 
 // Register configuration
 builder.Services.Configure<AdminSeedSettings>(builder.Configuration.GetSection("AdminSeed"));

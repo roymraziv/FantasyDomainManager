@@ -94,13 +94,13 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict
+            Secure = false, // Must match the Secure setting used when creating cookies
+            SameSite = SameSiteMode.Lax
         };
 
         Response.Cookies.Delete("accessToken", cookieOptions);
         Response.Cookies.Delete("refreshToken", cookieOptions);
-        return Ok();
+        return Ok("Logged out successfully");
     }
 
     private void SetAccessTokenCookie(string token)
@@ -108,8 +108,8 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
+            Secure = false, // Development: HTTP (set to true in production with HTTPS)
+            SameSite = SameSiteMode.Lax, // Lax works with Safari on different ports
             Expires = DateTime.UtcNow.AddMinutes(30)
         };
 
@@ -126,8 +126,8 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
+            Secure = false, // Development: HTTP (set to true in production with HTTPS)
+            SameSite = SameSiteMode.Lax, // Lax works with Safari on different ports
             Expires = DateTime.Now.AddDays(7)
         };
 
