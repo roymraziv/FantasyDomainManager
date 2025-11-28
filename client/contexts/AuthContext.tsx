@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { User } from '@/types/models';
 import { authApi } from '@/lib/api';
+import { extractRolesFromToken } from '@/lib/jwt';
 
 interface AuthContextType {
   user: User | null;
@@ -10,6 +11,7 @@ interface AuthContextType {
   login: (user: User, tokenExpiry: string) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  isAdmin: boolean;
   updateTokenExpiry: (expiry: string) => void;
 }
 
@@ -84,12 +86,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Validate that we received valid user data (not empty object from 204)
         if (data && data.id && data.email && data.name && data.tokenExpiry) {
+          const roles = extractRolesFromToken(data.token);
+          console.log('[AuthContext] User roles extracted from token:', roles);
           setUser({
             id: data.id,
             email: data.email,
             name: data.name,
             token: data.token,
             tokenExpiry: data.tokenExpiry,
+            roles,
           });
           setTokenExpiry(new Date(data.tokenExpiry));
         } else {
@@ -108,7 +113,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = (userData: User, tokenExpiryString: string) => {
-    setUser(userData);
+    const roles = extractRolesFromToken(userData.token);
+    console.log('[AuthContext] Login - User roles extracted from token:', roles);
+    setUser({ ...userData, roles });
     setTokenExpiry(new Date(tokenExpiryString));
   };
 
@@ -148,8 +155,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     login,
     logout,
     isAuthenticated: !!user,
+    isAdmin: !!user && (user.roles?.includes('Admin') || false),
     updateTokenExpiry,
   };
+
+  // Debug logging for admin status
+  useEffect(() => {
+    if (user) {
+      console.log('[AuthContext] User:', user.name);
+      console.log('[AuthContext] User roles:', user.roles);
+      console.log('[AuthContext] Is Admin:', !!user && (user.roles?.includes('Admin') || false));
+    }
+  }, [user]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

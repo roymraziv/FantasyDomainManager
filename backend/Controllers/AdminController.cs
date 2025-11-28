@@ -44,6 +44,7 @@ public class AdminController(UserManager<User> userManager, DomainDb context) : 
       {
         user.Id,
         user.Email,
+        Name = $"{user.FirstName} {user.LastName}",
         Roles = userRoles
       };
       userList.Add(userObj);

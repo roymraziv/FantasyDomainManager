@@ -1,13 +1,13 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { Castle, LogIn, User, Map } from 'lucide-react';
+import { Castle, LogIn, User, Map, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 
 export default function Header() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const router = useRouter();
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -58,6 +58,17 @@ export default function Header() {
               >
                 <Map className="h-4 w-4" />
                 <span className="hidden sm:inline">Domains</span>
+              </Link>
+            )}
+
+            {/* Admin Link - Only for admin users */}
+            {isAdmin && (
+              <Link
+                href="/admin/users"
+                className="flex items-center gap-2 px-4 py-2 text-amber-100 hover:text-amber-500 transition-colors font-semibold"
+              >
+                <Shield className="h-4 w-4" />
+                <span className="hidden sm:inline">Admin</span>
               </Link>
             )}
             {!isAuthenticated ? (

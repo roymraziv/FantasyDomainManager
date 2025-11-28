@@ -5,6 +5,15 @@ export interface User {
   name: string;
   token: string;
   tokenExpiry: string;
+  roles?: string[]; // User roles decoded from JWT
+}
+
+// Admin-specific types
+export interface UserWithRoles {
+  id: string;
+  email: string;
+  name: string;
+  roles: string[];
 }
 
 export interface LoginDto {
