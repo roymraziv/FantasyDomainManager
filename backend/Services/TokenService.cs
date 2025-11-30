@@ -34,7 +34,9 @@ public class TokenService(IConfiguration config, UserManager<User> userManager) 
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddMinutes(30),
-            SigningCredentials = creds
+            SigningCredentials = creds,
+            Issuer = "FantasyDomainManager",
+            Audience = "FantasyDomainManager.Client"
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
