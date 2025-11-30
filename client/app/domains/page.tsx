@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Plus, Castle } from 'lucide-react';
+import { Plus, Map } from 'lucide-react';
 import { Domain, CreateDomainDto } from '@/types/models';
 import { domainApi } from '@/lib/api';
 import DomainCard from '@/components/DomainCard';
@@ -47,6 +47,29 @@ export default function DomainsPage() {
 
     if (!formData.name || !formData.ruler) {
       setError('Name and Ruler are required');
+      return;
+    }
+
+    // Validate max lengths
+    if (formData.name.length > 100) {
+      setError('Name must not exceed 100 characters');
+      return;
+    }
+
+    if (formData.ruler.length > 100) {
+      setError('Ruler must not exceed 100 characters');
+      return;
+    }
+
+    if (formData.notes && formData.notes.length > 1000) {
+      setError('Notes must not exceed 1000 characters');
+      return;
+    }
+
+    // Validate population
+    const population = typeof formData.population === 'string' ? 0 : formData.population;
+    if (population <= 0) {
+      setError('Population must be greater than 0');
       return;
     }
 
@@ -150,9 +173,9 @@ export default function DomainsPage() {
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Castle className="text-amber-600" size={40} />
+            <Map className="text-amber-600" size={40} />
             <h1 className="text-4xl font-bold text-amber-100 tracking-wide">
-              Fantasy Domain Manager
+              My Domains
             </h1>
           </div>
           <button
@@ -171,7 +194,7 @@ export default function DomainsPage() {
           </div>
         ) : domains.length === 0 ? (
           <div className="text-center text-amber-200/60 py-20">
-            <Castle className="mx-auto mb-4 text-amber-700/30" size={64} />
+            <Map className="mx-auto mb-4 text-amber-700/30" size={64} />
             <p className="text-xl">No domains yet. Create your first domain to get started!</p>
           </div>
         ) : (
@@ -205,6 +228,7 @@ export default function DomainsPage() {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              maxLength={100}
               required
             />
           </div>
@@ -218,19 +242,20 @@ export default function DomainsPage() {
               value={formData.ruler}
               onChange={(e) => setFormData({ ...formData, ruler: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              maxLength={100}
               required
             />
           </div>
 
           <div>
             <label className="block text-amber-100 font-semibold mb-2">
-              Population
+              Population * 
             </label>
             <input
               type="number"
               min="0"
               value={formData.population}
-              onChange={(e) => setFormData({ ...formData, population: e.target.value === '' ? '' : parseInt(e.target.value) })}
+              onChange={(e) => setFormData({ ...formData, population: e.target.value === '' ? '' as const : parseInt(e.target.value) })}
               onWheel={(e) => e.currentTarget.blur()}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
             />
@@ -239,7 +264,7 @@ export default function DomainsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-amber-100 font-semibold mb-2">
-                Income (flat value)
+                Income (flat value) *
               </label>
               <input
                 type="number"
@@ -253,7 +278,7 @@ export default function DomainsPage() {
             </div>
             <div>
               <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Income Min (or range)
+                Income Min (or range) *
               </label>
               <input
                 type="number"
@@ -267,7 +292,7 @@ export default function DomainsPage() {
             </div>
             <div>
               <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Income Max
+                Income Max *
               </label>
               <input
                 type="number"
@@ -284,7 +309,7 @@ export default function DomainsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-amber-100 font-semibold mb-2">
-                Upkeep Cost (flat value)
+                Upkeep Cost (flat value) *
               </label>
               <input
                 type="number"
@@ -298,7 +323,7 @@ export default function DomainsPage() {
             </div>
             <div>
               <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Upkeep Min (or range)
+                Upkeep Min (or range) *
               </label>
               <input
                 type="number"
@@ -312,7 +337,7 @@ export default function DomainsPage() {
             </div>
             <div>
               <label className="block text-amber-100 font-semibold mb-2 text-sm">
-                Upkeep Max
+                Upkeep Max *
               </label>
               <input
                 type="number"
@@ -335,6 +360,7 @@ export default function DomainsPage() {
               onChange={(e) => setFormData({ ...formData, notes: e.target.value || null })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none min-h-[100px] resize-y"
               placeholder="Add any notes or descriptions..."
+              maxLength={1000}
             />
           </div>
 

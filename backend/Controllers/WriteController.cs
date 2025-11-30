@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using FantasyDomainManager.DTOs;
 using FantasyDomainManager.DTOs.CreateDtos;
@@ -8,11 +9,13 @@ using FantasyDomainManager.Extensions;
 using FantasyDomainManager.Models;
 using Microsoft.AspNetCore.Authorization;
 using FantasyDomainManager.DbContexts;
+using FantasyDomainManager.Services;
 
 namespace FantasyDomainManager.Controllers
 {
     [Authorize]
-    public class WriteController(DomainDb context) : BaseApiController(context)
+    [EnableRateLimiting("ApiPolicy")]
+    public class WriteController(DomainDb context, InputSanitizationService sanitizer) : BaseApiController(context)
     {
 
         // ========== DOMAIN ENDPOINTS ==========
@@ -22,6 +25,11 @@ namespace FantasyDomainManager.Controllers
         {
             var user = GetAuthenticatedUser(out var userError);
             if (userError != null) return userError;
+
+            // Sanitize inputs
+            dto.Name = sanitizer.StripHtml(dto.Name);
+            dto.Ruler = sanitizer.StripHtml(dto.Ruler);
+            dto.Notes = sanitizer.SanitizeHtml(dto.Notes);
 
             var domain = dto.ToDomain(user!);
 
@@ -44,8 +52,9 @@ namespace FantasyDomainManager.Controllers
                 return Forbid();
             }
 
-            existingDomain.Name = dto.Name;
-            existingDomain.Ruler = dto.Ruler;
+            // Sanitize inputs
+            existingDomain.Name = sanitizer.StripHtml(dto.Name);
+            existingDomain.Ruler = sanitizer.StripHtml(dto.Ruler);
             existingDomain.Population = dto.Population;
             existingDomain.UpkeepCost = dto.UpkeepCost;
             existingDomain.UpkeepCostLowerLimit = dto.UpkeepCostLowerLimit;
@@ -53,7 +62,7 @@ namespace FantasyDomainManager.Controllers
             existingDomain.Income = dto.Income;
             existingDomain.IncomeLowerLimit = dto.IncomeLowerLimit;
             existingDomain.IncomeUpperLimit = dto.IncomeUpperLimit;
-            existingDomain.Notes = dto.Notes;
+            existingDomain.Notes = sanitizer.SanitizeHtml(dto.Notes);
 
             context.SaveChanges();
             return Ok(existingDomain);
@@ -109,6 +118,12 @@ namespace FantasyDomainManager.Controllers
             var domain = GetAndValidateDomainOwnership(hero.DomainId, user!.Id, out var domainError);
             if (domainError != null) return domainError;
 
+            // Sanitize inputs
+            hero.Name = sanitizer.StripHtml(hero.Name);
+            hero.Class = sanitizer.StripHtml(hero.Class);
+            hero.Role = sanitizer.StripHtml(hero.Role);
+            hero.Notes = sanitizer.SanitizeHtml(hero.Notes);
+
             context.Heroes.Add(hero);
             context.SaveChanges();
             return CreatedAtAction(nameof(CreateHero), new { id = hero.Id }, hero);
@@ -126,12 +141,13 @@ namespace FantasyDomainManager.Controllers
             var domain = GetAndValidateDomainOwnership(dto.DomainId, user!.Id, out var domainError);
             if (domainError != null) return domainError;
 
-            existingHero!.Name = dto.Name;
-            existingHero.Class = dto.Class;
-            existingHero.Role = dto.Role;
+            // Sanitize inputs
+            existingHero!.Name = sanitizer.StripHtml(dto.Name);
+            existingHero.Class = sanitizer.StripHtml(dto.Class);
+            existingHero.Role = sanitizer.StripHtml(dto.Role);
             existingHero.Level = dto.Level;
             existingHero.Wage = dto.Wage;
-            existingHero.Notes = dto.Notes;
+            existingHero.Notes = sanitizer.SanitizeHtml(dto.Notes);
             existingHero.DomainId = dto.DomainId;
 
             context.SaveChanges();
@@ -166,6 +182,10 @@ namespace FantasyDomainManager.Controllers
             var domain = GetAndValidateDomainOwnership(enterprise.DomainId, user!.Id, out var domainError);
             if (domainError != null) return domainError;
 
+            // Sanitize inputs
+            enterprise.Name = sanitizer.StripHtml(enterprise.Name);
+            enterprise.Notes = sanitizer.SanitizeHtml(enterprise.Notes);
+
             context.Enterprises.Add(enterprise);
             context.SaveChanges();
             return CreatedAtAction(nameof(CreateEnterprise), new { id = enterprise.Id }, enterprise);
@@ -183,14 +203,15 @@ namespace FantasyDomainManager.Controllers
             var domain = GetAndValidateDomainOwnership(existingEnterprise!.DomainId, user!.Id, out var domainError);
             if (domainError != null) return domainError;
 
-            existingEnterprise.Name = dto.Name;
+            // Sanitize inputs
+            existingEnterprise.Name = sanitizer.StripHtml(dto.Name);
             existingEnterprise.Income = dto.Income;
             existingEnterprise.IncomeLowerLimit = dto.IncomeLowerLimit;
             existingEnterprise.IncomeUpperLimit = dto.IncomeUpperLimit;
             existingEnterprise.UpkeepCost = dto.UpkeepCost;
             existingEnterprise.UpkeepCostLowerLimit = dto.UpkeepCostLowerLimit;
             existingEnterprise.UpkeepCostUpperLimit = dto.UpkeepCostUpperLimit;
-            existingEnterprise.Notes = dto.Notes;
+            existingEnterprise.Notes = sanitizer.SanitizeHtml(dto.Notes);
             existingEnterprise.DomainId = dto.DomainId;
 
             context.SaveChanges();
@@ -225,6 +246,10 @@ namespace FantasyDomainManager.Controllers
             var domain = GetAndValidateDomainOwnership(troop!.DomainId, user!.Id, out var domainError);
             if (domainError != null) return domainError;
 
+            // Sanitize inputs
+            troop.Type = sanitizer.StripHtml(troop.Type);
+            troop.Notes = sanitizer.SanitizeHtml(troop.Notes);
+
             context.Troops.Add(troop);
             context.SaveChanges();
             return CreatedAtAction(nameof(CreateTroop), new { id = troop.Id }, troop);
@@ -242,10 +267,11 @@ namespace FantasyDomainManager.Controllers
             var domain = GetAndValidateDomainOwnership(existingTroop!.DomainId, user!.Id, out var domainError);
             if (domainError != null) return domainError;
 
-            existingTroop.Type = dto.Type;
+            // Sanitize inputs
+            existingTroop.Type = sanitizer.StripHtml(dto.Type);
             existingTroop.Quantity = dto.Quantity;
             existingTroop.Wage = dto.Wage;
-            existingTroop.Notes = dto.Notes;
+            existingTroop.Notes = sanitizer.SanitizeHtml(dto.Notes);
             existingTroop.DomainId = dto.DomainId;
 
             context.SaveChanges();

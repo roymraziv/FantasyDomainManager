@@ -23,6 +23,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
   const [formData, setFormData] = useState<Omit<CreateHeroDto, 'level' | 'wage'> & { level: number | '', wage: number | '' }>({
     name: '',
     role: '',
+    class: '',
     level: 1,
     wage: 0,
     notes: null,
@@ -52,21 +53,42 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
     e.preventDefault();
     setError('');
 
-    if (!formData.name || !formData.role) {
-      setError('Name and Role are required');
+    if (!formData.name || !formData.role || !formData.class) {
+      setError('Name, Role, and Class are required');
       return;
     }
 
-    const level = typeof formData.level === 'number' ? formData.level : 1;
-    const wage = typeof formData.wage === 'number' ? formData.wage : 0;
+    // Validate max lengths
+    if (formData.name.length > 100) {
+      setError('Name must not exceed 100 characters');
+      return;
+    }
 
-    if (level < 1) {
-      setError('Level must be at least 1');
+    if (formData.role.length > 100) {
+      setError('Role must not exceed 100 characters');
+      return;
+    }
+
+    if (formData.class.length > 50) {
+      setError('Class must not exceed 50 characters');
+      return;
+    }
+
+    if (formData.notes && formData.notes.length > 1000) {
+      setError('Notes must not exceed 1000 characters');
+      return;
+    }
+
+    const level = typeof formData.level === 'string' ? 1 : formData.level;
+    const wage = typeof formData.wage === 'string' ? 0 : formData.wage;
+
+    if (level <= 0) {
+      setError('Level must be greater than 0');
       return;
     }
 
     if (wage < 0) {
-      setError('Wage cannot be negative');
+      setError('Wage must be a positive value');
       return;
     }
 
@@ -89,21 +111,42 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
     e.preventDefault();
     setError('');
 
-    if (!selectedHero || !formData.name || !formData.role) {
-      setError('Name and Role are required');
+    if (!selectedHero || !formData.name || !formData.role || !formData.class) {
+      setError('Name, Role, and Class are required');
       return;
     }
 
-    const level = typeof formData.level === 'number' ? formData.level : 1;
-    const wage = typeof formData.wage === 'number' ? formData.wage : 0;
+    // Validate max lengths
+    if (formData.name.length > 100) {
+      setError('Name must not exceed 100 characters');
+      return;
+    }
 
-    if (level < 1) {
-      setError('Level must be at least 1');
+    if (formData.role.length > 100) {
+      setError('Role must not exceed 100 characters');
+      return;
+    }
+
+    if (formData.class.length > 50) {
+      setError('Class must not exceed 50 characters');
+      return;
+    }
+
+    if (formData.notes && formData.notes.length > 1000) {
+      setError('Notes must not exceed 1000 characters');
+      return;
+    }
+
+    const level = typeof formData.level === 'string' ? 1 : formData.level;
+    const wage = typeof formData.wage === 'string' ? 0 : formData.wage;
+
+    if (level <= 0) {
+      setError('Level must be greater than 0');
       return;
     }
 
     if (wage < 0) {
-      setError('Wage cannot be negative');
+      setError('Wage must be a positive value');
       return;
     }
 
@@ -141,6 +184,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
     setFormData({
       name: '',
       role: '',
+      class: '',
       level: 1,
       wage: 0,
       notes: null,
@@ -154,6 +198,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
     setFormData({
       name: hero.name,
       role: hero.role,
+      class: hero.class,
       level: hero.level,
       wage: hero.wage,
       notes: hero.notes,
@@ -224,6 +269,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              maxLength={100}
               required
             />
           </div>
@@ -235,6 +281,20 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
               value={formData.role}
               onChange={(e) => setFormData({ ...formData, role: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              maxLength={100}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-amber-100 font-semibold mb-2">Class *</label>
+            <input
+              type="text"
+              value={formData.class}
+              onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+              className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              placeholder="e.g., Fighter, Wizard, Rogue"
+              maxLength={50}
               required
             />
           </div>
@@ -272,6 +332,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
               onChange={(e) => setFormData({ ...formData, notes: e.target.value || null })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none min-h-[100px] resize-y"
               placeholder="Add any notes or descriptions..."
+              maxLength={1000}
             />
           </div>
 
@@ -305,6 +366,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              maxLength={100}
               required
             />
           </div>
@@ -316,6 +378,20 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
               value={formData.role}
               onChange={(e) => setFormData({ ...formData, role: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              maxLength={100}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-amber-100 font-semibold mb-2">Class *</label>
+            <input
+              type="text"
+              value={formData.class}
+              onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+              className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              placeholder="e.g., Fighter, Wizard, Rogue"
+              maxLength={50}
               required
             />
           </div>
@@ -353,6 +429,7 @@ export default function HeroSection({ domainId, initialHeroes = [] }: HeroSectio
               onChange={(e) => setFormData({ ...formData, notes: e.target.value || null })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none min-h-[100px] resize-y"
               placeholder="Add any notes or descriptions..."
+              maxLength={1000}
             />
           </div>
 

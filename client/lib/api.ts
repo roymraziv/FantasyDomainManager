@@ -10,14 +10,47 @@ import {
   User,
   LoginDto,
   RegisterDto,
+  UserWithRoles,
 } from '@/types/models';
 
 const API_BASE_URL = 'http://localhost:5223/api';
 
-// Helper function to get auth token
-function getAuthToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('auth_token');
+// Token refresh state management
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+function onRefreshed(token: string) {
+  refreshSubscribers.forEach(callback => callback(token));
+  refreshSubscribers = [];
+}
+
+function addRefreshSubscriber(callback: (token: string) => void) {
+  refreshSubscribers.push(callback);
+}
+
+// Refresh access token using refresh token cookie
+async function refreshAccessToken(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/account/refresh-token`, {
+      method: 'POST',
+      credentials: 'include', // Important: sends cookies
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      // Cookies are set automatically by browser
+      // Update context with new token expiry
+      if ((window as any).__authContext) {
+        (window as any).__authContext.updateTokenExpiry(data.tokenExpiry);
+      }
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    console.error('Token refresh failed:', error);
+    return false;
+  }
 }
 
 // Helper function for fetch requests
@@ -25,33 +58,76 @@ async function fetchApi<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
-  const token = getAuthToken();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options?.headers as Record<string, string>),
   };
 
-  // Add Authorization header if token exists
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+  // Remove manual Authorization header - cookies handle authentication now
+
+  try {
+    let response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers,
+      credentials: 'include', // Always include cookies
+    });
+
+    // Handle 401 - attempt token refresh (but not for auth endpoints)
+    const isAuthEndpoint = endpoint.includes('/account/login') ||
+                          endpoint.includes('/account/register') ||
+                          endpoint.includes('/refresh-token');
+
+    if (response.status === 401 && !isAuthEndpoint) {
+      if (!isRefreshing) {
+        isRefreshing = true;
+        const refreshSuccess = await refreshAccessToken();
+        isRefreshing = false;
+
+        if (refreshSuccess) {
+          onRefreshed('refreshed');
+          // Retry original request
+          response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            ...options,
+            headers,
+            credentials: 'include',
+          });
+        } else {
+          // Refresh failed - logout user
+          if ((window as any).__authContext) {
+            (window as any).__authContext.logout();
+          }
+          throw new Error('Session expired. Please login again.');
+        }
+      } else {
+        // Wait for ongoing refresh to complete
+        await new Promise<void>((resolve) => {
+          addRefreshSubscriber(() => resolve());
+        });
+        // Retry original request
+        response = await fetch(`${API_BASE_URL}${endpoint}`, {
+          ...options,
+          headers,
+          credentials: 'include',
+        });
+      }
+    }
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({
+        message: 'Request failed'
+      }));
+      throw new Error(error.message || `HTTP error! status: ${response.status}`);
+    }
+
+    // Handle 204 No Content responses
+    if (response.status === 204) {
+      return {} as T;
+    }
+
+    return response.json();
+  } catch (error) {
+    throw error;
   }
-
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers,
-    ...options,
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Request failed' }));
-    throw new Error(error.message || `HTTP error! status: ${response.status}`);
-  }
-
-  // Handle 204 No Content responses
-  if (response.status === 204) {
-    return {} as T;
-  }
-
-  return response.json();
 }
 
 // ========== DOMAIN API ==========
@@ -59,7 +135,7 @@ async function fetchApi<T>(
 export const domainApi = {
   getAll: () => fetchApi<Domain[]>('/Read/domains'),
 
-  getById: (id: number) => fetchApi<Domain>(`/Read/domains/${id}`),
+  getById: (id: string) => fetchApi<Domain>(`/Read/domains/${id}`),
 
   create: (domain: CreateDomainDto) =>
     fetchApi<Domain>('/Write/domains', {
@@ -67,15 +143,21 @@ export const domainApi = {
       body: JSON.stringify(domain),
     }),
 
-  update: (id: number, domain: Partial<Domain>) =>
+  update: (id: string, domain: Partial<Domain>) =>
     fetchApi<Domain>(`/Write/domains/${id}`, {
       method: 'PUT',
       body: JSON.stringify(domain),
     }),
 
-  delete: (id: number) =>
+  delete: (id: string) =>
     fetchApi<void>(`/Write/domains/${id}`, {
       method: 'DELETE',
+    }),
+
+  calculateFinancials: (id: string, months: number) =>
+    fetchApi<any>(`/Read/domains/${id}/calculate-financials`, {
+      method: 'POST',
+      body: JSON.stringify({ months }),
     }),
 };
 
@@ -84,7 +166,7 @@ export const domainApi = {
 export const heroApi = {
   getAll: () => fetchApi<Hero[]>('/Read/heroes'),
 
-  getById: (id: number) => fetchApi<Hero>(`/Read/heroes/${id}`),
+  getById: (id: string) => fetchApi<Hero>(`/Read/heroes/${id}`),
 
   getByDomainId: (domainId: string) => fetchApi<Hero[]>(`/Read/domains/${domainId}/heroes`),
 
@@ -94,13 +176,13 @@ export const heroApi = {
       body: JSON.stringify(hero),
     }),
 
-  update: (id: number, hero: Partial<Hero>) =>
+  update: (id: string, hero: Partial<Hero>) =>
     fetchApi<Hero>(`/Write/heroes/${id}`, {
       method: 'PUT',
       body: JSON.stringify(hero),
     }),
 
-  delete: (id: number) =>
+  delete: (id: string) =>
     fetchApi<void>(`/Write/heroes/${id}`, {
       method: 'DELETE',
     }),
@@ -111,7 +193,7 @@ export const heroApi = {
 export const enterpriseApi = {
   getAll: () => fetchApi<Enterprise[]>('/Read/enterprises'),
 
-  getById: (id: number) => fetchApi<Enterprise>(`/Read/enterprises/${id}`),
+  getById: (id: string) => fetchApi<Enterprise>(`/Read/enterprises/${id}`),
 
   getByDomainId: (domainId: string) =>
     fetchApi<Enterprise[]>(`/Read/domains/${domainId}/enterprises`),
@@ -122,13 +204,13 @@ export const enterpriseApi = {
       body: JSON.stringify(enterprise),
     }),
 
-  update: (id: number, enterprise: Partial<Enterprise>) =>
+  update: (id: string, enterprise: Partial<Enterprise>) =>
     fetchApi<Enterprise>(`/Write/enterprises/${id}`, {
       method: 'PUT',
       body: JSON.stringify(enterprise),
     }),
 
-  delete: (id: number) =>
+  delete: (id: string) =>
     fetchApi<void>(`/Write/enterprises/${id}`, {
       method: 'DELETE',
     }),
@@ -139,7 +221,7 @@ export const enterpriseApi = {
 export const troopApi = {
   getAll: () => fetchApi<Troop[]>('/Read/troops'),
 
-  getById: (id: number) => fetchApi<Troop>(`/Read/troops/${id}`),
+  getById: (id: string) => fetchApi<Troop>(`/Read/troops/${id}`),
 
   getByDomainId: (domainId: string) =>
     fetchApi<Troop[]>(`/Read/domains/${domainId}/troops`),
@@ -150,13 +232,13 @@ export const troopApi = {
       body: JSON.stringify(troop),
     }),
 
-  update: (id: number, troop: Partial<Troop>) =>
+  update: (id: string, troop: Partial<Troop>) =>
     fetchApi<Troop>(`/Write/troops/${id}`, {
       method: 'PUT',
       body: JSON.stringify(troop),
     }),
 
-  delete: (id: number) =>
+  delete: (id: string) =>
     fetchApi<void>(`/Write/troops/${id}`, {
       method: 'DELETE',
     }),
@@ -177,22 +259,36 @@ export const authApi = {
       body: JSON.stringify(data),
     }),
 
-  // Helper to store token in localStorage
-  storeToken: (token: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('auth_token', token);
-    }
-  },
+  refreshToken: () =>
+    fetchApi<User>('/account/refresh-token', {
+      method: 'POST',
+    }),
 
-  // Helper to remove token from localStorage
-  clearToken: () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('auth_token');
-    }
-  },
+  logout: () =>
+    fetchApi<void>('/account/logout', {
+      method: 'POST',
+    }),
+};
 
-  // Helper to check if user is authenticated
-  isAuthenticated: () => {
-    return getAuthToken() !== null;
-  },
+// ========== ADMIN API ==========
+// All admin endpoints require Admin role - enforced server-side
+
+export const adminApi = {
+  // Get all users with their roles
+  getUsersWithRoles: () =>
+    fetchApi<UserWithRoles[]>('/admin/users-with-roles', {
+      method: 'GET',
+    }),
+
+  // Edit user roles
+  editUserRoles: (userId: string, roles: string[]) =>
+    fetchApi<string[]>(`/admin/edit-roles/${userId}?roles=${roles.join(',')}`, {
+      method: 'POST',
+    }),
+
+  // Delete a user (admin only)
+  deleteUser: (userId: string) =>
+    fetchApi<void>(`/admin/users/${userId}`, {
+      method: 'DELETE',
+    }),
 };
