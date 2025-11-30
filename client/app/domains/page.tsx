@@ -102,11 +102,6 @@ export default function DomainsPage() {
     }
 
     // Validate negative numbers
-    const population = typeof formData.population === 'number' ? formData.population : 0;
-    if (population < 0) {
-      setError('Population cannot be negative');
-      return;
-    }
     if (formData.income != null && formData.income < 0) {
       setError('Income cannot be negative');
       return;
