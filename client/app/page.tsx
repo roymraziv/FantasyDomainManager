@@ -25,15 +25,8 @@ export default function LandingPage() {
           {/* CTA Buttons */}
           <div className="flex flex-wrap justify-center gap-4">
             <button
-              onClick={() => router.push('/domains')}
-              className="flex items-center gap-2 bg-amber-700 hover:bg-amber-600 text-amber-100 px-8 py-4 border-2 border-amber-900 font-bold text-lg transition-all hover:shadow-lg hover:shadow-amber-900/30"
-            >
-              <Map size={24} />
-              View My Domains
-            </button>
-            <button
               onClick={() => router.push('/register')}
-              className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-amber-100 px-8 py-4 border-2 border-amber-700/50 font-bold text-lg transition-all hover:border-amber-600"
+              className="flex items-center gap-2 bg-amber-700 hover:bg-amber-600 text-amber-100 px-8 py-4 border-2 border-amber-900 font-bold text-lg transition-all hover:shadow-lg hover:shadow-amber-900/30"
             >
               <Shield size={24} />
               Create Account
@@ -160,12 +153,6 @@ export default function LandingPage() {
               className="bg-amber-700 hover:bg-amber-600 text-amber-100 px-8 py-3 border-2 border-amber-900 font-bold text-lg transition-all hover:shadow-lg hover:shadow-amber-900/30"
             >
               Get Started Free
-            </button>
-            <button
-              onClick={() => router.push('/domains')}
-              className="border-2 border-amber-700/50 hover:bg-zinc-800 text-amber-100 px-8 py-3 font-bold text-lg transition-all hover:border-amber-600"
-            >
-              View Demo
             </button>
           </div>
         </div>

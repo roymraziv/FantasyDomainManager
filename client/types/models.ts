@@ -4,6 +4,16 @@ export interface User {
   email: string;
   name: string;
   token: string;
+  tokenExpiry: string;
+  roles?: string[]; // User roles decoded from JWT
+}
+
+// Admin-specific types
+export interface UserWithRoles {
+  id: string;
+  email: string;
+  name: string;
+  roles: string[];
 }
 
 export interface LoginDto {
@@ -19,7 +29,7 @@ export interface RegisterDto {
 }
 
 export interface Domain {
-  id: number;
+  id: string;
   name: string;
   ruler: string;
   population: number;
@@ -36,9 +46,10 @@ export interface Domain {
 }
 
 export interface Hero {
-  id: number;
+  id: string;
   name: string;
   role: string;
+  class: string;
   level: number;
   wage: number;
   notes?: string | null;
@@ -47,7 +58,7 @@ export interface Hero {
 }
 
 export interface Enterprise {
-  id: number;
+  id: string;
   name: string;
   income?: number | null;
   incomeLowerLimit?: number | null;
@@ -61,7 +72,7 @@ export interface Enterprise {
 }
 
 export interface Troop {
-  id: number;
+  id: string;
   type: string;
   quantity: number;
   wage: number;

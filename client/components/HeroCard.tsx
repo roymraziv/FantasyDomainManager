@@ -1,7 +1,7 @@
 'use client';
 
 import { Hero } from '@/types/models';
-import { User, Briefcase, TrendingUp, Coins, Edit, Trash2 } from 'lucide-react';
+import { User, Briefcase, Shield, TrendingUp, Coins, Edit, Trash2 } from 'lucide-react';
 
 interface HeroCardProps {
   hero: Hero;
@@ -39,6 +39,15 @@ export default function HeroCard({ hero, onEdit, onDelete }: HeroCardProps) {
               Role
             </p>
             <p className="text-amber-100 text-sm">{hero.role}</p>
+          </div>
+        </div>
+        <div className="flex items-start gap-2">
+          <Shield className="text-amber-600 flex-shrink-0 mt-0.5" size={16} />
+          <div>
+            <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold">
+              Class
+            </p>
+            <p className="text-amber-100 text-sm">{hero.class}</p>
           </div>
         </div>
         <div className="flex items-start gap-2">

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using FantasyDomainManager.Services;
 using FantasyDomainManager.DTOs;
@@ -9,6 +10,7 @@ using FantasyDomainManager.DbContexts;
 namespace FantasyDomainManager.Controllers
 {
     [Authorize]
+    [EnableRateLimiting("ApiPolicy")]
     public class ReadController(FinancialCalculationService financialService, DomainDb domainDb) : BaseApiController(domainDb)
     {
         // ========== DOMAIN ENDPOINTS ==========

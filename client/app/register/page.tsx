@@ -38,15 +38,16 @@ export default function RegisterPage() {
 
     try {
       // Call the register API
-      const user = await authApi.register({
+      const data = await authApi.register({
         email: formData.email,
         firstName: formData.firstName,
         lastName: formData.lastName,
         password: formData.password,
       });
 
-      // Store user data and token
-      login(user);
+      // Cookies are set automatically by browser
+      // Store user data and token expiry
+      login(data, data.tokenExpiry);
 
       // Redirect to domains page
       router.push('/domains');

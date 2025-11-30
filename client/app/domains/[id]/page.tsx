@@ -23,7 +23,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
   const loadDomain = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await domainApi.getById(parseInt(id));
+      const data = await domainApi.getById(id);
       setDomain(data);
       // Only set domain fields for formData, exclude collections
       const { ...domainFields } = data;
@@ -48,15 +48,37 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
       return;
     }
 
+    // Validate max lengths
+    if (formData.name.length > 100) {
+      setError('Name must not exceed 100 characters');
+      return;
+    }
+
+    if (formData.ruler.length > 100) {
+      setError('Ruler must not exceed 100 characters');
+      return;
+    }
+
+    if (formData.notes && formData.notes.length > 1000) {
+      setError('Notes must not exceed 1000 characters');
+      return;
+    }
+
+    // Validate population
+    if (formData.population !== undefined && formData.population <= 0) {
+      setError('Population must be greater than 0');
+      return;
+    }
+
     // Validate income: cannot have both flat value and range
-    if (formData.income !== null && (formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null)) {
-      setError('Cannot specify both a flat value and a range for income');
+    if (formData.income != null && (formData.incomeLowerLimit != null || formData.incomeUpperLimit != null)) {
+      setError('Income must be null when income lower limit and upper limit are provided');
       return;
     }
 
     // Validate upkeep: cannot have both flat value and range
-    if (formData.upkeepCost !== null && (formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null)) {
-      setError('Cannot specify both a flat value and a range for upkeep cost');
+    if (formData.upkeepCost != null && (formData.upkeepCostLowerLimit != null || formData.upkeepCostUpperLimit != null)) {
+      setError('Upkeep cost must be null when upkeep cost lower limit and upper limit are provided');
       return;
     }
 
@@ -77,38 +99,34 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
       }
     }
 
-    // Validate negative numbers
-    if (formData.population !== undefined && formData.population < 0) {
-      setError('Population cannot be negative');
+    // Validate positive values
+    if (formData.income != null && formData.income < 0) {
+      setError('Income must be a positive value');
       return;
     }
-    if (formData.income !== null && formData.income !== undefined && formData.income < 0) {
-      setError('Income cannot be negative');
+    if (formData.incomeLowerLimit != null && formData.incomeLowerLimit < 0) {
+      setError('Income lower limit must be a positive value');
       return;
     }
-    if (formData.incomeLowerLimit !== null && formData.incomeLowerLimit !== undefined && formData.incomeLowerLimit < 0) {
-      setError('Income minimum cannot be negative');
+    if (formData.incomeUpperLimit != null && formData.incomeUpperLimit < 0) {
+      setError('Income upper limit must be a positive value');
       return;
     }
-    if (formData.incomeUpperLimit !== null && formData.incomeUpperLimit !== undefined && formData.incomeUpperLimit < 0) {
-      setError('Income maximum cannot be negative');
+    if (formData.upkeepCost != null && formData.upkeepCost < 0) {
+      setError('Upkeep cost must be a positive value');
       return;
     }
-    if (formData.upkeepCost !== null && formData.upkeepCost !== undefined && formData.upkeepCost < 0) {
-      setError('Upkeep cost cannot be negative');
+    if (formData.upkeepCostLowerLimit != null && formData.upkeepCostLowerLimit < 0) {
+      setError('Upkeep cost lower limit must be a positive value');
       return;
     }
-    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostLowerLimit !== undefined && formData.upkeepCostLowerLimit < 0) {
-      setError('Upkeep minimum cannot be negative');
-      return;
-    }
-    if (formData.upkeepCostUpperLimit !== null && formData.upkeepCostUpperLimit !== undefined && formData.upkeepCostUpperLimit < 0) {
-      setError('Upkeep maximum cannot be negative');
+    if (formData.upkeepCostUpperLimit != null && formData.upkeepCostUpperLimit < 0) {
+      setError('Upkeep cost upper limit must be a positive value');
       return;
     }
 
     try {
-      await domainApi.update(parseInt(id), formData);
+      await domainApi.update(id, formData);
       setIsEditModalOpen(false);
       loadDomain();
     } catch (err) {
@@ -118,7 +136,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
 
   const handleDelete = async () => {
     try {
-      await domainApi.delete(parseInt(id));
+      await domainApi.delete(id);
       router.push('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete domain');
@@ -297,6 +315,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               value={formData.name || ''}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              maxLength={100}
               required
             />
           </div>
@@ -310,6 +329,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               value={formData.ruler || ''}
               onChange={(e) => setFormData({ ...formData, ruler: e.target.value })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none"
+              maxLength={100}
               required
             />
           </div>
@@ -339,7 +359,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 value={formData.income ?? ''}
                 onChange={(e) => setFormData({ ...formData, income: e.target.value === '' ? null : parseInt(e.target.value) })}
                 onWheel={(e) => e.currentTarget.blur()}
-                disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
+                disabled={formData.incomeLowerLimit != null || formData.incomeUpperLimit != null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -353,7 +373,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 value={formData.incomeLowerLimit ?? ''}
                 onChange={(e) => setFormData({ ...formData, incomeLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
                 onWheel={(e) => e.currentTarget.blur()}
-                disabled={formData.income !== null}
+                disabled={formData.income != null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -367,7 +387,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 value={formData.incomeUpperLimit ?? ''}
                 onChange={(e) => setFormData({ ...formData, incomeUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
                 onWheel={(e) => e.currentTarget.blur()}
-                disabled={formData.income !== null}
+                disabled={formData.income != null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -384,7 +404,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 value={formData.upkeepCost ?? ''}
                 onChange={(e) => setFormData({ ...formData, upkeepCost: e.target.value === '' ? null : parseInt(e.target.value) })}
                 onWheel={(e) => e.currentTarget.blur()}
-                disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
+                disabled={formData.upkeepCostLowerLimit != null || formData.upkeepCostUpperLimit != null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -398,7 +418,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 value={formData.upkeepCostLowerLimit ?? ''}
                 onChange={(e) => setFormData({ ...formData, upkeepCostLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
                 onWheel={(e) => e.currentTarget.blur()}
-                disabled={formData.upkeepCost !== null}
+                disabled={formData.upkeepCost != null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -412,7 +432,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 value={formData.upkeepCostUpperLimit ?? ''}
                 onChange={(e) => setFormData({ ...formData, upkeepCostUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
                 onWheel={(e) => e.currentTarget.blur()}
-                disabled={formData.upkeepCost !== null}
+                disabled={formData.upkeepCost != null}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -427,6 +447,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               onChange={(e) => setFormData({ ...formData, notes: e.target.value || null })}
               className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none min-h-[100px] resize-y"
               placeholder="Add any notes or descriptions..."
+              maxLength={1000}
             />
           </div>
 
