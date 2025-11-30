@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { use, useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Edit, Trash2, Crown, Users, Coins, TrendingDown } from 'lucide-react';
 import { Domain } from '@/types/models';
@@ -20,24 +20,24 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
   const [formData, setFormData] = useState<Partial<Domain>>({});
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    loadDomain();
-  }, [id]);
-
-  const loadDomain = async () => {
+  const loadDomain = useCallback(async () => {
     try {
       setLoading(true);
       const data = await domainApi.getById(parseInt(id));
       setDomain(data);
       // Only set domain fields for formData, exclude collections
-      const { heroes, troops, enterprises, ...domainFields } = data;
+      const { ...domainFields } = data;
       setFormData(domainFields);
     } catch (err) {
       console.error('Failed to load domain:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    loadDomain();
+  }, [loadDomain]);
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,14 +62,15 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
 
     // Validate income range: min must be less than max
     if (formData.incomeLowerLimit !== null && formData.incomeUpperLimit !== null) {
-      if (formData.incomeLowerLimit >= formData.incomeUpperLimit) {
+      if (formData.incomeLowerLimit !== undefined && formData.incomeUpperLimit !== undefined && formData.incomeLowerLimit >= formData.incomeUpperLimit) {
         setError('Income minimum must be less than income maximum');
         return;
       }
     }
 
     // Validate upkeep range: min must be less than max
-    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostUpperLimit !== null) {
+    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostLowerLimit !== undefined && 
+        formData.upkeepCostUpperLimit !== null && formData.upkeepCostUpperLimit !== undefined) {
       if (formData.upkeepCostLowerLimit >= formData.upkeepCostUpperLimit) {
         setError('Upkeep cost minimum must be less than upkeep cost maximum');
         return;
@@ -185,7 +186,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">
-                  <Crown className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <Crown className="text-amber-600 shrink-0 mt-1" size={20} />
                   <div>
                     <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
                       Ruler
@@ -195,7 +196,7 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Users className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <Users className="text-amber-600 shrink-0 mt-1" size={20} />
                   <div>
                     <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
                       Population
@@ -216,15 +217,16 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Upkeep (Left) */}
                 <div className="flex items-start gap-3">
-                  <TrendingDown className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <TrendingDown className="text-amber-600 shrink-0 mt-1" size={20} />
                   <div>
                     <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
                       Upkeep Cost
                     </p>
                     <p className="text-amber-100 font-medium">
-                      {domain.upkeepCost !== null
+                      {domain.upkeepCost !== null && domain.upkeepCost !== undefined
                         ? domain.upkeepCost.toLocaleString()
-                        : domain.upkeepCostLowerLimit !== null && domain.upkeepCostUpperLimit !== null
+                        : domain.upkeepCostLowerLimit !== null && domain.upkeepCostLowerLimit !== undefined && 
+                          domain.upkeepCostUpperLimit !== null && domain.upkeepCostUpperLimit !== undefined
                         ? `${domain.upkeepCostLowerLimit.toLocaleString()}-${domain.upkeepCostUpperLimit.toLocaleString()}`
                         : '-'}
                     </p>
@@ -233,15 +235,16 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
 
                 {/* Income (Right) */}
                 <div className="flex items-start gap-3">
-                  <Coins className="text-amber-600 flex-shrink-0 mt-1" size={20} />
+                  <Coins className="text-amber-600 shrink-0 mt-1" size={20} />
                   <div>
                     <p className="text-xs text-amber-200/60 uppercase tracking-wider font-semibold mb-1">
                       Income
                     </p>
                     <p className="text-amber-100 font-medium">
-                      {domain.income !== null
+                      {domain.income !== null && domain.income !== undefined
                         ? domain.income.toLocaleString()
-                        : domain.incomeLowerLimit !== null && domain.incomeUpperLimit !== null
+                        : domain.incomeLowerLimit !== null && domain.incomeLowerLimit !== undefined && 
+                          domain.incomeUpperLimit !== null && domain.incomeUpperLimit !== undefined
                         ? `${domain.incomeLowerLimit.toLocaleString()}-${domain.incomeUpperLimit.toLocaleString()}`
                         : '-'}
                     </p>
@@ -266,9 +269,9 @@ export default function DomainDetailPage({ params }: { params: Promise<{ id: str
 
         {/* Sections for Heroes, Troops, Enterprises */}
         <div className="space-y-6">
-          <HeroSection domainId={domain.id} initialHeroes={domain.heroes} />
-          <TroopSection domainId={domain.id} initialTroops={domain.troops} />
-          <EnterpriseSection domainId={domain.id} initialEnterprises={domain.enterprises} />
+          <HeroSection domainId={domain.id.toString()} initialHeroes={domain.heroes} />
+          <TroopSection domainId={domain.id.toString()} initialTroops={domain.troops} />
+          <EnterpriseSection domainId={domain.id.toString()} initialEnterprises={domain.enterprises} />
         </div>
       </div>
 
