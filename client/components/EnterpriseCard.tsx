@@ -32,7 +32,7 @@ export default function EnterpriseCard({ enterprise, onEdit, onDelete }: Enterpr
         </div>
       </div>
       <div className="px-4 py-4 space-y-3">
-        {(enterprise.income !== null || enterprise.incomeLowerLimit !== null || enterprise.incomeUpperLimit !== null) && (
+        {(enterprise.income != null || enterprise.incomeLowerLimit != null || enterprise.incomeUpperLimit != null) && (
           <div className="flex items-start gap-2">
             <Coins className="text-amber-600 flex-shrink-0 mt-0.5" size={16} />
             <div>
@@ -40,16 +40,16 @@ export default function EnterpriseCard({ enterprise, onEdit, onDelete }: Enterpr
                 Income
               </p>
               <p className="text-amber-100 text-sm">
-                {enterprise.income !== null
+                {enterprise.income != null
                   ? enterprise.income.toLocaleString()
-                  : enterprise.incomeLowerLimit !== null && enterprise.incomeUpperLimit !== null
+                  : enterprise.incomeLowerLimit != null && enterprise.incomeUpperLimit != null
                   ? `${enterprise.incomeLowerLimit.toLocaleString()}-${enterprise.incomeUpperLimit.toLocaleString()}`
                   : '-'}
               </p>
             </div>
           </div>
         )}
-        {(enterprise.upkeepCost !== null || enterprise.upkeepCostLowerLimit !== null || enterprise.upkeepCostUpperLimit !== null) && (
+        {(enterprise.upkeepCost != null || enterprise.upkeepCostLowerLimit != null || enterprise.upkeepCostUpperLimit != null) && (
           <div className="flex items-start gap-2">
             <TrendingDown className="text-amber-600 flex-shrink-0 mt-0.5" size={16} />
             <div>
@@ -57,9 +57,9 @@ export default function EnterpriseCard({ enterprise, onEdit, onDelete }: Enterpr
                 Upkeep Cost
               </p>
               <p className="text-amber-100 text-sm">
-                {enterprise.upkeepCost !== null
+                {enterprise.upkeepCost != null
                   ? enterprise.upkeepCost.toLocaleString()
-                  : enterprise.upkeepCostLowerLimit !== null && enterprise.upkeepCostUpperLimit !== null
+                  : enterprise.upkeepCostLowerLimit != null && enterprise.upkeepCostUpperLimit != null
                   ? `${enterprise.upkeepCostLowerLimit.toLocaleString()}-${enterprise.upkeepCostUpperLimit.toLocaleString()}`
                   : '-'}
               </p>

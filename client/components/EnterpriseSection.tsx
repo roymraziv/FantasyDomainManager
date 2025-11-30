@@ -61,19 +61,19 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
     }
 
     // Validate income: cannot have both flat value and range
-    if (formData.income !== null && (formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null)) {
+    if (formData.income != null && (formData.incomeLowerLimit != null || formData.incomeUpperLimit != null)) {
       setError('Cannot specify both a flat value and a range for income');
       return;
     }
 
     // Validate upkeep: cannot have both flat value and range
-    if (formData.upkeepCost !== null && (formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null)) {
+    if (formData.upkeepCost != null && (formData.upkeepCostLowerLimit != null || formData.upkeepCostUpperLimit != null)) {
       setError('Cannot specify both a flat value and a range for upkeep cost');
       return;
     }
 
     // Validate income range: min must be less than max
-    if (formData.incomeLowerLimit !== null && formData.incomeUpperLimit !== null) {
+    if (formData.incomeLowerLimit != null && formData.incomeUpperLimit != null) {
       if (formData.incomeLowerLimit >= formData.incomeUpperLimit) {
         setError('Income minimum must be less than income maximum');
         return;
@@ -81,7 +81,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
     }
 
     // Validate upkeep range: min must be less than max
-    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostUpperLimit !== null) {
+    if (formData.upkeepCostLowerLimit != null && formData.upkeepCostUpperLimit != null) {
       if (formData.upkeepCostLowerLimit >= formData.upkeepCostUpperLimit) {
         setError('Upkeep cost minimum must be less than upkeep cost maximum');
         return;
@@ -89,27 +89,27 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
     }
 
     // Validate negative numbers
-    if (formData.income !== null && formData.income < 0) {
+    if (formData.income != null && formData.income < 0) {
       setError('Income cannot be negative');
       return;
     }
-    if (formData.incomeLowerLimit !== null && formData.incomeLowerLimit < 0) {
+    if (formData.incomeLowerLimit != null && formData.incomeLowerLimit < 0) {
       setError('Income minimum cannot be negative');
       return;
     }
-    if (formData.incomeUpperLimit !== null && formData.incomeUpperLimit < 0) {
+    if (formData.incomeUpperLimit != null && formData.incomeUpperLimit < 0) {
       setError('Income maximum cannot be negative');
       return;
     }
-    if (formData.upkeepCost !== null && formData.upkeepCost < 0) {
+    if (formData.upkeepCost != null && formData.upkeepCost < 0) {
       setError('Upkeep cost cannot be negative');
       return;
     }
-    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostLowerLimit < 0) {
+    if (formData.upkeepCostLowerLimit != null && formData.upkeepCostLowerLimit < 0) {
       setError('Upkeep minimum cannot be negative');
       return;
     }
-    if (formData.upkeepCostUpperLimit !== null && formData.upkeepCostUpperLimit < 0) {
+    if (formData.upkeepCostUpperLimit != null && formData.upkeepCostUpperLimit < 0) {
       setError('Upkeep maximum cannot be negative');
       return;
     }
@@ -134,19 +134,19 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
     }
 
     // Validate income: cannot have both flat value and range
-    if (formData.income !== null && (formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null)) {
+    if (formData.income != null && (formData.incomeLowerLimit != null || formData.incomeUpperLimit != null)) {
       setError('Cannot specify both a flat value and a range for income');
       return;
     }
 
     // Validate upkeep: cannot have both flat value and range
-    if (formData.upkeepCost !== null && (formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null)) {
+    if (formData.upkeepCost != null && (formData.upkeepCostLowerLimit != null || formData.upkeepCostUpperLimit != null)) {
       setError('Cannot specify both a flat value and a range for upkeep cost');
       return;
     }
 
     // Validate income range: min must be less than max
-    if (formData.incomeLowerLimit !== null && formData.incomeUpperLimit !== null) {
+    if (formData.incomeLowerLimit != null && formData.incomeUpperLimit != null) {
       if (formData.incomeLowerLimit >= formData.incomeUpperLimit) {
         setError('Income minimum must be less than income maximum');
         return;
@@ -154,7 +154,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
     }
 
     // Validate upkeep range: min must be less than max
-    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostUpperLimit !== null) {
+    if (formData.upkeepCostLowerLimit != null && formData.upkeepCostUpperLimit != null) {
       if (formData.upkeepCostLowerLimit >= formData.upkeepCostUpperLimit) {
         setError('Upkeep cost minimum must be less than upkeep cost maximum');
         return;
@@ -162,27 +162,27 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
     }
 
     // Validate negative numbers
-    if (formData.income !== null && formData.income < 0) {
+    if (formData.income != null && formData.income < 0) {
       setError('Income cannot be negative');
       return;
     }
-    if (formData.incomeLowerLimit !== null && formData.incomeLowerLimit < 0) {
+    if (formData.incomeLowerLimit != null && formData.incomeLowerLimit < 0) {
       setError('Income minimum cannot be negative');
       return;
     }
-    if (formData.incomeUpperLimit !== null && formData.incomeUpperLimit < 0) {
+    if (formData.incomeUpperLimit != null && formData.incomeUpperLimit < 0) {
       setError('Income maximum cannot be negative');
       return;
     }
-    if (formData.upkeepCost !== null && formData.upkeepCost < 0) {
+    if (formData.upkeepCost != null && formData.upkeepCost < 0) {
       setError('Upkeep cost cannot be negative');
       return;
     }
-    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostLowerLimit < 0) {
+    if (formData.upkeepCostLowerLimit != null && formData.upkeepCostLowerLimit < 0) {
       setError('Upkeep minimum cannot be negative');
       return;
     }
-    if (formData.upkeepCostUpperLimit !== null && formData.upkeepCostUpperLimit < 0) {
+    if (formData.upkeepCostUpperLimit != null && formData.upkeepCostUpperLimit < 0) {
       setError('Upkeep maximum cannot be negative');
       return;
     }
@@ -320,7 +320,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 type="number"
                 value={formData.income ?? ''}
                 onChange={(e) => setFormData({ ...formData, income: e.target.value === '' ? null : parseInt(e.target.value) })}
-                disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
+                disabled={formData.incomeLowerLimit != null || formData.incomeUpperLimit != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -333,7 +333,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 onChange={(e) =>
                   setFormData({ ...formData, incomeLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
-                disabled={formData.income !== null}
+                disabled={formData.income != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -346,7 +346,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 onChange={(e) =>
                   setFormData({ ...formData, incomeUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
-                disabled={formData.income !== null}
+                disabled={formData.income != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -362,7 +362,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 onChange={(e) =>
                   setFormData({ ...formData, upkeepCost: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
-                disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
+                disabled={formData.upkeepCostLowerLimit != null || formData.upkeepCostUpperLimit != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -375,7 +375,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 onChange={(e) =>
                   setFormData({ ...formData, upkeepCostLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
-                disabled={formData.upkeepCost !== null}
+                disabled={formData.upkeepCost != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -388,7 +388,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 onChange={(e) =>
                   setFormData({ ...formData, upkeepCostUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
-                disabled={formData.upkeepCost !== null}
+                disabled={formData.upkeepCost != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -446,7 +446,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 type="number"
                 value={formData.income ?? ''}
                 onChange={(e) => setFormData({ ...formData, income: e.target.value === '' ? null : parseInt(e.target.value) })}
-                disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
+                disabled={formData.incomeLowerLimit != null || formData.incomeUpperLimit != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -459,7 +459,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 onChange={(e) =>
                   setFormData({ ...formData, incomeLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
-                disabled={formData.income !== null}
+                disabled={formData.income != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -472,7 +472,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 onChange={(e) =>
                   setFormData({ ...formData, incomeUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
-                disabled={formData.income !== null}
+                disabled={formData.income != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -488,7 +488,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 onChange={(e) =>
                   setFormData({ ...formData, upkeepCost: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
-                disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
+                disabled={formData.upkeepCostLowerLimit != null || formData.upkeepCostUpperLimit != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -501,7 +501,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 onChange={(e) =>
                   setFormData({ ...formData, upkeepCostLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
-                disabled={formData.upkeepCost !== null}
+                disabled={formData.upkeepCost != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -514,7 +514,7 @@ export default function EnterpriseSection({ domainId, initialEnterprises = [] }:
                 onChange={(e) =>
                   setFormData({ ...formData, upkeepCostUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })
                 }
-                disabled={formData.upkeepCost !== null}
+                disabled={formData.upkeepCost != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
