@@ -11,7 +11,7 @@ export default function DomainsPage() {
   const [domains, setDomains] = useState<Domain[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState<CreateDomainDto & { population: number | '' }>({
+  const [formData, setFormData] = useState<Omit<CreateDomainDto, 'population'> & { population: number | '' }>({
     name: '',
     ruler: '',
     population: 0,
@@ -51,19 +51,19 @@ export default function DomainsPage() {
     }
 
     // Validate income: cannot have both flat value and range
-    if (formData.income !== null && (formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null)) {
+    if (formData.income != null && (formData.incomeLowerLimit != null || formData.incomeUpperLimit != null)) {
       setError('Cannot specify both a flat value and a range for income');
       return;
     }
 
     // Validate upkeep: cannot have both flat value and range
-    if (formData.upkeepCost !== null && (formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null)) {
+    if (formData.upkeepCost != null && (formData.upkeepCostLowerLimit != null || formData.upkeepCostUpperLimit != null)) {
       setError('Cannot specify both a flat value and a range for upkeep cost');
       return;
     }
 
     // Validate income range: min must be less than max
-    if (formData.incomeLowerLimit !== null && formData.incomeUpperLimit !== null) {
+    if (formData.incomeLowerLimit != null && formData.incomeUpperLimit != null) {
       if (formData.incomeLowerLimit >= formData.incomeUpperLimit) {
         setError('Income minimum must be less than income maximum');
         return;
@@ -71,7 +71,7 @@ export default function DomainsPage() {
     }
 
     // Validate upkeep range: min must be less than max
-    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostUpperLimit !== null) {
+    if (formData.upkeepCostLowerLimit != null && formData.upkeepCostUpperLimit != null) {
       if (formData.upkeepCostLowerLimit >= formData.upkeepCostUpperLimit) {
         setError('Upkeep cost minimum must be less than upkeep cost maximum');
         return;
@@ -79,32 +79,32 @@ export default function DomainsPage() {
     }
 
     // Validate negative numbers
-    const population = formData.population === '' ? 0 : formData.population;
+    const population = typeof formData.population === 'number' ? formData.population : 0;
     if (population < 0) {
       setError('Population cannot be negative');
       return;
     }
-    if (formData.income !== null && formData.income < 0) {
+    if (formData.income != null && formData.income < 0) {
       setError('Income cannot be negative');
       return;
     }
-    if (formData.incomeLowerLimit !== null && formData.incomeLowerLimit < 0) {
+    if (formData.incomeLowerLimit != null && formData.incomeLowerLimit < 0) {
       setError('Income minimum cannot be negative');
       return;
     }
-    if (formData.incomeUpperLimit !== null && formData.incomeUpperLimit < 0) {
+    if (formData.incomeUpperLimit != null && formData.incomeUpperLimit < 0) {
       setError('Income maximum cannot be negative');
       return;
     }
-    if (formData.upkeepCost !== null && formData.upkeepCost < 0) {
+    if (formData.upkeepCost != null && formData.upkeepCost < 0) {
       setError('Upkeep cost cannot be negative');
       return;
     }
-    if (formData.upkeepCostLowerLimit !== null && formData.upkeepCostLowerLimit < 0) {
+    if (formData.upkeepCostLowerLimit != null && formData.upkeepCostLowerLimit < 0) {
       setError('Upkeep minimum cannot be negative');
       return;
     }
-    if (formData.upkeepCostUpperLimit !== null && formData.upkeepCostUpperLimit < 0) {
+    if (formData.upkeepCostUpperLimit != null && formData.upkeepCostUpperLimit < 0) {
       setError('Upkeep maximum cannot be negative');
       return;
     }
@@ -112,7 +112,7 @@ export default function DomainsPage() {
     try {
       const submitData = {
         ...formData,
-        population: formData.population === '' ? 0 : formData.population,
+        population: typeof formData.population === 'number' ? formData.population : 0,
       };
       await domainApi.create(submitData);
       setIsModalOpen(false);
@@ -246,7 +246,7 @@ export default function DomainsPage() {
                 min="0"
                 value={formData.income ?? ''}
                 onChange={(e) => setFormData({ ...formData, income: e.target.value === '' ? null : parseInt(e.target.value) })}
-                disabled={formData.incomeLowerLimit !== null || formData.incomeUpperLimit !== null}
+                disabled={formData.incomeLowerLimit != null || formData.incomeUpperLimit != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -260,7 +260,7 @@ export default function DomainsPage() {
                 min="0"
                 value={formData.incomeLowerLimit ?? ''}
                 onChange={(e) => setFormData({ ...formData, incomeLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
-                disabled={formData.income !== null}
+                disabled={formData.income != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -274,7 +274,7 @@ export default function DomainsPage() {
                 min="0"
                 value={formData.incomeUpperLimit ?? ''}
                 onChange={(e) => setFormData({ ...formData, incomeUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
-                disabled={formData.income !== null}
+                disabled={formData.income != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -291,7 +291,7 @@ export default function DomainsPage() {
                 min="0"
                 value={formData.upkeepCost ?? ''}
                 onChange={(e) => setFormData({ ...formData, upkeepCost: e.target.value === '' ? null : parseInt(e.target.value) })}
-                disabled={formData.upkeepCostLowerLimit !== null || formData.upkeepCostUpperLimit !== null}
+                disabled={formData.upkeepCostLowerLimit != null || formData.upkeepCostUpperLimit != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -305,7 +305,7 @@ export default function DomainsPage() {
                 min="0"
                 value={formData.upkeepCostLowerLimit ?? ''}
                 onChange={(e) => setFormData({ ...formData, upkeepCostLowerLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
-                disabled={formData.upkeepCost !== null}
+                disabled={formData.upkeepCost != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -319,7 +319,7 @@ export default function DomainsPage() {
                 min="0"
                 value={formData.upkeepCostUpperLimit ?? ''}
                 onChange={(e) => setFormData({ ...formData, upkeepCostUpperLimit: e.target.value === '' ? null : parseInt(e.target.value) })}
-                disabled={formData.upkeepCost !== null}
+                disabled={formData.upkeepCost != null}
                 onWheel={(e) => e.currentTarget.blur()}
                 className="w-full bg-zinc-800 border-2 border-amber-700/50 text-amber-100 px-4 py-2 focus:border-amber-600 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
