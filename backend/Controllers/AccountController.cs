@@ -3,20 +3,28 @@ using FantasyDomainManager.DTOs;
 using FantasyDomainManager.Extensions;
 using FantasyDomainManager.Interfaces;
 using FantasyDomainManager.Models;
+using FantasyDomainManager.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace FantasyDomainManager.Controllers;
 
-public class AccountController(ITokenService tokenService, UserManager<User> userManager, DomainDb context) : BaseApiController(context)
+public class AccountController(ITokenService tokenService, UserManager<User> userManager, DomainDb context, IHostEnvironment environment, InputSanitizationService sanitizer) : BaseApiController(context)
 {
+    private readonly IHostEnvironment _environment = environment;
 
     [HttpPost("register")]
+    [EnableRateLimiting("RegisterPolicy")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto dto)
     {
+        // Sanitize inputs
+        var sanitizedFirstName = sanitizer.StripHtml(dto.FirstName);
+        var sanitizedLastName = sanitizer.StripHtml(dto.LastName);
 
-        var user = new User { Email = dto.Email.ToLower(), UserName = dto.Email, FirstName = dto.FirstName, LastName = dto.LastName };
+        var user = new User { Email = dto.Email.ToLower(), UserName = dto.Email, FirstName = sanitizedFirstName, LastName = sanitizedLastName };
 
         var result = await userManager.CreateAsync(user, dto.Password);
 
@@ -39,6 +47,7 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting("LoginPolicy")]
     public async Task<ActionResult<UserDto>> Login(LoginDto dto)
     {
         var user = await userManager.FindByEmailAsync(dto.Email);
@@ -46,6 +55,11 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
         if (user == null)
         {
             return Unauthorized(new { message = "Invalid email or password" });
+        }
+
+        if (await userManager.IsLockedOutAsync(user))
+        {
+            return Unauthorized(new { message = "Account is temporarily locked due to multiple failed login attempts. Please try again later." });
         }
 
         var result = await userManager.CheckPasswordAsync(user, dto.Password);
@@ -88,13 +102,23 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
     }
 
     [HttpPost("logout")]
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout()
     {
+        // Invalidate refresh token in database if user is authenticated
+        var user = GetAuthenticatedUser(out var error);
+        if (user != null)
+        {
+            user.RefreshToken = null;
+            user.RefreshTokenExpiry = null;
+            await userManager.UpdateAsync(user);
+        }
+
         // Delete cookies with matching options to ensure proper deletion
+        // Always delete cookies even if user is not authenticated (defense in depth)
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = false, // Must match the Secure setting used when creating cookies
+            Secure = !_environment.IsDevelopment(), // Must match the Secure setting used when creating cookies
             SameSite = SameSiteMode.Lax
         };
 
@@ -108,7 +132,7 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = false, // Development: HTTP (set to true in production with HTTPS)
+            Secure = !_environment.IsDevelopment(), // Secure in production (HTTPS), false in development (HTTP)
             SameSite = SameSiteMode.Lax, // Lax works with Safari on different ports
             Expires = DateTime.UtcNow.AddMinutes(30)
         };
@@ -126,7 +150,7 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = false, // Development: HTTP (set to true in production with HTTPS)
+            Secure = !_environment.IsDevelopment(), // Secure in production (HTTPS), false in development (HTTP)
             SameSite = SameSiteMode.Lax, // Lax works with Safari on different ports
             Expires = DateTime.Now.AddDays(7)
         };

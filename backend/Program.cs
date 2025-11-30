@@ -12,6 +12,7 @@ using FantasyDomainManager.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Services.Configure<AdminSeedSettings>(builder.Configuration.GetSection("
 builder.Services.AddScoped<FinancialCalculationService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<DatabaseSeeder>();
+builder.Services.AddScoped<InputSanitizationService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -35,8 +37,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(tokenKey)),
-            ValidateIssuer = false,
-            ValidateAudience = false
+            ValidateIssuer = true,
+            ValidIssuer = "FantasyDomainManager",
+            ValidateAudience = true,
+            ValidAudience = "FantasyDomainManager.Client"
         };
 
         // Read JWT from cookie
@@ -90,6 +94,9 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateDomainDtoValidator>()
 builder.Services.AddIdentityCore<User>(opt =>
 {
     opt.User.RequireUniqueEmail = true;
+    opt.Lockout.MaxFailedAccessAttempts = 5;
+    opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+    opt.Lockout.AllowedForNewUsers = true;
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<DomainDb>();
@@ -103,6 +110,86 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API for managing fantasy domains and related entities.",
         Version = "v1"
     });
+});
+
+// Configure rate limiting
+builder.Services.AddRateLimiter(options =>
+{
+    // Login policy: 5 attempts per 15 minutes per IP
+    options.AddPolicy<string>("LoginPolicy", context =>
+    {
+        // Partition by IP address for login
+        var partitionKey = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetSlidingWindowLimiter(partitionKey, _ => new SlidingWindowRateLimiterOptions
+        {
+            PermitLimit = 5,
+            Window = TimeSpan.FromMinutes(15),
+            SegmentsPerWindow = 3,
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            QueueLimit = 0,
+            AutoReplenishment = true
+        });
+    });
+
+    // Register policy: 3 attempts per hour per IP
+    options.AddPolicy<string>("RegisterPolicy", context =>
+    {
+        // Partition by IP address for register
+        var partitionKey = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 3,
+            Window = TimeSpan.FromHours(1),
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            QueueLimit = 0,
+            AutoReplenishment = true
+        });
+    });
+
+    // API policy: 100 requests per minute per user/IP
+    options.AddPolicy<string>("ApiPolicy", context =>
+    {
+        // For authenticated users, use user ID; otherwise use IP address
+        string partitionKey;
+        var user = context.User;
+        if (user?.Identity != null && user.Identity.IsAuthenticated && user.Identity.Name != null)
+        {
+            partitionKey = user.Identity.Name;
+        }
+        else
+        {
+            partitionKey = context.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
+        }
+        return RateLimitPartition.GetSlidingWindowLimiter(partitionKey, _ => new SlidingWindowRateLimiterOptions
+        {
+            PermitLimit = 100,
+            Window = TimeSpan.FromMinutes(1),
+            SegmentsPerWindow = 4,
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            QueueLimit = 0,
+            AutoReplenishment = true
+        });
+    });
+
+    // Configure rejection response
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        
+        // Calculate retry after based on the rate limiter's retry after or default to 60 seconds
+        var retryAfter = 60;
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfterValue))
+        {
+            retryAfter = (int)retryAfterValue.TotalSeconds;
+        }
+        context.HttpContext.Response.Headers.RetryAfter = retryAfter.ToString();
+
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            message = "Too many requests. Please try again later.",
+            retryAfter
+        }, cancellationToken);
+    };
 });
 
 var app = builder.Build();
@@ -126,8 +213,35 @@ if (app.Environment.IsDevelopment())
 // Enforce HTTPS redirection
 app.UseHttpsRedirection();
 
+// Add HSTS (HTTP Strict Transport Security) headers in production
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
 // Enable CORS
 app.UseCors("AllowFrontend");
+
+// Add Content-Security-Policy headers
+app.Use(async (context, next) =>
+{
+    // Strict CSP policy: prevent inline scripts and only allow same-origin resources
+    context.Response.Headers.Append("Content-Security-Policy", 
+        "default-src 'self'; " +
+        "script-src 'self'; " +
+        "style-src 'self' 'unsafe-inline'; " +
+        "img-src 'self' data:; " +
+        "font-src 'self'; " +
+        "connect-src 'self'; " +
+        "frame-ancestors 'none'; " +
+        "base-uri 'self'; " +
+        "form-action 'self'");
+    
+    await next();
+});
+
+// Enable rate limiting
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
