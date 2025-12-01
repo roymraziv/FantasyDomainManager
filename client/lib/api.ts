@@ -13,7 +13,21 @@ import {
   UserWithRoles,
 } from '@/types/models';
 
-const API_BASE_URL = 'http://localhost:5223/api';
+// Determine API base URL based on environment
+const getApiBaseUrl = (): string => {
+  const environment = process.env.ENVIRONMENT?.toLowerCase();
+  const isProduction = environment === 'production';
+  
+  if (isProduction && process.env.API_ENDPOINT) {
+    // In production, use Beanstalk URL from Amplify environment variable
+    return `${process.env.API_ENDPOINT}/api`;
+  }
+  
+  // For non-production, use NEXT_PUBLIC_API_URL or fallback to localhost
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5223/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Token refresh state management
 let isRefreshing = false;
