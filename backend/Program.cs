@@ -18,8 +18,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 var getConnectionString = builder.Configuration.GetConnectionString("Domains") ?? "Data Source=domains.db";
 
+// Configure database provider based on connection string
 builder.Services.AddDbContext<DomainDb>(options =>
-    options.UseSqlite(getConnectionString));
+{
+    // Check if connection string is PostgreSQL format (contains "Host=")
+    if (getConnectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase))
+    {
+        // PostgreSQL connection
+        options.UseNpgsql(getConnectionString);
+    }
+    else
+    {
+        // SQLite connection (for development)
+        options.UseSqlite(getConnectionString);
+    }
+});
 
 // Register configuration
 builder.Services.Configure<AdminSeedSettings>(builder.Configuration.GetSection("AdminSeed"));
@@ -76,7 +89,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000")
+            // Get allowed origins from configuration or default to localhost
+            var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() 
+                ?? new[] { "http://localhost:3000" };
+            
+            policy.WithOrigins(allowedOrigins)
                   .WithHeaders("Content-Type", "Authorization")
                   .WithMethods("GET", "POST", "PUT", "DELETE")
                   .AllowCredentials();
