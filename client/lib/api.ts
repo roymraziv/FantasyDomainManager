@@ -15,12 +15,12 @@ import {
 
 // Determine API base URL based on environment
 const getApiBaseUrl = (): string => {
-  const environment = process.env.ENVIRONMENT?.toLowerCase();
+  const environment = process.env.NEXT_PUBLIC_ENVIRONMENT?.toLowerCase();
   const isProduction = environment === 'production';
   
-  if (isProduction && process.env.API_ENDPOINT) {
+  if (isProduction && process.env.NEXT_PUBLIC_API_ENDPOINT) {
     // In production, use Beanstalk URL from Amplify environment variable
-    return `${process.env.API_ENDPOINT}/api`;
+    return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api`;
   }
   
   // For non-production, use NEXT_PUBLIC_API_URL or fallback to localhost
