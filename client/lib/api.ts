@@ -30,7 +30,9 @@ const getApiBaseUrl = (): string => {
   
   if (isProduction && process.env.NEXT_PUBLIC_API_ENDPOINT) {
     // In production, use Beanstalk URL from Amplify environment variable
-    const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api`;
+    // Remove trailing slashes to prevent double slashes when appending /api
+    const baseUrl = process.env.NEXT_PUBLIC_API_ENDPOINT.replace(/\/+$/, '');
+    const url = `${baseUrl}/api`;
     console.log('Using production API endpoint:', url);
     return url;
   }
