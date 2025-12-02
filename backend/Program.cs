@@ -80,13 +80,37 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            // Get allowed origins from configuration or default to localhost
-            var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() 
-                ?? new[] { "http://localhost:3000" };
+            // Get allowed origins: check environment variable first, then appsettings, then default
+            string[]? allowedOrigins = null;
+            
+            // Check environment variable (supports both CORS__AllowedOrigins and CORS:AllowedOrigins formats)
+            var envOrigins = builder.Configuration["CORS:AllowedOrigins"] 
+                ?? builder.Configuration["CORS__AllowedOrigins"];
+            
+            if (!string.IsNullOrWhiteSpace(envOrigins))
+            {
+                // Parse comma-separated values from environment variable
+                allowedOrigins = envOrigins.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(origin => origin.Trim())
+                    .Where(origin => !string.IsNullOrWhiteSpace(origin))
+                    .ToArray();
+            }
+            
+            // Fall back to appsettings if environment variable not set
+            if (allowedOrigins == null || allowedOrigins.Length == 0)
+            {
+                allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+            }
+            
+            // Default to localhost if nothing is configured
+            if (allowedOrigins == null || allowedOrigins.Length == 0)
+            {
+                allowedOrigins = new[] { "http://localhost:3000" };
+            }
             
             policy.WithOrigins(allowedOrigins)
                   .WithHeaders("Content-Type", "Authorization")
-                  .WithMethods("GET", "POST", "PUT", "DELETE")
+                  .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                   .AllowCredentials();
         });
 });
