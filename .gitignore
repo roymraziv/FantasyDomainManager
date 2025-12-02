@@ -30,3 +30,7 @@ backend/appsettings.Development.json
 # Temporary files
 *.tmp
 *.temp
+
+# SQLite database files
+*.db
+backend/domains.db
