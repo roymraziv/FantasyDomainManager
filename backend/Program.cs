@@ -16,22 +16,13 @@ using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var getConnectionString = builder.Configuration.GetConnectionString("Domains") ?? "Data Source=domains.db";
+var getConnectionString = builder.Configuration.GetConnectionString("Domains") 
+    ?? throw new InvalidOperationException("Connection string 'Domains' is required. Please configure it in appsettings.json or environment variables.");
 
-// Configure database provider based on connection string
+// Configure database provider - PostgreSQL only
 builder.Services.AddDbContext<DomainDb>(options =>
 {
-    // Check if connection string is PostgreSQL format (contains "Host=")
-    if (getConnectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase))
-    {
-        // PostgreSQL connection
-        options.UseNpgsql(getConnectionString);
-    }
-    else
-    {
-        // SQLite connection (for development)
-        options.UseSqlite(getConnectionString);
-    }
+    options.UseNpgsql(getConnectionString);
 });
 
 // Register configuration
