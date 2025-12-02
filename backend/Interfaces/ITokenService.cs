@@ -1,4 +1,3 @@
-using System;
 using FantasyDomainManager.Models;
 
 namespace FantasyDomainManager.Interfaces;
