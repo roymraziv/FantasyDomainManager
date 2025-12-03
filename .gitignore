@@ -34,3 +34,6 @@ backend/appsettings.Development.json
 # SQLite database files
 *.db
 backend/domains.db
+
+# SST generated files and state
+.sst/
