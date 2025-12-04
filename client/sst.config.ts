@@ -1,5 +1,4 @@
 /// <reference path="./.sst/platform/config.d.ts" />
-import { Nextjs } from "sst/aws";
 
 export default $config({
   app(input: { stage?: string }) {
@@ -15,6 +14,7 @@ export default $config({
     };
   },
   async run() {
+    const { Nextjs } = await import("sst/aws");
     new Nextjs("Site", {
       path: ".",
       environment: {
