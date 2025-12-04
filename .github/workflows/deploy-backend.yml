@@ -45,8 +45,8 @@ jobs:
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v22
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID_BACKEND }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY_BACKEND }}
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: fantasy-domain-manager-api
           environment_name: fantasy-domain-manager-api-prod
           version_label: v${{ steps.timestamp.outputs.time }}-${{ github.sha }}
