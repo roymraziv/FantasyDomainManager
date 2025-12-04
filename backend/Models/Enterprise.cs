@@ -1,5 +1,3 @@
-using System;
-
 namespace FantasyDomainManager.Models;
 
 public class Enterprise
