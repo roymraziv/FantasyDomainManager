@@ -18,29 +18,23 @@ const getApiBaseUrl = (): string => {
   // Debug: Log all relevant environment variables
   console.log('=== API Configuration Debug ===');
   console.log('NEXT_PUBLIC_ENVIRONMENT:', process.env.NEXT_PUBLIC_ENVIRONMENT);
-  console.log('NEXT_PUBLIC_API_ENDPOINT:', process.env.NEXT_PUBLIC_API_ENDPOINT);
   console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
   console.log('All NEXT_PUBLIC_ env vars:', Object.keys(process.env).filter(key => key.startsWith('NEXT_PUBLIC_')));
   
-  const environment = process.env.NEXT_PUBLIC_ENVIRONMENT?.toLowerCase();
-  const isProduction = environment === 'production';
+  // Use NEXT_PUBLIC_API_URL if set, otherwise fallback to localhost
+  // If the URL doesn't end with /api, append it
+  let apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5223/api';
   
-  console.log('Processed environment (lowercase):', environment);
-  console.log('Is production?', isProduction);
+  // Remove trailing slashes to prevent double slashes
+  apiUrl = apiUrl.replace(/\/+$/, '');
   
-  if (isProduction && process.env.NEXT_PUBLIC_API_ENDPOINT) {
-    // In production, use Beanstalk URL from Amplify environment variable
-    // Remove trailing slashes to prevent double slashes when appending /api
-    const baseUrl = process.env.NEXT_PUBLIC_API_ENDPOINT.replace(/\/+$/, '');
-    const url = `${baseUrl}/api`;
-    console.log('Using production API endpoint:', url);
-    return url;
+  // If the URL doesn't already contain /api, append it
+  if (!apiUrl.endsWith('/api')) {
+    apiUrl = `${apiUrl}/api`;
   }
   
-  // For non-production, use NEXT_PUBLIC_API_URL or fallback to localhost
-  const fallbackUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5223/api';
-  console.log('Using fallback API URL:', fallbackUrl);
-  return fallbackUrl;
+  console.log('Final API_BASE_URL:', apiUrl);
+  return apiUrl;
 };
 
 const API_BASE_URL = getApiBaseUrl();

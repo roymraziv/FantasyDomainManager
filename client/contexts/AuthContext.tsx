@@ -21,7 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [tokenExpiry, setTokenExpiry] = useState<Date | null>(null);
-  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const refreshIntervalRef = useRef<number | null>(null);
   const lastActivityRef = useRef<Date>(new Date());
 
   // Track user activity
@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       // Set up new interval
-      refreshIntervalRef.current = setInterval(async () => {
+      refreshIntervalRef.current = window.setInterval(async () => {
         // Only refresh if user has been active in last 30 minutes
         const timeSinceActivity = Date.now() - lastActivityRef.current.getTime();
         const thirtyMinutes = 30 * 60 * 1000;
