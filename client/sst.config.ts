@@ -17,7 +17,7 @@ export default $config({
       new sst.aws.Nextjs("Site", {
         path: ".",
         environment: {
-          NEXT_PUBLIC_API_ENDPOINT: "https://api.fantasydomainmanager.com/",
+          NEXT_PUBLIC_API_URL: "https://api.fantasydomainmanager.com/",
           NEXT_PUBLIC_ENVIRONMENT: "Production",
         },
       });
