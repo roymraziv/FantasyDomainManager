@@ -1,7 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Castle, ArrowLeft, Shield, FileText, Scale } from 'lucide-react';
+import Link from 'next/link';
+import { Castle, ArrowLeft, Shield, FileText, Scale, User, PenTool, XCircle, AlertTriangle, AlertCircle, Edit, Mail } from 'lucide-react';
 
 export default function TermsOfServicePage() {
   const router = useRouter();
@@ -75,8 +76,11 @@ export default function TermsOfServicePage() {
 
             {/* User Accounts */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">3. User Accounts</h3>
-              <div className="text-amber-200/80 leading-relaxed space-y-3">
+              <div className="flex items-start gap-3 mb-3">
+                <User className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">3. User Accounts</h3>
+                  <div className="text-amber-200/80 leading-relaxed space-y-3">
                 <p>
                   When you create an account with us, you must provide accurate, complete, and current information.
                   Failure to do so constitutes a breach of the Terms.
@@ -88,21 +92,28 @@ export default function TermsOfServicePage() {
                 <p className="text-amber-100 font-semibold">
                   You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.
                 </p>
+                  </div>
+                </div>
               </div>
             </section>
 
             {/* User Content */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">4. User Content</h3>
-              <div className="text-amber-200/80 leading-relaxed space-y-3">
-                <p>
-                  You retain all rights to any content you submit, post, or display on or through the service.
-                  By submitting content, you grant us a worldwide, non-exclusive, royalty-free license to use,
-                  reproduce, and display such content solely for the purpose of providing the service.
-                </p>
-                <p>
-                  You are solely responsible for your content and the consequences of posting or publishing it.
-                </p>
+              <div className="flex items-start gap-3 mb-3">
+                <PenTool className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">4. User Content</h3>
+                  <div className="text-amber-200/80 leading-relaxed space-y-3">
+                    <p>
+                      You retain all rights to any content you submit, post, or display on or through the service.
+                      By submitting content, you grant us a worldwide, non-exclusive, royalty-free license to use,
+                      reproduce, and display such content solely for the purpose of providing the service.
+                    </p>
+                    <p>
+                      You are solely responsible for your content and the consequences of posting or publishing it.
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -128,78 +139,96 @@ export default function TermsOfServicePage() {
 
             {/* Termination */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">6. Termination</h3>
-              <div className="text-amber-200/80 leading-relaxed space-y-3">
-                <p>
-                  We may terminate or suspend your account immediately, without prior notice or liability, for any reason,
-                  including without limitation if you breach the Terms.
-                </p>
-                <p>
-                  Upon termination, your right to use the service will immediately cease. All provisions of the Terms which
-                  by their nature should survive termination shall survive.
-                </p>
+              <div className="flex items-start gap-3 mb-3">
+                <XCircle className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">6. Termination</h3>
+                  <div className="text-amber-200/80 leading-relaxed space-y-3">
+                    <p>
+                      We may terminate or suspend your account immediately, without prior notice or liability, for any reason,
+                      including without limitation if you breach the Terms.
+                    </p>
+                    <p>
+                      Upon termination, your right to use the service will immediately cease. All provisions of the Terms which
+                      by their nature should survive termination shall survive.
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
 
             {/* Disclaimer */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">7. Disclaimer</h3>
-              <div className="text-amber-200/80 leading-relaxed space-y-3">
-                <p className="uppercase font-semibold text-amber-100">
-                  The service is provided "AS IS" and "AS AVAILABLE" without warranties of any kind.
-                </p>
-                <p>
-                  We do not warrant that the service will be uninterrupted, secure, or error-free. We do not warrant
-                  the accuracy or reliability of any content obtained through the service.
-                </p>
+              <div className="flex items-start gap-3 mb-3">
+                <AlertTriangle className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">7. Disclaimer</h3>
+                  <div className="text-amber-200/80 leading-relaxed space-y-3">
+                    <p className="uppercase font-semibold text-amber-100">
+                      The service is provided "AS IS" and "AS AVAILABLE" without warranties of any kind.
+                    </p>
+                    <p>
+                      We do not warrant that the service will be uninterrupted, secure, or error-free. We do not warrant
+                      the accuracy or reliability of any content obtained through the service.
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
 
             {/* Limitation of Liability */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">8. Limitation of Liability</h3>
-              <div className="text-amber-200/80 leading-relaxed space-y-3">
-                <p>
-                  In no event shall Fantasy Domain Manager, its directors, employees, or agents be liable for any
-                  indirect, incidental, special, consequential, or punitive damages arising out of your use of the service.
-                </p>
+              <div className="flex items-start gap-3 mb-3">
+                <AlertCircle className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">8. Limitation of Liability</h3>
+                  <div className="text-amber-200/80 leading-relaxed space-y-3">
+                    <p>
+                      In no event shall Fantasy Domain Manager, its directors, employees, or agents be liable for any
+                      indirect, incidental, special, consequential, or punitive damages arising out of your use of the service.
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
 
             {/* Changes to Terms */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">9. Changes to Terms</h3>
-              <div className="text-amber-200/80 leading-relaxed space-y-3">
-                <p>
-                  We reserve the right to modify or replace these Terms at any time. If a revision is material, we will
-                  provide at least 30 days' notice prior to any new terms taking effect.
-                </p>
-                <p>
-                  By continuing to access or use our service after revisions become effective, you agree to be bound by
-                  the revised terms.
-                </p>
+              <div className="flex items-start gap-3 mb-3">
+                <Edit className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">9. Changes to Terms</h3>
+                  <div className="text-amber-200/80 leading-relaxed space-y-3">
+                    <p>
+                      We reserve the right to modify or replace these Terms at any time. If a revision is material, we will
+                      provide at least 30 days' notice prior to any new terms taking effect.
+                    </p>
+                    <p>
+                      By continuing to access or use our service after revisions become effective, you agree to be bound by
+                      the revised terms.
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
 
             {/* Contact */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">10. Contact Us</h3>
-              <p className="text-amber-200/80 leading-relaxed">
-                If you have any questions about these Terms, please contact us at:{' '}
-                <span className="text-amber-400 font-semibold">support@fantasydomainmanager.com</span>
-              </p>
+              <div className="flex items-start gap-3 mb-3">
+                <Mail className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">10. Contact Us</h3>
+                  <p className="text-amber-200/80 leading-relaxed">
+                    If you have any questions about these Terms, please{' '}
+                    <Link href="/contact" className="text-amber-400 hover:text-amber-300 font-semibold underline transition-colors">
+                      contact us
+                    </Link>
+                    .
+                  </p>
+                </div>
+              </div>
             </section>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-8 text-center">
-          <button
-            onClick={() => router.push('/register')}
-            className="text-amber-400 hover:text-amber-300 font-semibold transition-colors"
-          >
-            Return to Registration
-          </button>
         </div>
       </div>
     </div>

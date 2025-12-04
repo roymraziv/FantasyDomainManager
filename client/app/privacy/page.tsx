@@ -1,7 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Castle, ArrowLeft, Shield, Lock, Eye, Database, UserCheck } from 'lucide-react';
+import Link from 'next/link';
+import { Castle, ArrowLeft, Shield, Lock, Eye, Database, UserCheck, CheckCircle, Clock, Baby, Cookie, Edit, Mail } from 'lucide-react';
 
 export default function PrivacyPolicyPage() {
   const router = useRouter();
@@ -167,100 +168,126 @@ export default function PrivacyPolicyPage() {
 
             {/* Your Rights */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">6. Your Rights</h3>
-              <div className="text-amber-200/80 leading-relaxed space-y-3">
-                <p>You have the right to:</p>
-                <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li><span className="font-semibold text-amber-100">Access:</span> Request a copy of your personal data</li>
-                  <li><span className="font-semibold text-amber-100">Rectification:</span> Correct any inaccurate or incomplete data</li>
-                  <li><span className="font-semibold text-amber-100">Deletion:</span> Request deletion of your account and associated data</li>
-                  <li><span className="font-semibold text-amber-100">Data Portability:</span> Request your data in a portable format</li>
-                  <li><span className="font-semibold text-amber-100">Withdraw Consent:</span> Withdraw consent for data processing at any time</li>
-                </ul>
-                <p className="mt-3">
-                  To exercise these rights, please contact us at{' '}
-                  <span className="text-amber-400 font-semibold">privacy@fantasydomainmanager.com</span>
-                </p>
+              <div className="flex items-start gap-3 mb-3">
+                <CheckCircle className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">6. Your Rights</h3>
+                  <div className="text-amber-200/80 leading-relaxed space-y-3">
+                    <p>You have the right to:</p>
+                    <ul className="list-disc list-inside space-y-2 ml-4">
+                      <li><span className="font-semibold text-amber-100">Access:</span> Request a copy of your personal data</li>
+                      <li><span className="font-semibold text-amber-100">Rectification:</span> Correct any inaccurate or incomplete data</li>
+                      <li><span className="font-semibold text-amber-100">Deletion:</span> Request deletion of your account and associated data</li>
+                      <li><span className="font-semibold text-amber-100">Data Portability:</span> Request your data in a portable format</li>
+                      <li><span className="font-semibold text-amber-100">Withdraw Consent:</span> Withdraw consent for data processing at any time</li>
+                    </ul>
+                    <p className="mt-3">
+                      To exercise these rights, please{' '}
+                      <Link href="/contact" className="text-amber-400 hover:text-amber-300 font-semibold underline transition-colors">
+                        contact us
+                      </Link>
+                      .
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
 
             {/* Data Retention */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">7. Data Retention</h3>
-              <div className="text-amber-200/80 leading-relaxed space-y-3">
-                <p>
-                  We retain your personal information for as long as your account is active or as needed to provide you services.
-                </p>
-                <p>
-                  If you close your account, we will delete or anonymize your data within 90 days, unless we are required
-                  to retain it for legal or regulatory purposes.
-                </p>
+              <div className="flex items-start gap-3 mb-3">
+                <Clock className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">7. Data Retention</h3>
+                  <div className="text-amber-200/80 leading-relaxed space-y-3">
+                    <p>
+                      We retain your personal information for as long as your account is active or as needed to provide you services.
+                    </p>
+                    <p>
+                      If you close your account, we will delete or anonymize your data within 90 days, unless we are required
+                      to retain it for legal or regulatory purposes.
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
 
             {/* Children's Privacy */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">8. Children's Privacy</h3>
-              <div className="text-amber-200/80 leading-relaxed space-y-3">
-                <p>
-                  Our service is not intended for children under 13 years of age. We do not knowingly collect personal
-                  information from children under 13.
-                </p>
-                <p>
-                  If you are a parent or guardian and believe your child has provided us with personal information,
-                  please contact us immediately.
-                </p>
+              <div className="flex items-start gap-3 mb-3">
+                <Baby className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">8. Children's Privacy</h3>
+                  <div className="text-amber-200/80 leading-relaxed space-y-3">
+                    <p>
+                      Our service is not intended for children under 13 years of age. We do not knowingly collect personal
+                      information from children under 13.
+                    </p>
+                    <p>
+                      If you are a parent or guardian and believe your child has provided us with personal information,
+                      please contact us immediately.
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
 
             {/* Cookies */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">9. Cookies and Tracking</h3>
-              <div className="text-amber-200/80 leading-relaxed space-y-3">
-                <p>
-                  We use cookies and similar tracking technologies to track activity on our service and store certain information.
-                </p>
-                <p>
-                  You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
-                  However, some parts of our service may not function properly without cookies.
-                </p>
+              <div className="flex items-start gap-3 mb-3">
+                <Cookie className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">9. Cookies and Tracking</h3>
+                  <div className="text-amber-200/80 leading-relaxed space-y-3">
+                    <p>
+                      We use cookies and similar tracking technologies to track activity on our service and store certain information.
+                    </p>
+                    <p>
+                      You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
+                      However, some parts of our service may not function properly without cookies.
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
 
             {/* Changes to Privacy Policy */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">10. Changes to This Privacy Policy</h3>
-              <div className="text-amber-200/80 leading-relaxed space-y-3">
-                <p>
-                  We may update our Privacy Policy from time to time. We will notify you of any changes by posting the
-                  new Privacy Policy on this page and updating the "Last updated" date.
-                </p>
-                <p>
-                  You are advised to review this Privacy Policy periodically for any changes. Changes are effective when
-                  posted on this page.
-                </p>
+              <div className="flex items-start gap-3 mb-3">
+                <Edit className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">10. Changes to This Privacy Policy</h3>
+                  <div className="text-amber-200/80 leading-relaxed space-y-3">
+                    <p>
+                      We may update our Privacy Policy from time to time. We will notify you of any changes by posting the
+                      new Privacy Policy on this page and updating the "Last updated" date.
+                    </p>
+                    <p>
+                      You are advised to review this Privacy Policy periodically for any changes. Changes are effective when
+                      posted on this page.
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
 
             {/* Contact */}
             <section className="border-t-2 border-amber-700/30 pt-6">
-              <h3 className="text-xl font-bold text-amber-100 mb-3">11. Contact Us</h3>
-              <p className="text-amber-200/80 leading-relaxed">
-                If you have any questions about this Privacy Policy, please contact us at:{' '}
-                <span className="text-amber-400 font-semibold">privacy@fantasydomainmanager.com</span>
-              </p>
+              <div className="flex items-start gap-3 mb-3">
+                <Mail className="text-amber-600 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h3 className="text-xl font-bold text-amber-100 mb-2">11. Contact Us</h3>
+                  <p className="text-amber-200/80 leading-relaxed">
+                    If you have any questions about this Privacy Policy, please{' '}
+                    <Link href="/contact" className="text-amber-400 hover:text-amber-300 font-semibold underline transition-colors">
+                      contact us
+                    </Link>
+                    .
+                  </p>
+                </div>
+              </div>
             </section>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-8 text-center">
-          <button
-            onClick={() => router.push('/register')}
-            className="text-amber-400 hover:text-amber-300 font-semibold transition-colors"
-          >
-            Return to Registration
-          </button>
         </div>
       </div>
     </div>
