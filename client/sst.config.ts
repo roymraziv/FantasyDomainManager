@@ -1,4 +1,5 @@
 /// <reference path="./.sst/platform/config.d.ts" />
+import { Nextjs } from "sst/aws";
 
 export default $config({
   app(input: { stage?: string }) {
@@ -14,8 +15,7 @@ export default $config({
     };
   },
   async run() {
-    const sst = await import("sst");
-    new sst.aws.Nextjs("Site", {
+    new Nextjs("Site", {
       path: ".",
       environment: {
         NEXT_PUBLIC_API_ENDPOINT: "https://api.fantasydomainmanager.com/",
