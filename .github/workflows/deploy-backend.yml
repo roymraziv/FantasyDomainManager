@@ -1,0 +1,56 @@
+name: Deploy Backend to Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-backend.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Restore dependencies
+        working-directory: ./backend
+        run: dotnet restore
+      
+      - name: Build application
+        working-directory: ./backend
+        run: dotnet build --configuration Release --no-restore
+      
+      - name: Publish application
+        working-directory: ./backend
+        run: dotnet publish --configuration Release --no-build --output ./publish
+      
+      - name: Create deployment package
+        working-directory: ./backend/publish
+        run: zip -r ../deploy.zip .
+      
+      - name: Get timestamp
+        id: timestamp
+        run: echo "time=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+      
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID_BACKEND }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY_BACKEND }}
+          application_name: fantasy-domain-manager-api
+          environment_name: fantasy-domain-manager-api-prod
+          version_label: v${{ steps.timestamp.outputs.time }}-${{ github.sha }}
+          region: us-east-1
+          deployment_package: backend/deploy.zip
+          wait_for_environment_recovery: 300
+          wait_for_deployment: true
