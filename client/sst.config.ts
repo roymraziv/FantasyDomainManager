@@ -17,8 +17,8 @@ export default $config({
       new sst.aws.Nextjs("Site", {
         path: ".",
         domain: {
-            name: "fantasydomainmanager.com",  // Add this
-            dns: sst.aws.dns(),                 // Add this
+            name: "fantasydomainmanager.com",  
+            dns: sst.aws.dns(),                 
           },
         environment: {
           NEXT_PUBLIC_API_URL: "https://api.fantasydomainmanager.com/",

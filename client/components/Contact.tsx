@@ -20,7 +20,14 @@ export default function Contact() {
     }
 
     const formData = new FormData(form.current);
-    console.log('Form Data:', Object.fromEntries(formData.entries()));
+    const formEntries = Object.fromEntries(formData.entries());
+    
+    // Append "From FantasyDomainManager.com" to the name
+    if (formEntries.name) {
+      formEntries.name = `${formEntries.name} From FantasyDomainManager.com`;
+    }
+    
+    console.log('Form Data:', formEntries);
 
     try {
       const response = await fetch('https://sjh6tr29bk.execute-api.us-east-1.amazonaws.com/prod/contact', {
@@ -32,7 +39,7 @@ export default function Contact() {
         },
         body: JSON.stringify({
           clientId: 'client1',
-          ...Object.fromEntries(formData.entries()),
+          ...formEntries,
         }),
       });
 
@@ -64,7 +71,7 @@ export default function Contact() {
         <div className="bg-zinc-900 border-2 border-amber-700/50 p-8 text-center">
           <h3 className="text-2xl font-bold text-amber-100 mb-4">Thank You!</h3>
           <p className="text-amber-200/80 leading-relaxed">
-            Your message has been sent successfully. I'll get back to you soon!
+            Your message has been sent successfully. I&apos;ll get back to you soon!
           </p>
         </div>
       ) : (
