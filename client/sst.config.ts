@@ -16,6 +16,9 @@ export default $config({
     async run() {
       new sst.aws.Nextjs("Site", {
         path: ".",
+        server: {
+          runtime: "nodejs22.x",
+        },
         domain: {
             name: "fantasydomainmanager.com",  
             dns: sst.aws.dns(),                 
