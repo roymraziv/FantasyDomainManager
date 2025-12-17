@@ -33,6 +33,12 @@ builder.Services.AddScoped<FinancialCalculationService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<DatabaseSeeder>();
 builder.Services.AddScoped<InputSanitizationService>();
+
+// Email and verification services
+builder.Services.AddScoped<IEmailService, AwsSesEmailService>();
+builder.Services.AddScoped<ITokenGenerationService, TokenGenerationService>();
+builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
+builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -197,6 +203,48 @@ builder.Services.AddRateLimiter(options =>
             PermitLimit = 100,
             Window = TimeSpan.FromMinutes(1),
             SegmentsPerWindow = 4,
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            QueueLimit = 0,
+            AutoReplenishment = true
+        });
+    });
+
+    // Forgot password policy: 3 attempts per hour per IP
+    options.AddPolicy<string>("ForgotPasswordPolicy", context =>
+    {
+        var partitionKey = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 3,
+            Window = TimeSpan.FromHours(1),
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            QueueLimit = 0,
+            AutoReplenishment = true
+        });
+    });
+
+    // Reset password policy: 5 attempts per hour per IP
+    options.AddPolicy<string>("ResetPasswordPolicy", context =>
+    {
+        var partitionKey = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 5,
+            Window = TimeSpan.FromHours(1),
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            QueueLimit = 0,
+            AutoReplenishment = true
+        });
+    });
+
+    // Resend verification policy: 3 attempts per hour per IP
+    options.AddPolicy<string>("ResendVerificationPolicy", context =>
+    {
+        var partitionKey = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 3,
+            Window = TimeSpan.FromHours(1),
             QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
             QueueLimit = 0,
             AutoReplenishment = true
