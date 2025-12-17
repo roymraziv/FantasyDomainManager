@@ -15,12 +15,6 @@ import {
 
 // Determine API base URL based on environment
 const getApiBaseUrl = (): string => {
-  // Debug: Log all relevant environment variables
-  console.log('=== API Configuration Debug ===');
-  console.log('NEXT_PUBLIC_ENVIRONMENT:', process.env.NEXT_PUBLIC_ENVIRONMENT);
-  console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
-  console.log('All NEXT_PUBLIC_ env vars:', Object.keys(process.env).filter(key => key.startsWith('NEXT_PUBLIC_')));
-  
   // Use NEXT_PUBLIC_API_URL if set, otherwise fallback to localhost
   // If the URL doesn't end with /api, append it
   let apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5223/api';
@@ -33,12 +27,10 @@ const getApiBaseUrl = (): string => {
     apiUrl = `${apiUrl}/api`;
   }
   
-  console.log('Final API_BASE_URL:', apiUrl);
   return apiUrl;
 };
 
 const API_BASE_URL = getApiBaseUrl();
-console.log('Final API_BASE_URL:', API_BASE_URL);
 
 // Token refresh state management
 let isRefreshing = false;
