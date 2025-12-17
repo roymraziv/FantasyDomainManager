@@ -18,6 +18,8 @@ export default function RegisterPage() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [successEmail, setSuccessEmail] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,25 +40,55 @@ export default function RegisterPage() {
 
     try {
       // Call the register API
-      const data = await authApi.register({
+      const response = await authApi.register({
         email: formData.email,
         firstName: formData.firstName,
         lastName: formData.lastName,
         password: formData.password,
       });
 
-      // Cookies are set automatically by browser
-      // Store user data and token expiry
-      login(data, data.tokenExpiry);
-
-      // Redirect to domains page
-      router.push('/domains');
+      // Show success message instead of auto-login
+      setSuccess(true);
+      setSuccessEmail(formData.email);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+
+  if (success) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-8">
+        <div className="w-full max-w-md">
+          <div className="bg-zinc-900 border-2 border-amber-700/50">
+            <div className="border-b-2 border-amber-700/50 bg-zinc-950/50 px-6 py-4">
+              <h2 className="text-2xl font-bold text-amber-100">Check Your Email</h2>
+            </div>
+            <div className="px-6 py-8 text-center">
+              <Mail className="mx-auto h-12 w-12 text-amber-600 mb-4" />
+              <h2 className="text-2xl font-bold text-amber-100 mb-2">
+                Verification Email Sent
+              </h2>
+              <p className="text-amber-200/80 mb-6">
+                We've sent a verification email to <strong className="text-amber-400">{successEmail}</strong>.
+                Please click the link in the email to activate your account.
+              </p>
+              <p className="text-sm text-amber-200/50 mb-6">
+                Didn't receive an email? Check your spam folder.
+              </p>
+              <button
+                onClick={() => router.push('/login')}
+                className="w-full bg-amber-700 hover:bg-amber-600 text-amber-100 py-3 border-2 border-amber-900 font-bold text-lg transition-all"
+              >
+                Go to Login
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-8">

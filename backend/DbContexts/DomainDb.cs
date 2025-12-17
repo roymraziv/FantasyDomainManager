@@ -1,4 +1,3 @@
-using System;
 using FantasyDomainManager.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -12,10 +11,12 @@ public class DomainDb : IdentityDbContext<User>
     {
     }
 
-    public DbSet<Models.Domain> Domains { get; set; }
-    public DbSet<Models.Enterprise> Enterprises { get; set; }
-    public DbSet<Models.Hero> Heroes { get; set; }
-    public DbSet<Models.Troop> Troops { get; set; }
+    public DbSet<Domain> Domains { get; set; }
+    public DbSet<Enterprise> Enterprises { get; set; }
+    public DbSet<Hero> Heroes { get; set; }
+    public DbSet<Troop> Troops { get; set; }
+    public DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
+    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,23 +28,34 @@ public class DomainDb : IdentityDbContext<User>
                 new IdentityRole{Id = "admin-id", Name = "Admin", NormalizedName = "ADMIN"}
             );
 
-        // Index on User.Email for fast login lookups
-        modelBuilder.Entity<Models.User>()
+        modelBuilder.Entity<User>()
             .HasIndex(u => u.Email)
             .IsUnique();
 
-        // Index on Domain.UserId for filtering domains by user
-        modelBuilder.Entity<Models.Domain>()
+        modelBuilder.Entity<Domain>()
             .HasIndex(d => d.UserId);
 
-        // Indexes on foreign keys for better query performance
-        modelBuilder.Entity<Models.Enterprise>()
+        modelBuilder.Entity<Enterprise>()
             .HasIndex(e => e.DomainId);
 
-        modelBuilder.Entity<Models.Hero>()
+        modelBuilder.Entity<Hero>()
             .HasIndex(h => h.DomainId);
 
-        modelBuilder.Entity<Models.Troop>()
+        modelBuilder.Entity<Troop>()
             .HasIndex(t => t.DomainId);
+        
+        modelBuilder.Entity<EmailVerificationToken>(entity =>
+        {
+            entity.HasIndex(e => e.Token).IsUnique();
+            entity.HasIndex(e => new { e.UserId, e.CreatedAt });
+            entity.HasIndex(e => e.ExpiresAt);
+        });
+
+        modelBuilder.Entity<PasswordResetToken>(entity =>
+        {
+            entity.HasIndex(e => e.Token).IsUnique();
+            entity.HasIndex(e => new { e.UserId, e.CreatedAt });
+            entity.HasIndex(e => e.ExpiresAt);
+        });
     }
 }

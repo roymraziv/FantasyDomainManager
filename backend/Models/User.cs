@@ -10,4 +10,8 @@ public class User : IdentityUser
 
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiry { get; set; }
+
+    public DateTime? EmailConfirmedAt { get; set; }
+    public DateTime? PasswordResetRequestedAt { get; set; }
+    public int PasswordResetAttempts { get; set; } = 0;
 }

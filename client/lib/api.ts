@@ -279,7 +279,7 @@ export const authApi = {
     }),
 
   register: (data: RegisterDto) =>
-    fetchApi<User>('/account/register', {
+    fetchApi<{ message: string; email: string }>('/account/register', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
@@ -297,6 +297,98 @@ export const authApi = {
 
 // ========== ADMIN API ==========
 // All admin endpoints require Admin role - enforced server-side
+
+// Email Verification
+export async function verifyEmail(token: string): Promise<{ message: string }> {
+  const response = await fetch(`${API_BASE_URL}/account/verify-email`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ token }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Email verification failed');
+  }
+
+  return response.json();
+}
+
+export async function resendVerificationEmail(email: string): Promise<{ message: string }> {
+  const response = await fetch(`${API_BASE_URL}/account/resend-verification`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to resend verification email');
+  }
+
+  return response.json();
+}
+
+// Password Reset
+export async function forgotPassword(email: string): Promise<{ message: string }> {
+  const response = await fetch(`${API_BASE_URL}/account/forgot-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to send password reset email');
+  }
+
+  return response.json();
+}
+
+export async function resetPassword(
+  token: string,
+  newPassword: string,
+  confirmPassword: string
+): Promise<{ message: string }> {
+  const response = await fetch(`${API_BASE_URL}/account/reset-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ token, newPassword, confirmPassword }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Password reset failed');
+  }
+
+  return response.json();
+}
+
+export async function validateResetToken(token: string): Promise<{ message: string }> {
+  const response = await fetch(`${API_BASE_URL}/account/validate-reset-token?token=${encodeURIComponent(token)}`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Invalid token');
+  }
+
+  return response.json();
+}
 
 export const adminApi = {
   // Get all users with their roles

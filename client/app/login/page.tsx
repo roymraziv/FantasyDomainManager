@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Castle, Mail, Lock } from 'lucide-react';
 import { authApi } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
@@ -15,6 +16,18 @@ export default function LoginPage() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    const verified = searchParams.get('verified');
+    const reset = searchParams.get('reset');
+    
+    if (verified) {
+      setSuccessMessage('Email verified successfully! You can now log in.');
+    } else if (reset) {
+      setSuccessMessage('Password reset successfully! Please log in with your new password.');
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +48,19 @@ export default function LoginPage() {
       // Redirect to domains page
       router.push('/domains');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed. Please check your credentials.');
+      const errorMessage = err instanceof Error ? err.message : 'Login failed. Please check your credentials.';
+      
+      // Check if error response contains requiresVerification flag
+      try {
+        const errorObj = JSON.parse(errorMessage);
+        if (errorObj.requiresVerification) {
+          setError('Please verify your email address before logging in. Check your inbox for the verification email.');
+        } else {
+          setError(errorMessage);
+        }
+      } catch {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -63,6 +88,11 @@ export default function LoginPage() {
 
           <div className="px-6 py-6">
             <form onSubmit={handleSubmit} className="space-y-6">
+              {successMessage && (
+                <div className="bg-green-900/30 border-2 border-green-700 text-green-200 px-4 py-3">
+                  {successMessage}
+                </div>
+              )}
               {error && (
                 <div className="bg-red-900/30 border-2 border-red-700 text-red-200 px-4 py-3">
                   {error}
@@ -120,6 +150,7 @@ export default function LoginPage() {
                 </label>
                 <button
                   type="button"
+                  onClick={() => router.push('/forgot-password')}
                   className="text-amber-400 hover:text-amber-300 text-sm font-semibold transition-colors"
                 >
                   Forgot password?

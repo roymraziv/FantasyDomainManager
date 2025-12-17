@@ -8,23 +8,40 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace FantasyDomainManager.Controllers;
 
-public class AccountController(ITokenService tokenService, UserManager<User> userManager, DomainDb context, IHostEnvironment environment, InputSanitizationService sanitizer) : BaseApiController(context)
+public class AccountController(
+    ITokenService tokenService,
+    UserManager<User> userManager,
+    DomainDb context,
+    IHostEnvironment environment,
+    InputSanitizationService sanitizer,
+    IEmailVerificationService emailVerificationService,
+    IPasswordResetService passwordResetService,
+    IEmailService emailService,
+    IConfiguration configuration) : BaseApiController(context)
 {
     private readonly IHostEnvironment _environment = environment;
 
     [HttpPost("register")]
     [EnableRateLimiting("RegisterPolicy")]
-    public async Task<ActionResult<UserDto>> Register(RegisterDto dto)
+    public async Task<ActionResult> Register(RegisterDto dto)
     {
         // Sanitize inputs
         var sanitizedFirstName = sanitizer.StripHtml(dto.FirstName);
         var sanitizedLastName = sanitizer.StripHtml(dto.LastName);
 
-        var user = new User { Email = dto.Email.ToLower(), UserName = dto.Email, FirstName = sanitizedFirstName, LastName = sanitizedLastName };
+        var user = new User
+        {
+            Email = dto.Email.ToLower(),
+            UserName = dto.Email,
+            FirstName = sanitizedFirstName,
+            LastName = sanitizedLastName,
+            EmailConfirmed = false // Require email verification
+        };
 
         var result = await userManager.CreateAsync(user, dto.Password);
 
@@ -39,11 +56,19 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
             return BadRequest(roleResult.Errors);
         }
 
-        await SetRefreshTokenCookie(user);
-        var userDto = await user.ToDto(tokenService);
-        SetAccessTokenCookie(userDto.Token);
+        // Generate verification token and send email
+        var verificationToken = await emailVerificationService.GenerateVerificationTokenAsync(user.Id);
+        var baseUrl = configuration["Email:BaseUrl"] ?? "https://fantasydomainmanager.com";
+        var verificationLink = $"{baseUrl}/verify-email?token={verificationToken}";
 
-        return userDto;
+        await emailService.SendVerificationEmailAsync(user.Email!, user.FirstName, verificationLink);
+
+        // Return success message instead of auto-login
+        return Ok(new
+        {
+            message = "Registration successful. Please check your email to verify your account.",
+            email = user.Email
+        });
     }
 
     [HttpPost("login")]
@@ -60,6 +85,16 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
         if (await userManager.IsLockedOutAsync(user))
         {
             return Unauthorized(new { message = "Account is temporarily locked due to multiple failed login attempts. Please try again later." });
+        }
+
+        // Check if email is verified
+        if (!user.EmailConfirmed)
+        {
+            return Unauthorized(new
+            {
+                message = "Please verify your email address before logging in",
+                requiresVerification = true
+            });
         }
 
         var result = await userManager.CheckPasswordAsync(user, dto.Password);
@@ -156,5 +191,75 @@ public class AccountController(ITokenService tokenService, UserManager<User> use
         };
 
         Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+    }
+
+    [HttpPost("verify-email")]
+    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var result = await emailVerificationService.VerifyEmailAsync(dto.Token);
+
+        if (!result)
+            return BadRequest(new { message = "Invalid or expired verification token" });
+
+        return Ok(new { message = "Email verified successfully" });
+    }
+
+    [HttpPost("resend-verification")]
+    [EnableRateLimiting("ResendVerificationPolicy")]
+    public async Task<IActionResult> ResendVerification([FromBody] ResendVerificationDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var result = await emailVerificationService.ResendVerificationEmailAsync(dto.Email);
+
+        // Always return success to prevent email enumeration
+        return Ok(new { message = "If an account exists, a verification email has been sent" });
+    }
+
+    [HttpPost("forgot-password")]
+    [EnableRateLimiting("ForgotPasswordPolicy")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        var result = await passwordResetService.RequestPasswordResetAsync(dto.Email, ipAddress);
+
+        // Always return success to prevent email enumeration
+        return Ok(new { message = "If an account exists, a password reset email has been sent" });
+    }
+
+    [HttpPost("reset-password")]
+    [EnableRateLimiting("ResetPasswordPolicy")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var result = await passwordResetService.ResetPasswordAsync(dto.Token, dto.NewPassword);
+
+        if (!result)
+            return BadRequest(new { message = "Invalid or expired reset token" });
+
+        return Ok(new { message = "Password reset successfully. Please log in with your new password." });
+    }
+
+    [HttpGet("validate-reset-token")]
+    public async Task<IActionResult> ValidateResetToken([FromQuery] string token)
+    {
+        if (string.IsNullOrEmpty(token))
+            return BadRequest(new { message = "Token is required" });
+
+        var isValid = await passwordResetService.ValidateResetTokenAsync(token);
+
+        if (!isValid)
+            return BadRequest(new { message = "Invalid or expired token" });
+
+        return Ok(new { message = "Token is valid" });
     }
 }
