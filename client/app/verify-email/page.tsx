@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { verifyEmail, resendVerificationEmail } from '@/lib/api';
-import { CheckCircle, XCircle, Loader2, Mail } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2, Mail, Castle } from 'lucide-react';
 
 function VerifyEmailForm() {
   const searchParams = useSearchParams();
@@ -61,84 +61,116 @@ function VerifyEmailForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          {status === 'loading' && (
-            <>
-              <Loader2 className="mx-auto h-12 w-12 text-indigo-600 animate-spin" />
-              <h2 className="mt-6 text-3xl font-bold text-gray-900">
-                Verifying your email...
-              </h2>
-              <p className="mt-2 text-sm text-gray-600">
-                Please wait while we confirm your email address.
-              </p>
-            </>
-          )}
-
-          {status === 'success' && (
-            <>
-              <CheckCircle className="mx-auto h-12 w-12 text-green-600" />
-              <h2 className="mt-6 text-3xl font-bold text-gray-900">
-                Email Verified!
-              </h2>
-              <p className="mt-2 text-sm text-gray-600">{message}</p>
-              <p className="mt-4 text-sm text-gray-500">
-                Redirecting to login page...
-              </p>
-            </>
-          )}
-
-          {status === 'error' && (
-            <>
-              <XCircle className="mx-auto h-12 w-12 text-red-600" />
-              <h2 className="mt-6 text-3xl font-bold text-gray-900">
-                Verification Failed
-              </h2>
-              <p className="mt-2 text-sm text-gray-600">{message}</p>
-
-              <div className="mt-8 bg-gray-100 p-6 rounded-lg">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  <Mail className="inline mr-2 h-5 w-5" />
-                  Resend Verification Email
-                </h3>
-                <form onSubmit={handleResendEmail} className="space-y-4">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    required
-                  />
-                  <button
-                    type="submit"
-                    disabled={resending}
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {resending ? (
-                      <>
-                        <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
-                        Sending...
-                      </>
-                    ) : (
-                      'Resend Email'
-                    )}
-                  </button>
-                </form>
-              </div>
-
-              <div className="mt-6">
-                <button
-                  onClick={() => router.push('/login')}
-                  className="text-indigo-600 hover:text-indigo-500 text-sm font-medium"
-                >
-                  Back to Login
-                </button>
-              </div>
-            </>
-          )}
+    <div className="min-h-screen flex items-center justify-center p-8">
+      <div className="w-full max-w-md">
+        {/* Logo/Header */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <Castle className="text-amber-600" size={64} />
+          </div>
+          <h1 className="text-4xl font-bold text-amber-100 tracking-wide mb-2">
+            Fantasy Domain Manager
+          </h1>
+          <p className="text-amber-200/60">Email Verification</p>
         </div>
+
+        {/* Verification Card */}
+        <div className="bg-zinc-900 border-2 border-amber-700/50">
+          <div className="border-b-2 border-amber-700/50 bg-zinc-950/50 px-6 py-4">
+            <h2 className="text-2xl font-bold text-amber-100">
+              {status === 'loading' && 'Verifying Email'}
+              {status === 'success' && 'Email Verified'}
+              {status === 'error' && 'Verification Failed'}
+            </h2>
+          </div>
+
+          <div className="px-6 py-8 text-center">
+            {status === 'loading' && (
+              <>
+                <Loader2 className="mx-auto h-12 w-12 text-amber-600 animate-spin mb-4" />
+                <h2 className="text-2xl font-bold text-amber-100 mb-2">
+                  Verifying your email...
+                </h2>
+                <p className="text-amber-200/80">
+                  Please wait while we confirm your email address.
+                </p>
+              </>
+            )}
+
+            {status === 'success' && (
+              <>
+                <CheckCircle className="mx-auto h-12 w-12 text-green-600 mb-4" />
+                <h2 className="text-2xl font-bold text-amber-100 mb-2">
+                  Email Verified!
+                </h2>
+                <p className="text-amber-200/80 mb-4">{message}</p>
+                <p className="text-sm text-amber-200/50">
+                  Redirecting to login page...
+                </p>
+              </>
+            )}
+
+            {status === 'error' && (
+              <>
+                <XCircle className="mx-auto h-12 w-12 text-red-600 mb-4" />
+                <h2 className="text-2xl font-bold text-amber-100 mb-2">
+                  Verification Failed
+                </h2>
+                <p className="text-amber-200/80 mb-6">{message}</p>
+
+                <div className="mt-8 bg-zinc-800 border-2 border-amber-700/50 p-6">
+                  <h3 className="text-lg font-medium text-amber-100 mb-4 flex items-center justify-center">
+                    <Mail className="mr-2 h-5 w-5 text-amber-600" />
+                    Resend Verification Email
+                  </h3>
+                  <form onSubmit={handleResendEmail} className="space-y-4">
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Mail className="text-amber-600" size={20} />
+                      </div>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="your@email.com"
+                        className="w-full bg-zinc-900 border-2 border-amber-700/50 text-amber-100 pl-11 pr-4 py-3 focus:border-amber-600 focus:outline-none"
+                        required
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={resending}
+                      className="w-full bg-amber-700 hover:bg-amber-600 text-amber-100 py-3 border-2 border-amber-900 font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center"
+                    >
+                      {resending ? (
+                        <>
+                          <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
+                          Sending...
+                        </>
+                      ) : (
+                        'Resend Email'
+                      )}
+                    </button>
+                  </form>
+                </div>
+
+                <div className="mt-6">
+                  <button
+                    onClick={() => router.push('/login')}
+                    className="text-amber-400 hover:text-amber-300 font-semibold transition-colors text-sm"
+                  >
+                    Back to Login
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Footer Note */}
+        <p className="text-center text-amber-200/40 text-sm mt-6">
+          Secure email verification
+        </p>
       </div>
     </div>
   );
@@ -147,8 +179,8 @@ function VerifyEmailForm() {
 export default function VerifyEmailPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="h-12 w-12 text-indigo-600 animate-spin" />
+      <div className="min-h-screen flex items-center justify-center p-8">
+        <div className="text-amber-200/60">Loading...</div>
       </div>
     }>
       <VerifyEmailForm />
