@@ -34,6 +34,10 @@ jobs:
         working-directory: ./backend
         run: dotnet publish --configuration Release --no-build --output ./publish
       
+      - name: Copy .ebextensions to publish folder
+        working-directory: ./backend
+        run: cp -r .ebextensions ./publish/
+      
       - name: Create deployment package
         working-directory: ./backend/publish
         run: zip -r ../deploy.zip .
