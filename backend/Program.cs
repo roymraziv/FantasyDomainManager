@@ -278,7 +278,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DomainDb>();
-    db.Database.Migrate(); // This creates tables
+    db.Database.Migrate();
 }
 
 // Seed database with admin user and roles
