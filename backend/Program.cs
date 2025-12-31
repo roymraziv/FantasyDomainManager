@@ -274,6 +274,13 @@ builder.Services.AddRateLimiter(options =>
 
 var app = builder.Build();
 
+// Apply database migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DomainDb>();
+    db.Database.Migrate(); // This creates tables
+}
+
 // Seed database with admin user and roles
 using (var scope = app.Services.CreateScope())
 {
