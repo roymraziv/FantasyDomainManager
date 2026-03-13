@@ -163,8 +163,12 @@ resource "aws_api_gateway_deployment" "api" {
       aws_api_gateway_resource.proxy.id,
       aws_api_gateway_method.proxy.id,
       aws_api_gateway_method.proxy_root.id,
+      aws_api_gateway_method.options_proxy.id,
+      aws_api_gateway_method.options_root.id,
       aws_api_gateway_integration.lambda.id,
       aws_api_gateway_integration.lambda_root.id,
+      aws_api_gateway_integration.options_proxy.id,
+      aws_api_gateway_integration.options_root.id,
     ]))
   }
 
@@ -175,8 +179,12 @@ resource "aws_api_gateway_deployment" "api" {
   depends_on = [
     aws_api_gateway_method.proxy,
     aws_api_gateway_method.proxy_root,
+    aws_api_gateway_method.options_proxy,
+    aws_api_gateway_method.options_root,
     aws_api_gateway_integration.lambda,
     aws_api_gateway_integration.lambda_root,
+    aws_api_gateway_integration.options_proxy,
+    aws_api_gateway_integration.options_root,
   ]
 }
 
@@ -230,6 +238,107 @@ resource "aws_api_gateway_integration" "lambda_root" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.api.invoke_arn
+}
+
+# --- CORS: OPTIONS preflight handled by API Gateway (no Lambda) so preflight never 504s and always returns CORS headers ---
+
+resource "aws_api_gateway_method" "options_proxy" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.proxy.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "options_proxy" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.options_proxy.http_method
+
+  type = "MOCK"
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "options_proxy" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.options_proxy.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin"      = true
+    "method.response.header.Access-Control-Allow-Headers"    = true
+    "method.response.header.Access-Control-Allow-Methods"    = true
+    "method.response.header.Access-Control-Allow-Credentials" = true
+  }
+  response_models = {
+    "application/json" = "Empty"
+  }
+}
+
+resource "aws_api_gateway_integration_response" "options_proxy" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.options_proxy.http_method
+  status_code = aws_api_gateway_method_response.options_proxy.status_code
+
+  response_parameters = {
+    # Pass through request Origin (required when frontend uses credentials)
+    "method.response.header.Access-Control-Allow-Origin"      = "'method.request.header.Origin'"
+    "method.response.header.Access-Control-Allow-Headers"    = "'Content-Type,Authorization'"
+    "method.response.header.Access-Control-Allow-Methods"    = "'GET,POST,PUT,DELETE,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Credentials" = "'true'"
+  }
+}
+
+resource "aws_api_gateway_method" "options_root" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_rest_api.api.root_resource_id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "options_root" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_rest_api.api.root_resource_id
+  http_method = aws_api_gateway_method.options_root.http_method
+
+  type = "MOCK"
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "options_root" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_rest_api.api.root_resource_id
+  http_method = aws_api_gateway_method.options_root.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin"      = true
+    "method.response.header.Access-Control-Allow-Headers"    = true
+    "method.response.header.Access-Control-Allow-Methods"    = true
+    "method.response.header.Access-Control-Allow-Credentials" = true
+  }
+  response_models = {
+    "application/json" = "Empty"
+  }
+}
+
+resource "aws_api_gateway_integration_response" "options_root" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_rest_api.api.root_resource_id
+  http_method = aws_api_gateway_method.options_root.http_method
+  status_code = aws_api_gateway_method_response.options_root.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin"      = "'method.request.header.Origin'"
+    "method.response.header.Access-Control-Allow-Headers"    = "'Content-Type,Authorization'"
+    "method.response.header.Access-Control-Allow-Methods"    = "'GET,POST,PUT,DELETE,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Credentials" = "'true'"
+  }
 }
 
 # Lambda permission for API Gateway (required or Gateway returns 502/504 and Lambda never runs)
