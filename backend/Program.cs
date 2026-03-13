@@ -297,8 +297,15 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// Enforce HTTPS redirection
-app.UseHttpsRedirection();
+// Enforce HTTPS redirection (skip in Lambda - API Gateway handles HTTPS)
+if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("AWS_LAMBDA_FUNCTION_NAME")))
+{
+    // Running in Lambda - API Gateway handles HTTPS
+}
+else
+{
+    app.UseHttpsRedirection();
+}
 
 // Add HSTS (HTTP Strict Transport Security) headers in production
 if (!app.Environment.IsDevelopment())

@@ -1,11 +1,13 @@
-name: Deploy Backend to Elastic Beanstalk
+name: Deploy Backend to Lambda
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
     paths:
       - 'backend/**'
+      - 'terraform/**'
       - '.github/workflows/deploy-backend.yml'
 
 jobs:
@@ -26,35 +28,56 @@ jobs:
         working-directory: ./backend
         run: dotnet restore
       
-      - name: Build application
+      - name: Build and publish application
         working-directory: ./backend
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet publish --configuration Release --output ./publish --self-contained false
       
-      - name: Publish application
-        working-directory: ./backend
-        run: dotnet publish --configuration Release --no-build --output ./publish
-      
-      - name: Copy .ebextensions to publish folder
-        working-directory: ./backend
-        run: cp -r .ebextensions ./publish/
-      
-      - name: Create deployment package
+      - name: Create Lambda deployment package
         working-directory: ./backend/publish
-        run: zip -r ../deploy.zip .
+        run: zip -r ./lambda-package.zip . -x "lambda-package.zip"
       
-      - name: Get timestamp
-        id: timestamp
-        run: echo "time=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
-      
-      - name: Deploy to Elastic Beanstalk
-        uses: einaregilsson/beanstalk-deploy@v22
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: fantasy-domain-manager-api
-          environment_name: fantasy-domain-manager-api-prod
-          version_label: v${{ steps.timestamp.outputs.time }}-${{ github.sha }}
-          region: us-east-1
-          deployment_package: backend/deploy.zip
-          wait_for_environment_recovery: 300
-          wait_for_deployment: true
+          terraform_version: "1.6.0"
+      
+      - name: Terraform Init
+        working-directory: ./terraform
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ secrets.TF_STATE_KEY }}" \
+            -backend-config="region=${{ secrets.TF_STATE_REGION }}" \
+            -backend-config="dynamodb_table=${{ secrets.TF_STATE_LOCK_TABLE }}" \
+            -backend-config="encrypt=true"
+      
+      - name: Terraform Plan
+        working-directory: ./terraform
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_database_connection_string: ${{ secrets.DATABASE_CONNECTION_STRING }}
+          TF_VAR_token_key: ${{ secrets.TOKEN_KEY }}
+          TF_VAR_api_domain: ${{ secrets.API_DOMAIN }}
+          TF_VAR_cors_allowed_origins: ${{ secrets.CORS_ALLOWED_ORIGINS }}
+          TF_VAR_aws_ses_sender_email: ${{ secrets.AWS_SES_SENDER_EMAIL }}
+          TF_VAR_email_base_url: ${{ secrets.EMAIL_BASE_URL }}
+          TF_VAR_admin_seed_password: ${{ secrets.ADMIN_SEED_PASSWORD }}
+        run: terraform plan -out=tfplan
+      
+      - name: Terraform Apply
+        working-directory: ./terraform
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_database_connection_string: ${{ secrets.DATABASE_CONNECTION_STRING }}
+          TF_VAR_token_key: ${{ secrets.TOKEN_KEY }}
+          TF_VAR_api_domain: ${{ secrets.API_DOMAIN }}
+          TF_VAR_cors_allowed_origins: ${{ secrets.CORS_ALLOWED_ORIGINS }}
+          TF_VAR_aws_ses_sender_email: ${{ secrets.AWS_SES_SENDER_EMAIL }}
+          TF_VAR_email_base_url: ${{ secrets.EMAIL_BASE_URL }}
+          TF_VAR_admin_seed_password: ${{ secrets.ADMIN_SEED_PASSWORD }}
+        run: terraform apply -auto-approve tfplan

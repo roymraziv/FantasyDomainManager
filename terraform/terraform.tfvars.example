@@ -1,0 +1,40 @@
+# Copy this file to terraform.tfvars and fill in your values
+# terraform.tfvars is in .gitignore and should not be committed
+
+aws_region = "us-east-1"
+project_name = "fantasy-domain-manager"
+api_domain = "api.fantasydomainmanager.com"
+api_stage_name = "prod"
+environment = "Production"
+
+# Database connection string (Neon PostgreSQL)
+database_connection_string = "Host=your-neon-host.neon.tech;Database=your-database;Username=your-username;Password=your-password;SSL Mode=Require"
+
+# JWT token key (must be at least 64 characters)
+token_key = "YourSuperSecretProductionTokenKeyThatMustBeAtLeast64CharactersLongForJWTTokenSigning1234567890"
+
+# CORS allowed origins (comma-separated in actual tfvars, but list format here)
+cors_allowed_origins = [
+  "https://fantasydomainmanager.com",
+  "https://www.fantasydomainmanager.com"
+]
+
+# AWS SES configuration
+aws_ses_region = "us-east-1"
+aws_ses_sender_email = "noreply@fantasydomainmanager.com"
+aws_ses_sender_name = "Fantasy Domain Manager"
+
+# Email configuration
+email_base_url = "https://fantasydomainmanager.com"
+email_verification_token_expiry_minutes = "1440"
+email_reset_token_expiry_minutes = "60"
+
+# Admin seed configuration
+admin_seed_email = "admin@fantasydomainmanager.com"
+admin_seed_first_name = "Admin"
+admin_seed_last_name = "User"
+admin_seed_password = "ChangeThisPassword123!"
+
+# Logging
+log_retention_days = 7
+

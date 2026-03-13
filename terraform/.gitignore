@@ -1,0 +1,15 @@
+# Terraform files
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+*.tfvars.backup
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Lambda package
+lambda_package.zip
+
