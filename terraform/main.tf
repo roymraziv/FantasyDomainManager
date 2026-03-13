@@ -247,10 +247,6 @@ resource "aws_api_gateway_method" "options_proxy" {
   resource_id   = aws_api_gateway_resource.proxy.id
   http_method   = "OPTIONS"
   authorization = "NONE"
-
-  request_parameters = {
-    "method.request.header.Origin" = false
-  }
 }
 
 resource "aws_api_gateway_integration" "options_proxy" {
@@ -289,7 +285,7 @@ resource "aws_api_gateway_integration_response" "options_proxy" {
 
   response_parameters = {
     # Echo back the request Origin (required when frontend uses credentials)
-    "method.response.header.Access-Control-Allow-Origin"      = "method.request.header.Origin"
+    "method.response.header.Access-Control-Allow-Origin"      = "'https://fantasydomainmanager.com'"
     "method.response.header.Access-Control-Allow-Headers"    = "'Content-Type,Authorization'"
     "method.response.header.Access-Control-Allow-Methods"    = "'GET,POST,PUT,DELETE,OPTIONS'"
     "method.response.header.Access-Control-Allow-Credentials" = "'true'"
@@ -301,10 +297,6 @@ resource "aws_api_gateway_method" "options_root" {
   resource_id   = aws_api_gateway_rest_api.api.root_resource_id
   http_method   = "OPTIONS"
   authorization = "NONE"
-
-  request_parameters = {
-    "method.request.header.Origin" = false
-  }
 }
 
 resource "aws_api_gateway_integration" "options_root" {
@@ -342,7 +334,7 @@ resource "aws_api_gateway_integration_response" "options_root" {
   status_code = aws_api_gateway_method_response.options_root.status_code
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"      = "method.request.header.Origin"
+    "method.response.header.Access-Control-Allow-Origin"      = "'https://fantasydomainmanager.com'"
     "method.response.header.Access-Control-Allow-Headers"    = "'Content-Type,Authorization'"
     "method.response.header.Access-Control-Allow-Methods"    = "'GET,POST,PUT,DELETE,OPTIONS'"
     "method.response.header.Access-Control-Allow-Credentials" = "'true'"
