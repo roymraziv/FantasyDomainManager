@@ -134,9 +134,8 @@ After deployment, Terraform will output the API Gateway domain target. You need 
 ```bash
 # Get the domain target from terraform output
 terraform output api_gateway_domain_target
-terraform output api_gateway_domain_zone_id
 
-# Create CNAME record in Route53 pointing to the domain target
+# Create a CNAME record pointing to that target (or use alias if you have the hosted zone ID from API Gateway custom domain in the console)
 ```
 
 **If using external DNS:**
