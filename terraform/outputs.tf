@@ -33,8 +33,9 @@ output "api_gateway_domain_target" {
   value       = aws_api_gateway_domain_name.api.regional_domain_name
 }
 
+# Hosted zone ID for Route53; may be null in newer provider versions (get from AWS Console if needed)
 output "api_gateway_domain_zone_id" {
-  description = "API Gateway custom domain hosted zone ID (for Route53)"
-  value       = aws_api_gateway_domain_name.api.regional_hosted_zone_id
+  description = "API Gateway custom domain hosted zone ID (for Route53 alias target)"
+  value       = try(aws_api_gateway_domain_name.api.regional_hosted_zone_id, null)
 }
 
