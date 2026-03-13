@@ -62,7 +62,7 @@ jobs:
           TF_VAR_database_connection_string: ${{ secrets.DATABASE_CONNECTION_STRING }}
           TF_VAR_token_key: ${{ secrets.TOKEN_KEY }}
           TF_VAR_api_domain: ${{ secrets.API_DOMAIN }}
-          TF_VAR_cors_allowed_origins: ${{ secrets.CORS_ALLOWED_ORIGINS }}
+          TF_VAR_cors_allowed_origins: '"${{ secrets.CORS_ALLOWED_ORIGINS }}"'
           TF_VAR_aws_ses_sender_email: ${{ secrets.AWS_SES_SENDER_EMAIL }}
           TF_VAR_email_base_url: ${{ secrets.EMAIL_BASE_URL }}
           TF_VAR_admin_seed_password: ${{ secrets.ADMIN_SEED_PASSWORD }}
@@ -76,7 +76,7 @@ jobs:
           TF_VAR_database_connection_string: ${{ secrets.DATABASE_CONNECTION_STRING }}
           TF_VAR_token_key: ${{ secrets.TOKEN_KEY }}
           TF_VAR_api_domain: ${{ secrets.API_DOMAIN }}
-          TF_VAR_cors_allowed_origins: ${{ secrets.CORS_ALLOWED_ORIGINS }}
+          TF_VAR_cors_allowed_origins: '"${{ secrets.CORS_ALLOWED_ORIGINS }}"'
           TF_VAR_aws_ses_sender_email: ${{ secrets.AWS_SES_SENDER_EMAIL }}
           TF_VAR_email_base_url: ${{ secrets.EMAIL_BASE_URL }}
           TF_VAR_admin_seed_password: ${{ secrets.ADMIN_SEED_PASSWORD }}
