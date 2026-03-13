@@ -169,6 +169,10 @@ resource "aws_api_gateway_deployment" "api" {
       aws_api_gateway_integration.lambda_root.id,
       aws_api_gateway_integration.options_proxy.id,
       aws_api_gateway_integration.options_root.id,
+      aws_api_gateway_integration_response.options_proxy.id,
+      aws_api_gateway_integration_response.options_root.id,
+      aws_api_gateway_method_response.options_proxy.id,
+      aws_api_gateway_method_response.options_root.id,
     ]))
   }
 
