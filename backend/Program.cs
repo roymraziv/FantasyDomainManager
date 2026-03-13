@@ -13,7 +13,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.RateLimiting;
-
 var builder = WebApplication.CreateBuilder(args);
 
 var getConnectionString = builder.Configuration.GetConnectionString("Domains") 

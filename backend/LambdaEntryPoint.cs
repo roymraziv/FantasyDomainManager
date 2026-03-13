@@ -3,20 +3,15 @@ using Amazon.Lambda.AspNetCoreServer;
 namespace FantasyDomainManager;
 
 /// <summary>
-/// Lambda entry point for the ASP.NET Core application.
-/// This class is used by AWS Lambda to bootstrap the application.
+/// Lambda entry point. Uses Startup so the host builder has a configured application (required for .NET 6+ minimal-style apps in Lambda).
 /// </summary>
 public class LambdaEntryPoint : APIGatewayProxyFunction
 {
-    /// <summary>
-    /// The builder has already registered the services from Program.cs
-    /// Use this method to add any additional service configuration
-    /// </summary>
     protected override void Init(IWebHostBuilder builder)
     {
         builder
             .UseContentRoot(Directory.GetCurrentDirectory())
+            .UseStartup<Startup>()
             .UseLambdaServer();
     }
 }
-
