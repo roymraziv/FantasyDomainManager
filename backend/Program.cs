@@ -274,18 +274,21 @@ builder.Services.AddRateLimiter(options =>
 
 var app = builder.Build();
 
-// Apply database migrations on startup
-using (var scope = app.Services.CreateScope())
+// Run migrations and seed only when NOT in Lambda (cold start would exceed API Gateway 29s timeout).
+// In Lambda, run migrations separately (e.g. CI step or one-off) before or after deploy.
+if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("AWS_LAMBDA_FUNCTION_NAME")))
 {
-    var db = scope.ServiceProvider.GetRequiredService<DomainDb>();
-    db.Database.Migrate();
-}
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<DomainDb>();
+        db.Database.Migrate();
+    }
 
-// Seed database with admin user and roles
-using (var scope = app.Services.CreateScope())
-{
-    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-    await seeder.SeedAsync();
+    using (var scope = app.Services.CreateScope())
+    {
+        var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+        await seeder.SeedAsync();
+    }
 }
 
 if (app.Environment.IsDevelopment())

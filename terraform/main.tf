@@ -96,8 +96,8 @@ resource "aws_lambda_function" "api" {
   handler          = "FantasyDomainManager::FantasyDomainManager.LambdaEntryPoint::FunctionHandlerAsync"
   source_code_hash = filebase64sha256("${path.module}/${var.lambda_package_path}")
   runtime          = "dotnet8"
-  timeout          = 30
-  memory_size      = 512
+  timeout          = 29  # API Gateway REST API max integration timeout
+  memory_size      = 1024
 
   environment {
     variables = {
