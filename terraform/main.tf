@@ -144,7 +144,7 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
 }
 
 # API Gateway REST API
-resource "aws_apigateway_rest_api" "api" {
+resource "aws_api_gateway_rest_api" "api" {
   name        = "${var.project_name}-api"
   description = "Fantasy Domain Manager API"
 
@@ -154,16 +154,16 @@ resource "aws_apigateway_rest_api" "api" {
 }
 
 # API Gateway deployment
-resource "aws_apigateway_deployment" "api" {
-  rest_api_id = aws_apigateway_rest_api.api.id
+resource "aws_api_gateway_deployment" "api" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
   stage_name  = var.api_stage_name
 
   triggers = {
     redeployment = sha1(jsonencode([
-      aws_apigateway_rest_api.api.body,
-      aws_apigateway_resource.proxy.id,
-      aws_apigateway_method.proxy.id,
-      aws_apigateway_integration.lambda.id,
+      aws_api_gateway_rest_api.api.body,
+      aws_api_gateway_resource.proxy.id,
+      aws_api_gateway_method.proxy.id,
+      aws_api_gateway_integration.lambda.id,
     ]))
   }
 
@@ -172,39 +172,39 @@ resource "aws_apigateway_deployment" "api" {
   }
 
   depends_on = [
-    aws_apigateway_method.proxy,
-    aws_apigateway_integration.lambda,
+    aws_api_gateway_method.proxy,
+    aws_api_gateway_integration.lambda,
   ]
 }
 
 # API Gateway proxy resource (catches all paths)
-resource "aws_apigateway_resource" "proxy" {
-  rest_api_id = aws_apigateway_rest_api.api.id
-  parent_id   = aws_apigateway_rest_api.api.root_resource_id
+resource "aws_api_gateway_resource" "proxy" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  parent_id   = aws_api_gateway_rest_api.api.root_resource_id
   path_part   = "{proxy+}"
 }
 
 # API Gateway method for proxy resource
-resource "aws_apigateway_method" "proxy" {
-  rest_api_id   = aws_apigateway_rest_api.api.id
-  resource_id   = aws_apigateway_resource.proxy.id
+resource "aws_api_gateway_method" "proxy" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.proxy.id
   http_method   = "ANY"
   authorization = "NONE"
 }
 
 # API Gateway method for root
-resource "aws_apigateway_method" "proxy_root" {
-  rest_api_id   = aws_apigateway_rest_api.api.id
-  resource_id   = aws_apigateway_rest_api.api.root_resource_id
+resource "aws_api_gateway_method" "proxy_root" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_rest_api.api.root_resource_id
   http_method   = "ANY"
   authorization = "NONE"
 }
 
 # API Gateway integration with Lambda for proxy
-resource "aws_apigateway_integration" "lambda" {
-  rest_api_id = aws_apigateway_rest_api.api.id
-  resource_id = aws_apigateway_resource.proxy.id
-  http_method = aws_apigateway_method.proxy.http_method
+resource "aws_api_gateway_integration" "lambda" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.proxy.http_method
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
@@ -212,10 +212,10 @@ resource "aws_apigateway_integration" "lambda" {
 }
 
 # API Gateway integration with Lambda for root
-resource "aws_apigateway_integration" "lambda_root" {
-  rest_api_id = aws_apigateway_rest_api.api.id
-  resource_id = aws_apigateway_rest_api.api.root_resource_id
-  http_method = aws_apigateway_method.proxy_root.http_method
+resource "aws_api_gateway_integration" "lambda_root" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_rest_api.api.root_resource_id
+  http_method = aws_api_gateway_method.proxy_root.http_method
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
@@ -228,11 +228,11 @@ resource "aws_lambda_permission" "apigw" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.api.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigateway_rest_api.api.execution_arn}/*/*"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
 }
 
 # API Gateway custom domain
-resource "aws_apigateway_domain_name" "api" {
+resource "aws_api_gateway_domain_name" "api" {
   domain_name              = var.api_domain
   regional_certificate_arn = data.aws_acm_certificate.api_cert.arn
 
@@ -242,10 +242,10 @@ resource "aws_apigateway_domain_name" "api" {
 }
 
 # API Gateway base path mapping
-resource "aws_apigateway_base_path_mapping" "api" {
-  api_id      = aws_apigateway_rest_api.api.id
-  stage_name  = aws_apigateway_deployment.api.stage_name
-  domain_name = aws_apigateway_domain_name.api.domain_name
+resource "aws_api_gateway_base_path_mapping" "api" {
+  api_id      = aws_api_gateway_rest_api.api.id
+  stage_name  = aws_api_gateway_deployment.api.stage_name
+  domain_name = aws_api_gateway_domain_name.api.domain_name
 }
 
 # Lambda package is built by ./scripts/build-lambda.sh
