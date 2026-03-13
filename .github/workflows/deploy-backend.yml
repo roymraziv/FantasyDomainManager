@@ -81,3 +81,15 @@ jobs:
           TF_VAR_email_base_url: ${{ secrets.EMAIL_BASE_URL }}
           TF_VAR_admin_seed_password: ${{ secrets.ADMIN_SEED_PASSWORD }}
         run: terraform apply -auto-approve tfplan
+
+      - name: Run database seed
+        working-directory: ./backend/publish
+        env:
+          RUN_SEED_ONLY: "true"
+          ConnectionStrings__Domains: ${{ secrets.DATABASE_CONNECTION_STRING }}
+          TokenKey: ${{ secrets.TOKEN_KEY }}
+          AdminSeed__Email: ${{ secrets.ADMIN_SEED_EMAIL }}
+          AdminSeed__FirstName: ${{ secrets.ADMIN_SEED_FIRST_NAME }}
+          AdminSeed__LastName: ${{ secrets.ADMIN_SEED_LAST_NAME }}
+          AdminSeed__Password: ${{ secrets.ADMIN_SEED_PASSWORD }}
+        run: dotnet FantasyDomainManager.dll

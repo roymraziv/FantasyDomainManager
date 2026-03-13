@@ -162,7 +162,9 @@ resource "aws_api_gateway_deployment" "api" {
       aws_api_gateway_rest_api.api.body,
       aws_api_gateway_resource.proxy.id,
       aws_api_gateway_method.proxy.id,
+      aws_api_gateway_method.proxy_root.id,
       aws_api_gateway_integration.lambda.id,
+      aws_api_gateway_integration.lambda_root.id,
     ]))
   }
 
@@ -172,7 +174,9 @@ resource "aws_api_gateway_deployment" "api" {
 
   depends_on = [
     aws_api_gateway_method.proxy,
+    aws_api_gateway_method.proxy_root,
     aws_api_gateway_integration.lambda,
+    aws_api_gateway_integration.lambda_root,
   ]
 }
 
@@ -228,13 +232,14 @@ resource "aws_api_gateway_integration" "lambda_root" {
   uri                     = aws_lambda_function.api.invoke_arn
 }
 
-# Lambda permission for API Gateway
+# Lambda permission for API Gateway (required or Gateway returns 502/504 and Lambda never runs)
 resource "aws_lambda_permission" "apigw" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.api.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
+  # Explicit stage so API Gateway can invoke; /*/* can be too broad in some accounts
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/${aws_api_gateway_stage.api.stage_name}/*/*"
 }
 
 # API Gateway custom domain

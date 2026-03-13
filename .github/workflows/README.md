@@ -37,6 +37,11 @@ Add these secrets in your GitHub repository settings (Settings → Secrets and v
 - `ADMIN_SEED_PASSWORD` - Admin user password for seeding
   - Example: `SecurePassword123!`
 
+Optional (for deploy-time seed step; if unset, roles are still created but admin user is skipped):
+- `ADMIN_SEED_EMAIL` - Admin user email (e.g. `admin@yourdomain.com`)
+- `ADMIN_SEED_FIRST_NAME` - Admin first name (default: Admin)
+- `ADMIN_SEED_LAST_NAME` - Admin last name (default: User)
+
 ## How It Works
 
 1. **Trigger**: Workflow runs on push to `main` branch when backend/terraform files change
@@ -51,7 +56,9 @@ Add these secrets in your GitHub repository settings (Settings → Secrets and v
    - Plans changes (shows what will be created/updated)
    - Applies changes (creates/updates AWS resources)
 
-4. **Result**: Lambda function updated with new code
+4. **Seed**: Runs database migrations and seed once (roles + admin user if secrets set)
+
+5. **Result**: Lambda function updated with new code
 
 ## Manual Deployment
 

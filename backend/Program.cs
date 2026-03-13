@@ -274,8 +274,24 @@ builder.Services.AddRateLimiter(options =>
 
 var app = builder.Build();
 
+// Seed-only mode: run migrations + seed then exit (used by CI on deploy).
+if (Environment.GetEnvironmentVariable("RUN_SEED_ONLY") == "true")
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<DomainDb>();
+        db.Database.Migrate();
+    }
+    using (var scope = app.Services.CreateScope())
+    {
+        var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+        await seeder.SeedAsync();
+    }
+    Environment.Exit(0);
+}
+
 // Run migrations and seed only when NOT in Lambda (cold start would exceed API Gateway 29s timeout).
-// In Lambda, run migrations separately (e.g. CI step or one-off) before or after deploy.
+// In Lambda, seeding runs in CI via RUN_SEED_ONLY after deploy.
 if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("AWS_LAMBDA_FUNCTION_NAME")))
 {
     using (var scope = app.Services.CreateScope())

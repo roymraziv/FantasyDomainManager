@@ -212,6 +212,26 @@ Key outputs:
 
 ## Troubleshooting
 
+### 504 Gateway Timeout and No Lambda Logs in CloudWatch
+
+If you get 504 and the Lambda log group has no (or empty) log streams, API Gateway is likely **not invoking Lambda** (permission or integration issue).
+
+1. **Check Lambda resource-based policy**
+   - AWS Console → Lambda → your function → Configuration → Permissions.
+   - Under "Resource-based policy statements" there should be a statement allowing `apigateway.amazonaws.com` to `lambda:InvokeFunction`.
+   - If it’s missing, run `terraform apply` again so `aws_lambda_permission.apigw` is applied.
+
+2. **Confirm API Gateway integration**
+   - API Gateway → your API → Resources → select the `{proxy+}` (and root) resource → Integration request.
+   - Integration type should be **Lambda** and point to your function name/region. Fix in console or re-apply Terraform.
+
+3. **Test Lambda directly**
+   - Lambda → your function → Test tab. Create a test event with an API Gateway proxy payload (e.g. use the "API Gateway AWS Proxy" template), then Test.
+   - If you see logs in CloudWatch and a response, Lambda is fine; the issue is between API Gateway and Lambda (permission or integration). If the test fails or no logs, the problem is inside the Lambda (runtime/config).
+
+4. **Redeploy API Gateway**
+   - After changing permissions or integration, the stage must use a new deployment. Re-run `terraform apply` so a new deployment is created and the stage is updated.
+
 ### Lambda Cold Starts
 
 If cold starts are too slow:
