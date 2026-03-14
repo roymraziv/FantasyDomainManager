@@ -30,6 +30,9 @@ jobs:
         working-directory: ./client
         run: npm ci
       
+      - name: Remove pre-installed Pulumi language plugins
+        run: sudo rm -f /usr/local/bin/pulumi-language-nodejs
+
       - name: Deploy to AWS with SST
         working-directory: ./client
         run: npm run sst:deploy
