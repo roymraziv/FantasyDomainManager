@@ -1,6 +1,6 @@
 using System;
 
-namespace FantasyDomainManager.DTOs;
+namespace FantasyDomainManager.Core.DTOs;
 
 public class UserDto
 {

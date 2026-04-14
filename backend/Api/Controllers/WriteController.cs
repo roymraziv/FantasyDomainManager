@@ -2,16 +2,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using FantasyDomainManager.DTOs;
-using FantasyDomainManager.DTOs.CreateDtos;
-using API.Extensions;
-using FantasyDomainManager.Extensions;
-using FantasyDomainManager.Models;
+using FantasyDomainManager.Core.DTOs;
+using FantasyDomainManager.Core.DTOs.CreateDtos;
+using FantasyDomainManager.Api.Extensions;
+using FantasyDomainManager.Core.Extensions;
+using FantasyDomainManager.Core.Models;
 using Microsoft.AspNetCore.Authorization;
-using FantasyDomainManager.DbContexts;
-using FantasyDomainManager.Services;
+using FantasyDomainManager.Infrastructure.DbContexts;
+using FantasyDomainManager.Infrastructure.Services;
 
-namespace FantasyDomainManager.Controllers
+namespace FantasyDomainManager.Api.Controllers
 {
     [Authorize]
     [EnableRateLimiting("ApiPolicy")]
@@ -174,7 +174,7 @@ namespace FantasyDomainManager.Controllers
         // ========== ENTERPRISE ENDPOINTS ==========
 
         [HttpPost("enterprises")]
-        public IActionResult CreateEnterprise([FromBody] Models.Enterprise enterprise)
+        public IActionResult CreateEnterprise([FromBody] Enterprise enterprise)
         {
             var user = GetAuthenticatedUser(out var userError);
             if (userError != null) return userError;
@@ -238,7 +238,7 @@ namespace FantasyDomainManager.Controllers
         // ========== TROOP ENDPOINTS ==========
 
         [HttpPost("troops")]
-        public IActionResult CreateTroop([FromBody] Models.Troop troop)
+        public IActionResult CreateTroop([FromBody] Troop troop)
         {
             var user = GetAuthenticatedUser(out var userError);
             if (userError != null) return userError;

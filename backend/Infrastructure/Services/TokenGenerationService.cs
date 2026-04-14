@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace FantasyDomainManager.Services;
+namespace FantasyDomainManager.Infrastructure.Services;
 
 public class TokenGenerationService : ITokenGenerationService
 {

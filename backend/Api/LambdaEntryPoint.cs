@@ -1,6 +1,6 @@
 using Amazon.Lambda.AspNetCoreServer;
 
-namespace FantasyDomainManager;
+namespace FantasyDomainManager.Api;
 
 /// <summary>
 /// Lambda entry point. Uses Startup so the host builder has a configured application (required for .NET 6+ minimal-style apps in Lambda).

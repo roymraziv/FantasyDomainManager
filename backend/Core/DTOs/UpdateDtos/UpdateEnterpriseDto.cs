@@ -1,4 +1,4 @@
-namespace FantasyDomainManager.DTOs;
+namespace FantasyDomainManager.Core.DTOs;
 
 public class UpdateEnterpriseDto
 {

@@ -1,9 +1,9 @@
-using FantasyDomainManager.Configuration;
-using FantasyDomainManager.Models;
+using FantasyDomainManager.Core.Configuration;
+using FantasyDomainManager.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
-namespace FantasyDomainManager.Services;
+namespace FantasyDomainManager.Infrastructure.Services;
 
 public class DatabaseSeeder
 {

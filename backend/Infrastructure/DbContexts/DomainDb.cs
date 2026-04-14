@@ -1,9 +1,9 @@
-using FantasyDomainManager.Models;
+using FantasyDomainManager.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace FantasyDomainManager.DbContexts;
+namespace FantasyDomainManager.Infrastructure.DbContexts;
 
 public class DomainDb : IdentityDbContext<User>
 {

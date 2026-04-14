@@ -2,12 +2,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using FantasyDomainManager.Interfaces;
-using FantasyDomainManager.Models;
+using FantasyDomainManager.Core.Interfaces;
+using FantasyDomainManager.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-namespace FantasyDomainManager.Services;
+namespace FantasyDomainManager.Infrastructure.Services;
 
 public class TokenService(IConfiguration config, UserManager<User> userManager) : ITokenService
 {

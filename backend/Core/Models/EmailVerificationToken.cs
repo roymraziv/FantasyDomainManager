@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FantasyDomainManager.Models;
+namespace FantasyDomainManager.Core.Models;
 
 public class EmailVerificationToken
 {

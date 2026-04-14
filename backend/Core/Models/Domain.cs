@@ -1,4 +1,4 @@
-namespace FantasyDomainManager.Models;
+namespace FantasyDomainManager.Core.Models;
 
 public class Domain
 {

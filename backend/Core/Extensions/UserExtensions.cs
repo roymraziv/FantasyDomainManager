@@ -1,8 +1,8 @@
-using FantasyDomainManager.DTOs;
-using FantasyDomainManager.Interfaces;
-using FantasyDomainManager.Models;
+using FantasyDomainManager.Core.DTOs;
+using FantasyDomainManager.Core.Interfaces;
+using FantasyDomainManager.Core.Models;
 
-namespace FantasyDomainManager.Extensions;
+namespace FantasyDomainManager.Core.Extensions;
 
 public static class UserExtensions
 {

@@ -4,7 +4,7 @@ using Amazon.SimpleEmail.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace FantasyDomainManager.Services;
+namespace FantasyDomainManager.Infrastructure.Services;
 
 public class AwsSesEmailService : IEmailService
 {

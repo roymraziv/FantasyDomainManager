@@ -1,4 +1,4 @@
-namespace FantasyDomainManager.Configuration;
+namespace FantasyDomainManager.Core.Configuration;
 
 public class AdminSeedSettings
 {

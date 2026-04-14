@@ -1,7 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Identity;
 
-namespace FantasyDomainManager.Models;
+namespace FantasyDomainManager.Core.Models;
 
 public class User : IdentityUser
 {

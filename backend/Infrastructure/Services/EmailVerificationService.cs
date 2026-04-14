@@ -1,11 +1,11 @@
-using FantasyDomainManager.DbContexts;
-using FantasyDomainManager.Models;
+using FantasyDomainManager.Infrastructure.DbContexts;
+using FantasyDomainManager.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace FantasyDomainManager.Services;
+namespace FantasyDomainManager.Infrastructure.Services;
 
 public class EmailVerificationService : IEmailVerificationService
 {

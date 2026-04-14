@@ -1,9 +1,10 @@
-using FantasyDomainManager.DbContexts;
-using FantasyDomainManager.DTOs;
-using FantasyDomainManager.Extensions;
-using FantasyDomainManager.Interfaces;
-using FantasyDomainManager.Models;
-using FantasyDomainManager.Services;
+using FantasyDomainManager.Infrastructure.DbContexts;
+using FantasyDomainManager.Core.DTOs;
+using FantasyDomainManager.Core.Extensions;
+using FantasyDomainManager.Core.Interfaces;
+using FantasyDomainManager.Core.Models;
+using FantasyDomainManager.Core.Services;
+using FantasyDomainManager.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -11,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
-namespace FantasyDomainManager.Controllers;
+namespace FantasyDomainManager.Api.Controllers;
 
 public class AccountController(
     ITokenService tokenService,

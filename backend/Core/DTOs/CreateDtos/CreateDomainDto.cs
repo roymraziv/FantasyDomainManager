@@ -1,6 +1,6 @@
 using System;
 
-namespace FantasyDomainManager.DTOs.CreateDtos;
+namespace FantasyDomainManager.Core.DTOs.CreateDtos;
 
 public class CreateDomainDto
 {

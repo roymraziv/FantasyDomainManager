@@ -1,10 +1,10 @@
-using API.Extensions;
-using FantasyDomainManager.DbContexts;
-using FantasyDomainManager.Models;
+using FantasyDomainManager.Api.Extensions;
+using FantasyDomainManager.Infrastructure.DbContexts;
+using FantasyDomainManager.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FantasyDomainManager.Controllers
+namespace FantasyDomainManager.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

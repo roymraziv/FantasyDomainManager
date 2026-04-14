@@ -1,9 +1,9 @@
 using System;
 using System.Data;
-using FantasyDomainManager.Models;
+using FantasyDomainManager.Core.Models;
 using FluentValidation;
 
-namespace FantasyDomainManager.Validators;
+namespace FantasyDomainManager.Core.Validators;
 
 public class EnterpriseValidator : AbstractValidator<Enterprise>
 {

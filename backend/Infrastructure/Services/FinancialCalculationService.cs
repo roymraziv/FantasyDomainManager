@@ -1,8 +1,8 @@
-using FantasyDomainManager.DbContexts;
-using FantasyDomainManager.DTOs;
+using FantasyDomainManager.Infrastructure.DbContexts;
+using FantasyDomainManager.Core.DTOs;
 using Microsoft.EntityFrameworkCore;
 
-namespace FantasyDomainManager.Services;
+namespace FantasyDomainManager.Infrastructure.Services;
 
 public class FinancialCalculationService
 {

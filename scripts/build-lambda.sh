@@ -24,7 +24,7 @@ dotnet restore
 
 # Build and publish
 echo "Building and publishing application..."
-dotnet publish \
+dotnet publish "$BACKEND_DIR/Api" \
   --configuration Release \
   --output "$OUTPUT_DIR" \
   --self-contained false \

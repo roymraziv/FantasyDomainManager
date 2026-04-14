@@ -1,6 +1,6 @@
-using FantasyDomainManager.Models;
+using FantasyDomainManager.Core.Models;
 
-namespace FantasyDomainManager.Interfaces;
+namespace FantasyDomainManager.Core.Interfaces;
 
 public interface ITokenService
 {

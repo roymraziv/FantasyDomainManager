@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using FantasyDomainManager.Services;
-using FantasyDomainManager.DTOs;
-using API.Extensions;
+using FantasyDomainManager.Infrastructure.Services;
+using FantasyDomainManager.Core.DTOs;
+using FantasyDomainManager.Api.Extensions;
 using Microsoft.AspNetCore.Authorization;
-using FantasyDomainManager.DbContexts;
+using FantasyDomainManager.Infrastructure.DbContexts;
 
-namespace FantasyDomainManager.Controllers
+namespace FantasyDomainManager.Api.Controllers
 {
     [Authorize]
     [EnableRateLimiting("ApiPolicy")]

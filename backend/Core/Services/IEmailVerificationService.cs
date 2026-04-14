@@ -1,4 +1,4 @@
-namespace FantasyDomainManager.Services;
+namespace FantasyDomainManager.Core.Services;
 
 public interface IEmailVerificationService
 {

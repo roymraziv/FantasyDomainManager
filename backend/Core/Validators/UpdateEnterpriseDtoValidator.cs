@@ -1,7 +1,7 @@
-using FantasyDomainManager.DTOs;
+using FantasyDomainManager.Core.DTOs;
 using FluentValidation;
 
-namespace FantasyDomainManager.Validators;
+namespace FantasyDomainManager.Core.Validators;
 
 public class UpdateEnterpriseDtoValidator : AbstractValidator<UpdateEnterpriseDto>
 {

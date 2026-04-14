@@ -1,6 +1,6 @@
 using Ganss.Xss;
 
-namespace FantasyDomainManager.Services;
+namespace FantasyDomainManager.Infrastructure.Services;
 
 public class InputSanitizationService
 {

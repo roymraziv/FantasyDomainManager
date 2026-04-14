@@ -1,8 +1,8 @@
 using System;
-using FantasyDomainManager.DTOs.CreateDtos;
-using FantasyDomainManager.Models;
+using FantasyDomainManager.Core.DTOs.CreateDtos;
+using FantasyDomainManager.Core.Models;
 
-namespace FantasyDomainManager.Extensions;
+namespace FantasyDomainManager.Core.Extensions;
 
 public static class CreateDomainDtoExtensions
 {

@@ -1,9 +1,9 @@
 using System;
 using System.Data;
-using FantasyDomainManager.DTOs.CreateDtos;
+using FantasyDomainManager.Core.DTOs.CreateDtos;
 using FluentValidation;
 
-namespace FantasyDomainManager.Validators;
+namespace FantasyDomainManager.Core.Validators;
 
 public class CreateDomainDtoValidator : AbstractValidator<CreateDomainDto>
 {

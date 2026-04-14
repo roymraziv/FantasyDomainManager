@@ -1,11 +1,11 @@
-using FantasyDomainManager.DbContexts;
-using FantasyDomainManager.Models;
+using FantasyDomainManager.Infrastructure.DbContexts;
+using FantasyDomainManager.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace FantasyDomainManager.Controllers;
+namespace FantasyDomainManager.Api.Controllers;
 
 public class AdminController(UserManager<User> userManager, DomainDb context) : BaseApiController(context)
 {

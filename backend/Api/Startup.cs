@@ -1,20 +1,21 @@
-using FantasyDomainManager.DbContexts;
-using FantasyDomainManager.Configuration;
+using FantasyDomainManager.Infrastructure.DbContexts;
+using FantasyDomainManager.Core.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
-using FantasyDomainManager.Validators;
+using FantasyDomainManager.Core.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using FantasyDomainManager.Interfaces;
-using FantasyDomainManager.Models;
-using FantasyDomainManager.Services;
+using FantasyDomainManager.Core.Interfaces;
+using FantasyDomainManager.Core.Models;
+using FantasyDomainManager.Core.Services;
+using FantasyDomainManager.Infrastructure.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.RateLimiting;
 
-namespace FantasyDomainManager;
+namespace FantasyDomainManager.Api;
 
 /// <summary>
 /// Configures the app for Lambda (used by LambdaEntryPoint). Keeps the same configuration as Program.cs so Lambda and local run behave the same.

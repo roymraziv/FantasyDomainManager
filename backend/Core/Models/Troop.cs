@@ -1,6 +1,6 @@
 using System;
 
-namespace FantasyDomainManager.Models;
+namespace FantasyDomainManager.Core.Models;
 
 public class Troop
 {
