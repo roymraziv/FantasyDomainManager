@@ -1,4 +1,4 @@
-using FantasyDomainManager.Core.DTOs;
+using FantasyDomainManager.Core.DTOs.AuthDtos;
 using FantasyDomainManager.Core.Interfaces;
 using FantasyDomainManager.Core.Models;
 

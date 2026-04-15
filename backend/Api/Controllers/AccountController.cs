@@ -1,5 +1,5 @@
 using FantasyDomainManager.Infrastructure.DbContexts;
-using FantasyDomainManager.Core.DTOs;
+using FantasyDomainManager.Core.DTOs.AuthDtos;
 using FantasyDomainManager.Core.Extensions;
 using FantasyDomainManager.Core.Interfaces;
 using FantasyDomainManager.Core.Models;

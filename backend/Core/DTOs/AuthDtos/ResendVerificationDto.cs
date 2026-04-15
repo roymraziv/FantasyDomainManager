@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FantasyDomainManager.Core.DTOs;
+namespace FantasyDomainManager.Core.DTOs.AuthDtos;
 
 public class ResendVerificationDto
 {

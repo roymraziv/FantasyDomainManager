@@ -1,4 +1,4 @@
-using FantasyDomainManager.Core.DTOs;
+using FantasyDomainManager.Core.DTOs.UpdateDtos;
 using FluentValidation;
 
 namespace FantasyDomainManager.Core.Validators;
