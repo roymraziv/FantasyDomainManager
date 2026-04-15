@@ -422,3 +422,6 @@ Properties/launchSettings.json
 # User secrets (ASP.NET Core)
 secrets.json
 *.secrets.json
+
+# Development documentation
+docs/
