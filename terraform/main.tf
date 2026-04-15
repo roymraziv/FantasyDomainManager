@@ -92,7 +92,7 @@ resource "aws_lambda_function" "api" {
   filename         = "${path.module}/${var.lambda_package_path}"
   function_name    = "${var.project_name}-api"
   role             = aws_iam_role.lambda_role.arn
-  handler          = "FantasyDomainManager::FantasyDomainManager.LambdaEntryPoint::FunctionHandlerAsync"
+  handler          = "FantasyDomainManager::FantasyDomainManager.Api.LambdaEntryPoint::FunctionHandlerAsync"
   source_code_hash = filebase64sha256("${path.module}/${var.lambda_package_path}")
   runtime          = "dotnet8"
   timeout          = 29  # API Gateway REST API max integration timeout
