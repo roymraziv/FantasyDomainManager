@@ -88,7 +88,6 @@ resource "aws_iam_role_policy" "lambda_ses" {
 }
 
 # Lambda function
-# Note: Build the Lambda package first: ./scripts/build-lambda.sh
 resource "aws_lambda_function" "api" {
   filename         = "${path.module}/${var.lambda_package_path}"
   function_name    = "${var.project_name}-api"
@@ -371,10 +370,6 @@ resource "aws_api_gateway_base_path_mapping" "api" {
   stage_name  = aws_api_gateway_stage.api.stage_name
   domain_name = aws_api_gateway_domain_name.api.domain_name
 }
-
-# Lambda package is built by ./scripts/build-lambda.sh
-# The zip file is created at var.lambda_package_path
-# We use filebase64sha256 to get the hash for change detection
 
 # Provider for us-east-1 (required for ACM certificates used by API Gateway)
 provider "aws" {
