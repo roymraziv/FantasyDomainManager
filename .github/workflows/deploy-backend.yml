@@ -29,8 +29,8 @@ jobs:
         run: dotnet restore
       
       - name: Build and publish application
-        working-directory: ./backend
-        run: dotnet publish --configuration Release --output ./publish --self-contained false
+        working-directory: ./backend/Api
+        run: dotnet publish --configuration Release --output ../publish --self-contained false
       
       - name: Create Lambda deployment package
         working-directory: ./backend/publish

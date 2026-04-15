@@ -93,7 +93,9 @@ resource "aws_acm_certificate" "api_cert" {
 Build the Lambda deployment package:
 
 ```bash
-./scripts/build-lambda.sh
+cd backend && dotnet restore
+dotnet publish Api --configuration Release --output publish --self-contained false
+cd publish && zip -r ./lambda-package.zip . -x "lambda-package.zip"
 ```
 
 This will create `backend/publish/lambda-package.zip`
@@ -173,7 +175,9 @@ When you make code changes:
 
 1. **Build new Lambda package:**
    ```bash
-   ./scripts/build-lambda.sh
+   cd backend && dotnet restore
+   dotnet publish Api --configuration Release --output publish --self-contained false
+   cd publish && zip -r ./lambda-package.zip . -x "lambda-package.zip"
    ```
 
 2. **Update Terraform (if infrastructure changed):**
